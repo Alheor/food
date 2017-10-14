@@ -19,6 +19,10 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
     <!-- Styles -->
+
+    <link rel="stylesheet" href="css/stl.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="js/script.js"></script>
 </head>
 <body>
 <div class="container">
@@ -36,14 +40,11 @@
                     <a class="nav-link" href="{{ route('index') }}">Мое питание</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown09" data-toggle="dropdown"
+                    <a class="nav-link dropdown-toggle" href="#" id="dropdown09" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false">Классификатор</a>
                     <div class="dropdown-menu" aria-labelledby="dropdown09">
                         <a class="dropdown-item" href="{{ route('dishes') }}">Блюда</a>
                         <a class="dropdown-item" href="{{ route('products') }}">Продукты</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{{ route('dishes_category') }}">Категории блюд</a>
-                        <a class="dropdown-item" href="{{ route('products_category') }}">Категории продуктов</a>
                     </div>
                 </li>
                 <li class="nav-item">
@@ -75,7 +76,7 @@
     </nav>
 
     <div class="jumbotron">
-        <div class="col-sm-8 mx-auto">
+        <div class="col-sm-12">
             @yield('content')
         </div>
     </div>

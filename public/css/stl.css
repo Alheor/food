@@ -1,0 +1,16 @@
+.category-list {
+    list-style: none;
+    padding: 0;
+}
+
+.category-list ul {
+    display: block;
+    cursor: default;
+    display: none;
+    list-style: none;
+    padding: 0px;
+    padding-left: 15px;
+}
+.category-list span {
+    cursor: pointer;
+}

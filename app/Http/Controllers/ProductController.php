@@ -10,9 +10,8 @@ class ProductController extends Controller
     {
         return view('Product.product');
     }
-
-    public function category()
+    public function new()
     {
-        return view('Product.category');
+        return view('Product.new');
     }
 }

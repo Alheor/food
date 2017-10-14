@@ -10,9 +10,4 @@ class DishController extends Controller
     {
         return view('Dish.dish');
     }
-
-    public function category()
-    {
-        return view('Dish.category');
-    }
 }
