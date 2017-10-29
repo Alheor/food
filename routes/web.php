@@ -21,5 +21,5 @@ Route::get('/dishes/new', 'DishController@new')->name('new_dish');
 Route::get('/dishes_category', 'DishController@category')->name('dishes_category');
 
 Route::get('/products', 'ProductController@index')->name('products');
-Route::get('/products/new', 'ProductController@new')->name('new_product');
-Route::get('/products_category', 'ProductController@category')->name('products_category');
+Route::match(['get','post'],'/products/new', 'ProductController@new')->name('new_product');
+Route::get('/products_category', 'ProductController@getCategoryList')->name('products_category');
