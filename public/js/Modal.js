@@ -30,7 +30,9 @@ class Modal {
     }
 
     show() {
-        $(document.body).append(this.htmlBody);
+        if (!$('div').is('#modal_body_' + this.guid)) {
+            $(document.body).append(this.htmlBody);
+        }
         $('#'+this.guid).modal('toggle');
         let modal = this;
         $('#modal_agree_' + this.guid).on('click', function () {
@@ -43,10 +45,8 @@ class Modal {
         $('#'+this.guid).modal('toggle');
     }
 
-    html(data){
-        if (!$('div').is('#modal_body_' + this.guid)) {
-            $('#modal_body_' + this.guid).html(data);
-        }
+    html(data) {
+        $('#modal_body_' + this.guid).html(data);
     }
 
     showSpiner() {

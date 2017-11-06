@@ -1,46 +1,35 @@
-    <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#exampleModal">
-        Не выбрано
+@if($tplName == 'button')
+    <button type="button" name="manufacturer" class="btn btn-dark" id="productManufacturersSelect">
+        @if(old('manufacturer_name')) {{old('manufacturer_name')}} @else Не выбрано @endif
     </button>
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="manufacturer_tree"></div>
-                    <script type="application/javascript">
-                        var data = [
-                            {
-                                name: 'node1', id: 1,
-                                children: [
-                                    { name: 'child1', id: 2 },
-                                    { name: 'child2', id: 3 }
-                                ]
-                            },
-                            {
-                                name: 'node2', id: 4,
-                                children: [
-                                    { name: 'child3', id: 5 }
-                                ]
-                            }
-                        ];
-                        $('#category_tree').tree({
-                            data: data,
-                            autoOpen: false,
-                            dragAndDrop: false,
-                            closedIcon: '+',
-                            openedIcon:'-'
-                        });
-                    </script>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <input type="hidden" name="manufacturer" value="{{ old('manufacturer') }}" id="productManufacturerId" />
+    <input type="hidden" name="manufacturer_name" value="{{ old('manufacturer_name') }}" id="productManufacturerName" />
+@elseif($tplName == 'productManufacturers')
+    <table class="table table-striped table-bordered table-sm">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Наименование</th>
+            <th scope="col">ИНН</th>
+            <th scope="col">ОГРН</th>
+        </tr>
+        </thead>
+        <tbody class="manufacturers-list">
+        @foreach ($manufacturers as $manufacturer)
+            <tr style="font-size: 12px;">
+                <th scope="row">{{$manufacturer->id}}</th>
+                <td>{{$manufacturer->name}}</td>
+                <td>{{$manufacturer->inn}}</td>
+                <td>{{$manufacturer->ogrn}}</td>
+            </tr>
+        @endforeach
+
+        </tbody>
+    </table>
+    <script type="application/javascript">
+        $('.manufacturers-list').find('tr').on('click', function () {
+            $('.manufacturers-list').find('tr').removeClass('manufacturers-list-selected');
+            $(this).addClass('manufacturers-list-selected');
+        });
+    </script>
+@endif

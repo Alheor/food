@@ -23,3 +23,4 @@ Route::get('/dishes_category', 'DishController@category')->name('dishes_category
 Route::get('/products', 'ProductController@index')->name('products');
 Route::match(['get','post'],'/products/new', 'ProductController@new')->name('new_product');
 Route::get('/products_category', 'ProductController@getCategoryList')->name('products_category');
+Route::get('/products_manufacturers', 'ProductController@getManufacturersList')->name('products_manufacturers');

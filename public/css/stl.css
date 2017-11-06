@@ -20,3 +20,11 @@
     margin-right: 5px;
     position: inherit !important;
 }
+
+.manufacturers-list tr {
+    cursor: pointer;
+}
+
+.manufacturers-list-selected{
+    background-color: #cce5ff !important;
+}
