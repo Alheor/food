@@ -21,11 +21,16 @@ class Product extends Model
 
     public function manufacturer()
     {
-        return $this->hasOne('App\Manufacturer', 'manufacturer_id');
+        return $this->hasOne('App\Manufacturer', 'id', 'manufacturer_id');
     }
 
     public function user()
     {
         return $this->hasOne('App\User', 'user_id');
+    }
+
+    public function attributes()
+    {
+        return $this->hasOne('App\Attributes', 'id');
     }
 }

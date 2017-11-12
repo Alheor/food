@@ -41,7 +41,7 @@
                 </div>
                 <div class="form-group col-sm-2">
                     <label for="salt" class="col-form-label">Соль</label>
-                    <input type="text" value="@if(empty(old('salt'))) 0 @else {{ old('salt') }} @endif" class="form-control" id="salt" name="salt"/>
+                    <input type="text" @if(empty(old('salt'))) value="0" @else value="{{ old('salt') }}" @endif class="form-control" id="salt" name="salt"/>
                 </div>
             </div>
             <div class="form-group">
@@ -55,22 +55,27 @@
             <div class="form-group">
                 <h5>Подходит для</h5>
                 <div class="btn-group" data-toggle="buttons">
-                    <label class="btn btn-success">
+                    <label class="btn" style="background-color: #7ed7d4;">
+                        <input class="my-input-checkbox" @if(old('sh')) checked="" @endif type="checkbox" name="sh" autocomplete="off">Сушка
+                    </label>
+                </div>
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn"style="background-color: #81d877;">
                         <input class="my-input-checkbox" @if(old('ph')) checked="" @endif type="checkbox" name="ph" autocomplete="off">Похудение
                     </label>
                 </div>
                 <div class="btn-group" data-toggle="buttons">
-                    <label class="btn btn-warning">
+                    <label class="btn" style="background-color: #f2d638;">
                         <input class="my-input-checkbox" @if(old('pd')) checked="" @endif type="checkbox" name="pd" autocomplete="off">Поддержка
                     </label>
                 </div>
                 <div class="btn-group" data-toggle="buttons">
-                    <label class="btn btn-danger">
+                    <label class="btn" style="background-color: #eb9a53;">
                         <input class="my-input-checkbox"  @if(old('nm')) checked="" @endif type="checkbox" name="nm" autocomplete="off">Набор массы
                     </label>
                 </div>
                 <div class="btn-group" data-toggle="buttons">
-                    <label class="btn btn-primary">
+                    <label class="btn" style="background-color: #e66161;">
                         <input class="my-input-checkbox" @if(old('cm')) checked="" @endif type="checkbox" name="cm"  autocomplete="off">Cheat meal
                     </label>
                 </div>

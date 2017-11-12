@@ -28,4 +28,9 @@ class Dish extends Model
     {
         return $this->hasOne('App\User', 'user_id');
     }
+
+    public function attributes()
+    {
+        return $this->hasOne('App\Attributes', 'attribute_id');
+    }
 }

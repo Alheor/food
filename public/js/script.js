@@ -72,6 +72,8 @@ $( document ).ready(function() {
     
     $('.calc_bju_field').on('keyup change', function () {
         let parent = $(this).parent().parent();
+
+        this.value = this.value.replace(/,/, '.');
         let sum = 0;
 
         $(parent).find('input').each(function(i, el) {
