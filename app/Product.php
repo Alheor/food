@@ -31,6 +31,6 @@ class Product extends Model
 
     public function attributes()
     {
-        return $this->hasOne('App\Attributes', 'id');
+        return $this->hasOne('App\Attributes', 'id', 'attribute_id');
     }
 }

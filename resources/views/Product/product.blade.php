@@ -44,6 +44,23 @@
                 <td>
                     <div>{{$product->name}}
                         <span class="small"><sup>{{$product->manufacturer->name}}</sup></span>
+                        <div class="pull-right">
+                            @if(!is_null($product->attributes) && $product->attributes->food_sushka)
+                                <div class="food-type-icon-sh" title="Подходит для сушки"></div>
+                            @endif
+                            @if(!is_null($product->attributes) && $product->attributes->food_pohudenie)
+                            <div class="food-type-icon-ph" title="Подходит для похудения"></div>
+                            @endif
+                            @if(!is_null($product->attributes) && $product->attributes->food_podderjka)
+                            <div class="food-type-icon-pd" title="Подходит для поддержки"></div>
+                            @endif
+                            @if(!is_null($product->attributes) && $product->attributes->food_nabor_massi)
+                            <div class="food-type-icon-nm" title="Подходит для набора массы"></div>
+                            @endif
+                            @if(!is_null($product->attributes) && $product->attributes->food_cheat_meal)
+                            <div class="food-type-icon-cm" title="Подходит для cheat meal"></div>
+                            @endif
+                        </div>
                     </div>
                 </td>
                 <td style="background-color: #c3e6cb">{{$product->b}}</td>

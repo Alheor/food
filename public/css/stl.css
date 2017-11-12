@@ -28,3 +28,46 @@
 .manufacturers-list-selected{
     background-color: #cce5ff !important;
 }
+
+.food-type-icon-sh {
+    margin-left: 2px;
+    float: right;
+    width: 29px;
+    height: 29px;
+    background-image: url(./../img/icon.png);
+}
+.food-type-icon-ph {
+    margin-left: 2px;
+    float: right;
+    width: 29px;
+    height: 29px;
+    background-image: url(./../img/icon.png);
+    background-position: -31px;
+}
+
+.food-type-icon-pd {
+    margin-left: 2px;
+    float: right;
+    width: 29px;
+    height: 29px;
+    background-image: url(./../img/icon.png);
+    background-position: -58px;
+}
+
+.food-type-icon-nm {
+    margin-left: 2px;
+    float: right;
+    width: 29px;
+    height: 29px;
+    background-image: url(./../img/icon.png);
+    background-position: -85px;
+}
+
+.food-type-icon-cm {
+    margin-left: 2px;
+    float: right;
+    width: 29px;
+    height: 29px;
+    background-image: url(./../img/icon.png);
+    background-position: -112px;
+}
