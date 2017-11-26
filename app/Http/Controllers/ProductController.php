@@ -16,7 +16,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::all();
+        $products = Product::orderBy('name', 'asc')->get();
 
         return view('Product.product', [
             'products' => $products
@@ -34,14 +34,14 @@ class ProductController extends Controller
                 'form' => 'new_form'
             ]);
         } else {
+
             $validator = Validator::make($request->all(), [
-                'prodName'  => 'required|max:50|min:3',
+                'prodName'  => 'required|max:100|min:3',
                 'b'         => 'required|numeric|max:100',
                 'j'         => 'required|numeric|max:100',
                 'u'         => 'required|numeric|max:100',
+                'cellulose' => 'required|numeric|max:100',
                 'k'         => 'required|numeric|max:1000',
-                'sugar'     => 'numeric|max:100',
-                'salt'      => 'numeric|max:100',
                 'category'  => 'required|integer',
                 'manufacturer' => 'required|integer',
             ]);
@@ -79,18 +79,15 @@ class ProductController extends Controller
                 $product->name = $request->get('prodName');
                 $product->user_id = Auth::id();
                 $product->guid = strtoupper(guid());
-                $product->b = $request->get('b');
-                $product->j = $request->get('j');
-                $product->u = $request->get('u');
-                $product->k = $request->get('k');
-                $product->sugar = $request->get('sugar');
-                $product->salt = $request->get('salt');
+                $product->b = (float)$request->get('b');
+                $product->j = (float)$request->get('j');
+                $product->u = (float)$request->get('u');
+                $product->cellulose = (float)$request->get('cellulose');
+                $product->k = (float)$request->get('k');
+                $product->sugar = request()->has('sugar');
+                $product->salt = request()->has('salt');
                 $product->category_id = $request->get('category');
                 $product->manufacturer_id = $request->get('manufacturer');
-                $product->suitable_w_loss = request()->has('ph') ? 1 : 0;
-                $product->suitable_w_maintenance = request()->has('pd') ? 1 : 0;
-                $product->suitable_w_loss_gain = request()->has('nm') ? 1 : 0;
-                $product->suitable_cheat_meal = request()->has('cm') ? 1 : 0;
 
                 $product->save();
             } catch (\Throwable $e) {
@@ -110,25 +107,26 @@ class ProductController extends Controller
     }
 
     public function getCategoryList(Request $request) {
-        function asd($item, $pc, &$arr) {
+        function asd($item, &$arr) {
+            $item = $item->sortBy('name');
             foreach ($item as $el) {
                 $tmpArray =  ['id' => $el->id,'name' => $el->name];
                 if (!$el->cats->isEmpty()) {
-                    asd($el->cats, $pc, $tmpArray['children']);
+                    asd($el->cats,  $tmpArray['children']);
                 }
                 $arr[] = $tmpArray;
             }
         }
 
         $arr = [];
-        $pc = ProductCategory::All();
+        $pc = ProductCategory::orderBy('name', 'asc')->get();
 
         foreach ($pc as $item) {
             //Элементы верхнего уровня
             if (is_null($item->parent_id)) {
                 $tmpArray = ['id' => $item->id,'name' => $item->name];
                 if (!$item->cats->isEmpty()) {
-                    asd($item->cats, $pc, $tmpArray['children']);
+                    asd($item->cats, $tmpArray['children']);
                 }
 
                 $arr[] = $tmpArray;
@@ -138,16 +136,6 @@ class ProductController extends Controller
         return view('Product.categories', [
             'tplName' => 'productCategories',
             'categories' => json_encode($arr),
-            'jsguid' => $request->get('guid')
-        ]);
-    }
-
-    public function getManufacturersList(Request $request) {
-        $manufacturers = Manufacturer::All();
-
-        return view('Product.manufacturers', [
-            'tplName' => 'productManufacturers',
-            'manufacturers' => $manufacturers,
             'jsguid' => $request->get('guid')
         ]);
     }

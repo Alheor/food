@@ -36,8 +36,9 @@ class Modal {
         $('#'+this.guid).modal('toggle');
         let modal = this;
         $('#modal_agree_' + this.guid).on('click', function () {
-            modal.onAgree();
-            modal.hide();
+            if (true === modal.onAgree()) {
+                modal.hide();
+            }
         });
     }
 

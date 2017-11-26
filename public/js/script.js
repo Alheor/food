@@ -1,4 +1,9 @@
 $( document ).ready(function() {
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    });
+
     $('.category-list span').on('click', function () {
         $(this.parentNode).find('ul').first().toggle("slow");
     });
@@ -14,6 +19,23 @@ $( document ).ready(function() {
             $(button).html(el.name);
             $('#productCategoryId').attr('value', el.id);
             $('#productCategoryName').attr('value', el.name);
+
+            if (
+                el.id === 1 ||
+                el.id === 3 ||
+                el.id === 6 ||
+                el.id === 8 ||
+                el.id === 9 ||
+                el.id === 14 ||
+                el.id === 15 ||
+                el.id === 16
+            ){
+                $('.cellulose').show();
+            } else {
+                $('.cellulose').hide();
+            }
+
+            return true;
         };
 
         let request = $.ajax({
@@ -37,7 +59,7 @@ $( document ).ready(function() {
 
     $('#productManufacturersSelect').on('click', function () {
         let modal = new Modal({
-            title: 'Производитель продуктов'
+            title: 'Торговая марка'
         });
 
         let button = this;
@@ -49,6 +71,8 @@ $( document ).ready(function() {
                     $('#productManufacturerName').attr('value', $(tr).find('td').html());
                 }
             });
+
+            return true;
         };
 
         let request = $.ajax({
@@ -99,5 +123,78 @@ $( document ).ready(function() {
         });
 
         $('.calc_bju_k_res').attr('value', sum.toFixed(1));
+    });
+
+    $('.product-delete').on('click', function() {
+        if (confirm('Уверены?')) {
+            $(this).parent().parent().remove();
+        }
     })
 });
+
+function productManufacturersSearch(input) {
+
+    let mName = $('#ManufacturersSearch').val();
+
+    let request = $.ajax({
+        url: "/products_manufacturers",
+        method: "GET",
+        data: {
+            search: mName
+        }
+    });
+
+    request.fail(function(jqXHR) {
+        modal.showError(jqXHR);
+    });
+
+    request.done(function(msg) {
+        $('.manufacturers-list').html(msg);
+    });
+}
+
+function productManufacturersAdd(obj) {
+    let modal = new Modal({
+        title: 'Новая торговая марка'
+    });
+
+    let request = $.ajax({
+        url: "/addManufacturer",
+        method: "GET"
+    });
+
+    modal.show();
+
+    request.fail(function(jqXHR) {
+        modal.showError(jqXHR);
+    });
+
+    request.done(function( msg ) {
+        modal.html(msg);
+    });
+
+    modal.onAgree = function () {
+
+        let mName = $('#manufacturerName').val();
+        let mToken = $('#manufacturerToken').val();
+
+        if(mName !== "undefined" && mName.length > 1) {
+            let request = $.ajax({
+                url: "/addManufacturer",
+                method: "POST",
+                data: {
+                    mName: mName,
+                    _token: mToken,
+                }
+            });
+
+            request.fail(function (jqXHR) {
+                modal.showError(jqXHR);
+            });
+
+            return true;
+        } else {
+            return false;
+        };
+    };
+}

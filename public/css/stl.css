@@ -71,3 +71,13 @@
     background-image: url(./../img/icon.png);
     background-position: -112px;
 }
+
+.product-delete {
+    color: #c7254e;
+    cursor: pointer;
+}
+
+.product-add {
+    color: #20895e;
+    cursor: pointer;
+}
