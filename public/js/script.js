@@ -1,6 +1,10 @@
 $(document).ready(function () {
 
     $(function () {
+        $('[data-toggle="popover"]').popover()
+    });
+
+    $(function () {
         $('[data-toggle="tooltip"]').tooltip()
     });
 
@@ -181,6 +185,10 @@ $(document).ready(function () {
             modal.html(msg);
         });
     });
+    
+    $('.saveDiaryButton').on('click', function () {
+        saveDiaryData(this);
+    });
 });
 
 function productManufacturersSearch() {
@@ -296,8 +304,9 @@ function addDishProdToDiary(el, modal, dayNumber, weight) {
         let bjuk = calculateBJUFromWeight(weight, msg.b, msg.j, msg.u);
 
         let html = '<tr>\n' +
-            '            <td style="text-overflow: ellipsis;">' +
-            '                <input type="hidden" value=\'' + JSON.stringify(msg) + '\' />' + msg.name +
+            '            <td style="text-overflow: ellipsis;">\n' +
+            '                <input type="hidden" value=\'' + JSON.stringify(msg) + '\' />\n' +
+            '                <a  tabindex="0"  role="button" data-trigger="focus" class="dish-prod-info" data-toggle="popover">' + msg.name + '</a>' +
             '            </td>\n' +
             '            <td style="min-width: 40px;">\n' +
             '                <input type="integer" value="' + weight + '" class="form-control input-table dishProdWeight"/>\n' +
@@ -314,7 +323,16 @@ function addDishProdToDiary(el, modal, dayNumber, weight) {
 
         $('#diaryTableAmount_' + dayNumber).before(html);
 
+        setTimeout(function () {
+            $('[data-toggle="popover"]').popover({
+                trigger: 'focus',
+                html: true,
+                content: dishProdInfo(msg)
+            });
+        }, 100);
+
         $('.dishProdWeight').unbind();
+
         $('.dishProdWeight').keyup(function (event) {
             this.value = this.value.replace(/[^0-9]*/g, '');
             setTimeout(function () {
@@ -346,7 +364,7 @@ function calculateBJUFromWeight(w, b, j, u) {
         b: resB.toFixed(1),
         j: resJ.toFixed(1),
         u: resU.toFixed(1),
-        k: Math.round(resB * 4 + resJ * 9 + resU * 4)
+        k: Math.round((resB * 4 + resJ * 9 + resU * 4).toFixed(1))
     }
 }
 
@@ -388,18 +406,34 @@ function calculateDiary() {
 
                 // --- Белки ---
                 sumTB += Number($($(el).find('td')[2]).text());
+                if (isNaN(sumTWtmp)) {
+                    alert('Ошибка калькуляции! Проблемы с полем "Белки" таблицы '+ (z+1) +', строки '+ (i+1));
+                    throw new Error('Protein value problem! Table '+ z +', tr '+ i + ', td 1.');
+                }
                 // --- Белки ---
 
                 // --- Жиры ---
                 sumTJ += Number($($(el).find('td')[3]).text());
+                if (isNaN(sumTWtmp)) {
+                    alert('Ошибка калькуляции! Проблемы с полем "Жиры" таблицы '+ (z+1) +', строки '+ (i+1));
+                    throw new Error('Fat value problem! Table '+ z +', tr '+ i + ', td 1.');
+                }
                 // --- Жиры ---
 
                 // --- Углеводы ---
                 sumTU += Number($($(el).find('td')[4]).text());
+                if (isNaN(sumTWtmp)) {
+                    alert('Ошибка калькуляции! Проблемы с полем "Углеводы" таблицы '+ (z+1) +', строки '+ (i+1));
+                    throw new Error('Carbohydrates value problem! Table '+ z +', tr '+ i + ', td 1.');
+                }
                 // --- Углеводы ---
 
                 // --- Ккал ---
                 sumTK += Number($($(el).find('td')[5]).text());
+                if (isNaN(sumTWtmp)) {
+                    alert('Ошибка калькуляции! Проблемы с полем "Ккал" таблицы '+ (z+1) +', строки '+ (i+1));
+                    throw new Error('Kcal value problem! Table '+ z +', tr '+ i + ', td 1.');
+                }
                 // --- Ккал ---
 
             } else {
@@ -407,7 +441,7 @@ function calculateDiary() {
                 $($(el).find('td')[2]).html(sumTB.toFixed(1));
                 $($(el).find('td')[3]).html(sumTJ.toFixed(1));
                 $($(el).find('td')[4]).html(sumTU.toFixed(1));
-                $($(el).find('td')[5]).html(Math.round(sumTK));
+                $($(el).find('td')[5]).html(Math.round(sumTK.toFixed(1)));
             }
         });
 
@@ -425,3 +459,28 @@ function calculateDiary() {
     $($(tr).find('td')[3]).text(sumU.toFixed(1));
     $($(tr).find('td')[4]).text(Math.round(sumK));
 }
+
+function dishProdInfo(data) {
+    return '<h6>' + data.name +
+        '</h6><i>' + data.manufacturer.name +
+        '</i><br>Пищевая ценность на 100 гр.' +
+        '<table class="table table-bordered table-sm diaryTableResult">' +
+        '<tr>' +
+        '<td>Белки</td>' +
+        '<td>Жиры</td>' +
+        '<td>Угл.</td>' +
+        '<td>Ккал.</td>' +
+        '</tr>' +
+        '<tr>' +
+        '<td style="background-color: #c3e6cb;">' + data.b +'</td>' +
+        '<td style="background-color: #ffeeba;">' + data.j +'</td>' +
+        '<td style="background-color: #f5c6cb;  ">' + data.u +'</td>' +
+        '<td>' + data.k +'</td>' +
+        '</tr>' +
+        '</table>';
+}
+
+function saveDiaryData(obj) {
+
+}
+

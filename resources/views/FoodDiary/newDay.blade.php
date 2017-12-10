@@ -16,11 +16,11 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td style="width: 50px; text-align: center;">Вес</td>
-                        <td style="width: 44px; text-align: center;">Б</td>
-                        <td style="width: 44px; text-align: center;">Ж</td>
-                        <td style="width: 44px; text-align: center;">У</td>
-                        <td style="width: 50px; text-align: center;">Ккал</td>
+                        <td style="width: 50px; text-align: center;">Вес, гр.</td>
+                        <td style="width: 44px; text-align: center;">Белки, гр.</td>
+                        <td style="width: 44px; text-align: center;">Жиры, гр.</td>
+                        <td style="width: 44px; text-align: center;">Угл., гр.</td>
+                        <td style="width: 50px; text-align: center;">Ккал., гр.</td>
                     </tr>
                     <tr>
                         <td style="width: 50px; text-align: center;">0</td>
@@ -81,7 +81,7 @@
     <div class="form-row">
         <div class="form-group col-sm-10"></div>
         <div class="form-group col-sm-2">
-            <button type="submit" style="float: right;" class="btn btn-secondary">Сохранить</button>
+            <button type="submit" style="float: right;" class="btn btn-secondary saveDiaryButton">Сохранить</button>
         </div>
     </div>
 @endsection

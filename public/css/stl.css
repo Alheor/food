@@ -173,3 +173,9 @@
     padding: 0;
     border: none !important;
 }
+
+.dish-prod-info {
+    cursor: pointer;
+    color: inherit !important;
+    text-decoration: underline;
+}

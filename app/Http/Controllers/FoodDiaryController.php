@@ -43,8 +43,10 @@ class FoodDiaryController extends Controller
                     'productList' => $productList
                 ]);
             } else {
+                $product = Product::where('id', $id)->first();
+                $product->manufacturer->name;
                 return response()->json(
-                    Product::where('id', $id)->first()
+                    $product
                 );
             }
         }
