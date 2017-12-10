@@ -50,13 +50,13 @@
             <th scope="row" style="text-align: center;">{{$manufacturer->id}}</th>
             <td>{{$manufacturer->name}}</td>
         </tr>
-        <script type="application/javascript">
-            $('.manufacturers-list').find('tr').on('click', function () {
-                $('.manufacturers-list').find('tr').removeClass('manufacturers-list-selected');
-                $(this).addClass('manufacturers-list-selected');
-            });
-        </script>
     @endforeach
+    <script type="application/javascript">
+        $('.manufacturers-list').find('tr').on('click', function () {
+            $('.manufacturers-list').find('tr').removeClass('manufacturers-list-selected');
+            $(this).addClass('manufacturers-list-selected');
+        });
+    </script>
 @elseif($tplName == 'addManufacturer')
     <div class="form-group">
         <label for="manufacturerName">Наименование <span class="text-danger font-weight-bold">*</span></label>

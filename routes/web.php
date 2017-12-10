@@ -24,6 +24,13 @@ Route::get('/products', 'ProductController@index')->name('products');
 Route::match(['get','post'],'/products/new', 'ProductController@new')->name('new_product');
 Route::get('/products_category', 'ProductController@getCategoryList')->name('products_category');
 Route::get('/products_manufacturers', 'ManufacturerController@getManufacturersList')->name('products_manufacturers');
+
 Route::match(['get','post'],'/addManufacturer', 'ManufacturerController@addManufacturer')->name('addManufacturers');
 
 Route::match(['get','post'],'/food_diary/new_day', 'FoodDiaryController@newDay')->name('foodDiaryNewDay');
+Route::match(
+        ['get','post'],
+        '/food_diary/finddp/{id?}',
+        'FoodDiaryController@findDp')
+    ->name('find_dp')
+    ->where('id', '[0-9]+');
