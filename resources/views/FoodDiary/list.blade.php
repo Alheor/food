@@ -5,7 +5,8 @@
         <thead class="thead-inverse">
         <tr>
             <th>Дата</th>
-            <th style="width: 60px;">Вес</th>
+            <th style="width: 90px;">Мой вес</th>
+            <th style="width: 90px;">Вес пищи</th>
             <th style="width: 50px;">Б</th>
             <th style="width: 50px;">Ж</th>
             <th style="width: 50px;">У</th>
@@ -17,7 +18,8 @@
         @foreach($diaryList as $diary)
             <tr>
                 <td>@rusiandate($diary->to_date)</td>
-                <td style="background-color: #fff">{{$diary->w}}</td>
+                <td style="background-color: #fff">{{$diary->my_weight}} кг.</td>
+                <td>{{$diary->w}} гр.</td>
                 <td style="background-color: #c3e6cb">{{$diary->b}}</td>
                 <td style="background-color: #ffeeba">{{$diary->j}}</td>
                 <td style="background-color: #f5c6cb">{{$diary->u}}</td>
