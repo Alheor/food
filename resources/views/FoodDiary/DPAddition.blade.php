@@ -49,7 +49,7 @@
             <input type="hidden" value="{{$product->id}}" />
         </td>
         <td>
-            <input type="text" class="form-control input-table" />
+            <input type="text" class="form-control input-table" onkeyup="this.value = strToFloat(this.value);"/>
         </td>
         <td style="padding-top: 7px;">
             <div class="prod-search-el" style="background-color: #c3e6cb">{{$product->b}}</div>

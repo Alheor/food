@@ -27,10 +27,13 @@ Route::get('/products_manufacturers', 'ManufacturerController@getManufacturersLi
 
 Route::match(['get','post'],'/addManufacturer', 'ManufacturerController@addManufacturer')->name('addManufacturers');
 
+Route::get('/food_diary/list', 'FoodDiaryController@list')->name('foodDiaryList');
 Route::match(['get','post'],'/food_diary/new_day', 'FoodDiaryController@newDay')->name('foodDiaryNewDay');
+Route::match(['get','post'],'/food_diary/load_day/{token?}', 'FoodDiaryController@loadDay')->name('foodDiaryLoadDay');
 Route::match(
         ['get','post'],
         '/food_diary/finddp/{id?}',
-        'FoodDiaryController@findDp')
+        'FoodDiaryController@findDishesOrProduct')
     ->name('find_dp')
     ->where('id', '[0-9]+');
+Route::post('/food_diary/save_day', 'FoodDiaryController@saveDay')->name('foodDiarySaveDay');

@@ -189,7 +189,23 @@ $(document).ready(function () {
     $('.saveDiaryButton').on('click', function () {
         saveDiaryData(this);
     });
+
+    $('.to-float').on('keyup', function () {
+        this.value = strToFloat(this.value);
+    });
+
+    $('.to-int').on('keyup', function () {
+        this.value = strToInt(this.value);
+    });
 });
+
+function strToInt(str) {
+   return str.replace(/[^0-9]*/, '');
+}
+
+function strToFloat(str) {
+    return str.replace(/[^0-9,.]*/, '').replace(/,/, '.');
+}
 
 function productManufacturersSearch() {
 
@@ -306,7 +322,7 @@ function addDishProdToDiary(el, modal, dayNumber, weight) {
         let html = '<tr>\n' +
             '            <td style="text-overflow: ellipsis;">\n' +
             '                <input type="hidden" value=\'' + JSON.stringify(msg) + '\' />\n' +
-            '                <a  tabindex="0"  role="button" data-trigger="focus" class="dish-prod-info" data-toggle="popover">' + msg.name + '</a>' +
+            '                <a  tabindex="0"  role="button" data-trigger="focus" class="dish-prod-info" data-toggle="dish-prod-info">' + msg.name + '</a>' +
             '            </td>\n' +
             '            <td style="min-width: 40px;">\n' +
             '                <input type="integer" value="' + weight + '" class="form-control input-table dishProdWeight"/>\n' +
@@ -324,7 +340,7 @@ function addDishProdToDiary(el, modal, dayNumber, weight) {
         $('#diaryTableAmount_' + dayNumber).before(html);
 
         setTimeout(function () {
-            $('[data-toggle="popover"]').popover({
+            $('[data-toggle="dish-prod-info"]').popover({
                 trigger: 'focus',
                 html: true,
                 content: dishProdInfo(msg)
@@ -351,20 +367,24 @@ function addDishProdToDiary(el, modal, dayNumber, weight) {
 }
 
 function calculateBJUFromWeight(w, b, j, u) {
-    let resB =  Number(b) * Number(w) / 100;
-    let resJ =  Number(j) * Number(w) / 100;
-    let resU =  Number(u) * Number(w) / 100;
+    let resB = Number(b) * Number(w) / 100;
+    let resJ = Number(j) * Number(w) / 100;
+    let resU = Number(u) * Number(w) / 100;
 
     if (isNaN(resB) || isNaN(resJ) || isNaN(resU) ) {
         alert('Ошибка калькуляции! Проблемы с расчетом БЖУ по весу');
         throw new Error('Calculate bju from weight problem!');
     }
 
+    let tempResB = parseInt(resB * 10) / 10;
+    let tempResJ = parseInt(resJ * 10) / 10;
+    let tempResU = parseInt(resU * 10) / 10;
+
     return {
-        b: resB.toFixed(1),
-        j: resJ.toFixed(1),
-        u: resU.toFixed(1),
-        k: Math.round((resB * 4 + resJ * 9 + resU * 4).toFixed(1))
+        b: tempResB,
+        j: tempResJ,
+        u: tempResU,
+        k: parseInt(tempResB * 4 + tempResJ * 9 + tempResU * 4)
     }
 }
 
@@ -481,6 +501,83 @@ function dishProdInfo(data) {
 }
 
 function saveDiaryData(obj) {
+    obj.disabled = true;
 
+    let diaryTable = $('.diaryTable');
+    let _token = $(obj).parent().find('input').val();
+    let data = [];
+    let myWeight = $('#my_weight');
+    let toDate = $('#to_date');
+    let productExist = false;
+    let product_guid = $('#product_guid');
+
+    $(diaryTable).each(function (z, el) {
+        data[z] = [];
+        $($(el).find('tbody')).find('tr').each(function (i, el) {
+            let elDataInput = $(el).find('input')[0];
+            let elWeightInput = $(el).find('input')[1];
+
+            if (typeof elDataInput !== "undefined" ) {
+                if (typeof elWeightInput === "undefined" ) {
+                    alert('Ошибка сохранения данных! Проблемы с весом таблицы '+ (z+1) +', строки '+ (i+1));
+                    obj.disabled = false;
+                    throw new Error('Weight value problem! Table '+ z +', tr '+ i + ', td 2.');
+                }
+
+                let elData = JSON.parse(elDataInput.value);
+                data[z].push({
+                    'guid': elData.guid,
+                    'weight': elWeightInput.value,
+                });
+
+                productExist = true;
+            }
+        });
+    });
+
+    if (myWeight.val() == '' || Number(myWeight.val()) < 1 || isNaN(Number(myWeight.val()))) {
+        alert('Введите свой вес');
+        obj.disabled = false;
+        myWeight.focus();
+        throw new Error('Self weight value problem!');
+    }
+
+    if (!productExist) {
+        alert('Добавьте хотя бы один продукт!');
+        obj.disabled = false;
+        throw new Error('Add product!');
+    }
+
+
+    $('#resultSendIndicator').html('<i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>');
+
+    let request = $.ajax({
+        url: "/food_diary/save_day",
+        method: "POST",
+        data: {
+            'data': {'products': data, 'weight': myWeight.val()},
+            'guid' : product_guid.length === 0? null : product_guid.val(),
+            'to_date' : toDate.val(),
+            '_token':_token
+        }
+    });
+
+    request.fail(function (jqXHR) {
+        $('#resultSendIndicator').html('<i class="fa fa-exclamation-triangle text-danger" aria-hidden="true" style="font-size:24px;"></i>');
+        obj.disabled = false;
+    });
+
+    request.done(function (msg) {
+        if (typeof msg.status !== "undefined" && msg.status === 'success') {
+            $('#resultSendIndicator').html('<i class="fa fa-check text-success" aria-hidden="true" style="font-size:24px;"></i>');
+            setTimeout(function () {
+                $('#resultSendIndicator').html('');
+            }, 1000);
+        } else {
+            $('#resultSendIndicator').html('<i class="fa fa-exclamation-triangle text-danger" aria-hidden="true" style="font-size:24px;"></i>');
+        }
+
+        obj.disabled = false;
+    });
 }
 
