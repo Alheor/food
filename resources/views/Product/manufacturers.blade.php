@@ -17,7 +17,7 @@
                    onclick="productManufacturersSearch(this);"
                 ></i>
             </div>
-            <div class="pull-right">
+            <div class="pull-right" style="width: 150px;">
                 <input class="form-control" id="ManufacturersSearch" onkeyup="productManufacturersSearch(this);" type="text" placeholder="Найти" aria-label="Найти">
             </div>
         </div>

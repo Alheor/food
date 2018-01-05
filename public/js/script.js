@@ -233,9 +233,11 @@ function productManufacturersSearch() {
 }
 
 function productManufacturersAdd() {
-    var modal = new Modal({
+    var modal = new modalWindow();
+    modal.constructor({
         title: 'Новая торговая марка'
     });
+
     modal.spinner().show();
 
     var request = $.ajax({
