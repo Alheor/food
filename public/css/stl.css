@@ -93,6 +93,16 @@
     border-radius: 3px;
     background-color: #28a745;
 }
+
+.dish-add-div {
+    padding-right: 8px;
+    padding-left: 8px;
+    margin-right: 3px;
+    cursor: pointer;
+    border-radius: 3px;
+    background-color: #28a745;
+}
+
 .input-table {
     width: 100%;
     padding: 3px;

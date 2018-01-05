@@ -4,18 +4,18 @@
             <div class="pull-left" style="font-size: 13px;">
                 <a href="{{ route('new_product') }}" target="_blank" class="text-info">Новый продукт</a>
                 <br/>
-                <a href="{{ route('new_dish') }}" target="_blank" class="text-success" style="display: none;">Новое блюдо</a>
+                <a href="{{ route('new_dish', ['new']) }}" target="_blank" class="text-success" style="display: none;">Новое блюдо</a>
             </div>
             <div class="pull-right">
                 <i class="fa fa-refresh"
                    aria-hidden="true"
                    style="font-size: 20px; margin:5px; margin-top: 10px; margin-right: 0px; cursor: pointer;"
-                   onclick="dishProdSearch(this);"
+                   onclick="dishProdSearch(this, '{{$type}}');"
                 ></i>
             </div>
             <div class="col-6 pull-right">
                 {{ csrf_field() }}
-                <input class="form-control" id="dishProdSearch" onkeyup="dishProdSearch(this);" type="text" placeholder="Найти" aria-label="Найти">
+                <input class="form-control" id="dishProdSearch" onkeyup="dishProdSearch(this, '{{$type}}');" type="text" placeholder="Найти" aria-label="Найти">
             </div>
         </div>
     </nav>

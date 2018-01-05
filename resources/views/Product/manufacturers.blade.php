@@ -8,7 +8,7 @@
     <nav class="navbar navbar-expand-xs navbar-light bg-light">
         <div class="navbar-collapse">
             <div class="pull-left">
-                <a href="#" onclick="productManufacturersAdd(this);" class="btn btn-success">Новый</a>
+                <a href="#" onclick="productManufacturersAdd(this);" class="btn btn-success">Новая</a>
             </div>
             <div class="pull-right">
                 <i class="fa fa-refresh"

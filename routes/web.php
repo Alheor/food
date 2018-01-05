@@ -17,9 +17,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/plan', 'PlanController@index')->name('plan');
 
-    Route::get('/dishes', 'DishController@index')->name('dishes');
-    Route::get('/dishes/new', 'DishController@new')->name('new_dish');
-    Route::get('/dishes_category', 'DishController@category')->name('dishes_category');
+    Route::get('/dishes/list', 'DishController@list')->name('dishes');
+    Route::get('/dishes/{oper}', 'DishController@crEd')->name('new_dish');
+    Route::get('/dish_category', 'DishController@getCategoryList')->name('dish_category');
 
     Route::get('/products', 'ProductController@index')->name('products');
     Route::match(['get', 'post'], '/products/new', 'ProductController@new')->name('new_product');

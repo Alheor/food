@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Calculators\NutritionalValueCalculator;
 use App\DayDiary;
 use App\Diary\DayRation;
+use App\Dish;
 use App\Product;
 use App\User;
 use Faker\Provider\DateTime;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -89,32 +91,67 @@ class FoodDiaryController extends Controller
      */
     public function findDishesOrProduct(Request $request)
     {
+        $type = $request->get('type') ?? 'all';
+
         if ($request->method() == 'POST') {
             $search = trim($request->get('search'));
 
             $id = $request->get('id');
 
             if (is_null($id)) {
-                $productList = Product::where('name', 'LIKE', "%{$search}%")
-                    ->orderBy('name', 'asc')
-                    ->take(10)
-                    ->get();
+                if($type === 'product') {
+                    $objList = Product::where('name', 'LIKE', "%{$search}%")
+                        ->orderBy('name', 'asc')
+                        ->take(10)
+                        ->get();
+                } else if($type === 'dish') {
+                    $objList = Dish::where('name', 'LIKE', "%{$search}%")
+                        ->orderBy('name', 'asc')
+                        ->take(10)
+                        ->get();
+                } else {
+                    /** @var Collection $objList */
+                    $objList = Product::where('name', 'LIKE', "%{$search}%")
+                        ->orderBy('name', 'asc')
+                        ->take(10)
+                        ->get();
+                    $objList2 = Dish::where('name', 'LIKE', "%{$search}%")
+                        ->orderBy('name', 'asc')
+                        ->take(10)
+                        ->get();
+
+                    $objList->merge($objList2);
+                }
 
                 return view('FoodDiary.DPAddition', [
                     'oper' => 'search_form',
-                    'productList' => $productList
+                    'productList' => $objList
                 ]);
             } else {
-                $product = Product::where('id', $id)->first();
-                $product->manufacturer->name; //LAZYLOAD что бы загрузился производитель
+                if ($type === 'product') {
+                    $obj = Product::where('id', $id)->first();
+                    $obj->manufacturer->name; //LAZYLOAD что бы загрузился производитель
+                } else if($type === 'dish') {
+                    $obj = Dish::where('id', $id)->first();
+                } else {
+                    $obj = Product::where('id', $id)->first();
+
+                    if (!is_null($obj)) {
+                        $obj->manufacturer->name;
+                    } else {
+                        $obj = Dish::where('id', $id)->first();
+                    }
+                }
+
                 return response()->json(
-                    $product
+                    $obj
                 );
             }
         }
 
         return view('FoodDiary.DPAddition', [
-            'oper' => 'get_form'
+            'oper' => 'get_form',
+            'type' => $type
         ]);
     }
 

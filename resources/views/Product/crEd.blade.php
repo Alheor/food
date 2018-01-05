@@ -15,7 +15,7 @@
             <input type="hidden" name="_token" value="{{ csrf_token() }}" >
             <div class="form-group">
                 <label for="prodName">Наименование <span class="text-danger font-weight-bold">*</span></label>
-                <input type="text" value="{{ old('prodName') }}" class="form-control col-sm-12" id="prodName" name="prodName">
+                <input type="text" value="{{ old('prodName') }}" autocomplete="off" class="form-control col-sm-12" id="prodName" name="prodName">
             </div>
             <div class="form-group">
                 <h5>Категория <span class="text-danger font-weight-bold">*</span></h5>
@@ -29,17 +29,17 @@
             <div class="form-row">
                 <div class="form-group col-sm-2">
                     <label for="b" class="col-form-label">Белки <span class="text-danger font-weight-bold">*</span></label>
-                    <input type="text" value="{{ old('b') }}" class="form-control calc_bju_field" id="b" name="b"/>
+                    <input type="text" value="{{ old('b') }}"  autocomplete="off" class="form-control calc_bju_field" id="b" name="b"/>
                 </div>
                 <div class="form-group col-sm-2">
                     <label for="j" class="col-form-label">Жиры <span class="text-danger font-weight-bold">*</span></label>
-                    <input type="text" value="{{ old('j') }}" class="form-control calc_bju_field" id="j" name="j"/>
+                    <input type="text" value="{{ old('j') }}" autocomplete="off"  class="form-control calc_bju_field" id="j" name="j"/>
                 </div>
                 <div class="form-group col-sm-2">
                     <label for="u" class="col-form-label">Угл. <span class="text-danger font-weight-bold">*</span>
                         <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Углеводы, включая клетчатку (пищевые волокна)."></i>
                     </label>
-                    <input type="text" value="{{ old('u') }}" class="form-control calc_bju_field" id="u" name="u"/>
+                    <input type="text" value="{{ old('u') }}" autocomplete="off" class="form-control calc_bju_field" id="u" name="u"/>
                   </div>
                 <div class="form-group col-sm-2 cellulose" @if(
                                                                 old('category') != 1 &&
@@ -54,11 +54,11 @@
                     <label for="cellulose" class="col-form-label">Клч.<span class="text-danger font-weight-bold">*</span>
                         <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Клетчатка (пищевые волокна), при расчетах это значение вычитается из углеводов."></i>
                     </label>
-                    <input type="text" @if(!empty(old('cellulose'))) value="{{ old('cellulose') }}" @else value="0" @endif class="form-control calc_bju_field" id="cellulose" name="cellulose"/>
+                    <input type="text" autocomplete="off"  @if(!empty(old('cellulose'))) value="{{ old('cellulose') }}" @else value="0" @endif class="form-control calc_bju_field" id="cellulose" name="cellulose"/>
                 </div>
                 <div class="form-group col-sm-2">
                     <label for="k" class="col-form-label">Ккал <span class="text-danger font-weight-bold">*</span></label>
-                    <input type="text" value="{{ old('k') }}" class="form-control calc_bju_k_res" id="k" name="k"/>
+                    <input type="text" value="{{ old('k') }}" autocomplete="off" class="form-control calc_bju_k_res" id="k" name="k"/>
                 </div>
             </div>
             <h5>Добавки</h5>

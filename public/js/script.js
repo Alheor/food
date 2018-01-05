@@ -284,7 +284,7 @@ function productManufacturersAdd() {
     };
 }
 
-function dishProdSearch() {
+function dishProdSearch(obj, type) {
 
     var el = $('#dishProdSearch');
 
@@ -293,6 +293,7 @@ function dishProdSearch() {
         method: "POST",
         data: {
             search: el.val(),
+            type: type,
             _token: el.parent().find('input').first().val()
         }
     });
@@ -310,6 +311,7 @@ function addDishProdToDiary(el, modal, dayGuid, weight) {
     var id = $(el).find('td').first().find('input').val();
     var request = $.ajax({
         url: "/food_diary/finddp/" + id,
+        type: "all",
         method: "POST",
         data: {
             id: id,
@@ -479,11 +481,14 @@ function calculateDiary() {
     });
 
     var tr = $('.diaryTableResult').find('tr')[2];
-    $($(tr).find('td')[0]).text(Math.round(sumW));
-    $($(tr).find('td')[1]).text(sumB.toFixed(1));
-    $($(tr).find('td')[2]).text(sumJ.toFixed(1));
-    $($(tr).find('td')[3]).text(sumU.toFixed(1));
-    $($(tr).find('td')[4]).text(Math.round(sumK));
+
+    if($(tr).length > 0) {
+        $($(tr).find('td')[0]).text(Math.round(sumW));
+        $($(tr).find('td')[1]).text(sumB.toFixed(1));
+        $($(tr).find('td')[2]).text(sumJ.toFixed(1));
+        $($(tr).find('td')[3]).text(sumU.toFixed(1));
+        $($(tr).find('td')[4]).text(Math.round(sumK));
+    }
 }
 
 function dishProdInfo(data) {

@@ -28,6 +28,7 @@
     <script src="/js/bootstrap-datepicker.min.js"></script>
     <script src="/js/bootstrap-datepicker.ru.min.js"></script>
     <script src="/js/script.js"></script>
+    <script src="/js/dish.js"></script>
 </head>
 <body>
 <div class="container">

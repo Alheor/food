@@ -30,7 +30,7 @@ class ProductController extends Controller
     public function new(Request $request)
     {
         if ($request->method() == 'GET') {
-            return view('Product.new', [
+            return view('Product.crEd', [
                 'form' => 'new_form'
             ]);
         } else {
@@ -100,7 +100,7 @@ class ProductController extends Controller
 
             DB::commit();
 
-            return view('Product.new', [
+            return view('Product.crEd', [
                 'form' => 'success_form'
             ]);
         }
