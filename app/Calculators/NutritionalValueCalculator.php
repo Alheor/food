@@ -17,34 +17,42 @@ class NutritionalValueCalculator
 
     /**
      * @param Product $product
+     * @param $mealGuid
      * @param int $weight
      */
-    public function addProduct(Product $product, int $weight)
+    public function addProduct(Product $product, $mealGuid, int $weight)
     {
-        $this->productList[$product->guid] = [$product, $weight];
+        $elIndex = md5($mealGuid . $product->guid);
+
+        if(isset($this->productList[$elIndex])) {
+            $this->productList[$elIndex][1] += $weight;
+        } else {
+            $this->productList[$elIndex] = [$product, $weight];
+        }
     }
 
     /**
      * @param $guid
      * @return array|null
      */
-    public function getProductNutritionalValueByGuid($guid)
+    public function getProductNutritionalValueByGuid($mealGuid, $guid)
     {
-        if (!isset($this->productList[$guid])) {
+        $elIndex = md5($mealGuid . $guid);
+        if (!isset($this->productList[$elIndex])) {
             return [];
         }
 
-        $b = (int)(($this->productList[$guid][0]->b * $this->productList[$guid][1] / 100) * 10) / 10;
-        $j = (int)(($this->productList[$guid][0]->j * $this->productList[$guid][1] / 100) * 10) / 10;
-        $u = (int)(($this->productList[$guid][0]->u * $this->productList[$guid][1] / 100) * 10) / 10;
-        $k = (int)(($this->productList[$guid][0]->k * $this->productList[$guid][1] / 100) * 10) / 10;
+        $b = (int)(($this->productList[$elIndex][0]->b * $this->productList[$elIndex][1] / 100) * 10) / 10;
+        $j = (int)(($this->productList[$elIndex][0]->j * $this->productList[$elIndex][1] / 100) * 10) / 10;
+        $u = (int)(($this->productList[$elIndex][0]->u * $this->productList[$elIndex][1] / 100) * 10) / 10;
+        $k = (int)(($this->productList[$elIndex][0]->k * $this->productList[$elIndex][1] / 100) * 10) / 10;
 
         return [
             'b' => $b,
             'j' => $j,
             'u' => $u,
             'k' => $k,
-            'w' => $this->productList[$guid][1],
+            'w' => $this->productList[$elIndex][1],
         ];
     }
 

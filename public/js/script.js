@@ -1,9 +1,4 @@
 $(document).ready(function () {
-
-    $('.navbar-toggler').on('touchstart', function (event) {
-        $('.navbar-collapse').parent().toggleClass('open');
-    });
-
     $(function () {
         $('[data-toggle="popover"]').popover()
     });
@@ -148,7 +143,7 @@ $(document).ready(function () {
 
     $('.product-add-div').on('click', function () {
 
-        var dayNumber = $(this).find('input').first().val();
+        var dayGuid = $(this).find('input').first().val();
         var modal = new modalWindow();
         modal.constructor({
             title: 'Добавить продукт или блюдо',
@@ -172,7 +167,7 @@ $(document).ready(function () {
             }
 
             modal.spinner().show();
-            return addDishProdToDiary(selectEl, modal, dayNumber, weight);
+            return addDishProdToDiary(selectEl, modal, dayGuid, weight);
         };
 
         var request = $.ajax({
@@ -194,7 +189,7 @@ $(document).ready(function () {
             modal.html(msg);
         });
     });
-    
+
     $('.saveDiaryButton').on('click', function () {
         saveDiaryData(this);
     });
@@ -309,7 +304,7 @@ function dishProdSearch() {
     });
 }
 
-function addDishProdToDiary(el, modal, dayNumber, weight) {
+function addDishProdToDiary(el, modal, dayGuid, weight) {
     var id = $(el).find('td').first().find('input').val();
     var request = $.ajax({
         url: "/food_diary/finddp/" + id,
@@ -341,12 +336,12 @@ function addDishProdToDiary(el, modal, dayNumber, weight) {
             '            <td style="background-color: #f5c6cb; text-align: center;">' + bjuk.u + '</td>\n' +
             '            <td style="text-align: center;">' + bjuk.k +
             '            </td>\n' +
-            '            <td style="padding-left: 10px;">\n' +
-            '                <i class="fa fa-ban product-delete"  title="Удалить продукт или блюдо"  onclick="$(this).parent().parent().remove();calculateDiary();" aria-hidden="true"></i>\n' +
+            '            <td style="padding-left: 5px;">\n' +
+            '                <i class="fa fa-ban product-delete"  title="Удалить продукт или блюдо"  onclick="if(confirm(\'Удалить?\')){$(this).parent().parent().remove();calculateDiary();}" aria-hidden="true"></i>\n' +
             '            </td>\n' +
             '        </tr>';
 
-        $('#diaryTableAmount_' + dayNumber).before(html);
+        $('#diaryTableAmount_' + dayGuid).before(html);
 
         setTimeout(function () {
             $('[data-toggle="dish-prod-info"]').popover({
@@ -521,7 +516,11 @@ function saveDiaryData(obj) {
     var product_guid = $('#product_guid');
 
     $(diaryTable).each(function (z, el) {
-        data[z] = [];
+        var mealGuid = $(el).find('input').first().val();
+        data[z] = {
+            'mealGuid': mealGuid,
+            'productList': []
+        };
         $($(el).find('tbody')).find('tr').each(function (i, el) {
             var elDataInput = $(el).find('input')[0];
             var elWeightInput = $(el).find('input')[1];
@@ -534,7 +533,7 @@ function saveDiaryData(obj) {
                 }
 
                 var elData = JSON.parse(elDataInput.value);
-                data[z].push({
+                data[z].productList.push({
                     'guid': elData.guid,
                     'weight': elWeightInput.value,
                 });
@@ -543,6 +542,7 @@ function saveDiaryData(obj) {
             }
         });
     });
+
 
     if (myWeight.val() == '' || Number(myWeight.val()) < 1 || isNaN(Number(myWeight.val()))) {
         alert('Введите свой вес');
@@ -564,7 +564,7 @@ function saveDiaryData(obj) {
         url: "/food_diary/save_day",
         method: "POST",
         data: {
-            'data': {'products': data, 'weight': myWeight.val()},
+            'data': {'mealList': data, 'weight': myWeight.val()},
             'guid' : product_guid.length === 0? null : product_guid.val(),
             'to_date' : toDate.val(),
             '_token':_token

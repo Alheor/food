@@ -4,7 +4,7 @@
             <div class="pull-left" style="font-size: 13px;">
                 <a href="{{ route('new_product') }}" target="_blank" class="text-info">Новый продукт</a>
                 <br/>
-                <a href="{{ route('new_dish') }}" target="_blank" class="text-success">Новое блюдо</a>
+                <a href="{{ route('new_dish') }}" target="_blank" class="text-success" style="display: none;">Новое блюдо</a>
             </div>
             <div class="pull-right">
                 <i class="fa fa-refresh"
@@ -22,14 +22,14 @@
     <table class="table table-striped table-bordered table-sm">
         <thead class="thead-dark">
         <tr>
-            <th scope="col">Наименование</th>
-            <th style="width: 50px; text-align: center;">Вес</th>
-            <th style="width: 160px;">
+            <td scope="col" style="font-size: 14px; color: #777;">Наименование</td>
+            <td style="width: 50px; text-align: center; font-size: 14px; color: #777;">Вес</td>
+            <td style="width: 140px; font-size: 14px; color: #777;">
                 <div class="prod-search-el">Б</div>
                 <div class="prod-search-el">Ж</div>
                 <div class="prod-search-el">У</div>
                 <div class="prod-search-el">Ккал</div>
-            </th>
+            </td>
         </tr>
         </thead>
         <tbody class="dish-prod-list">
@@ -52,10 +52,10 @@
             <input type="text" class="form-control input-table" onkeyup="this.value = strToFloat(this.value);"/>
         </td>
         <td style="padding-top: 7px;">
-            <div class="prod-search-el" style="background-color: #c3e6cb">{{$product->b}}</div>
-            <div class="prod-search-el" style="background-color: #ffeeba">{{$product->j}}</div>
-            <div class="prod-search-el" style="background-color: #f5c6cb">{{$product->u}}</div>
-            <div class="prod-search-el">{{$product->k}}</div>
+            <div class="prod-search-el" style="background-color: #c3e6cb; font-size: 14px;">{{$product->b}}</div>
+            <div class="prod-search-el" style="background-color: #ffeeba; font-size: 14px;">{{$product->j}}</div>
+            <div class="prod-search-el" style="background-color: #f5c6cb; font-size: 14px;">{{$product->u}}</div>
+            <div class="prod-search-el" style="font-size: 14px;">{{$product->k}}</div>
         </td>
     </tr>
     @empty

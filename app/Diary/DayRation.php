@@ -38,7 +38,7 @@ class DayRation
      */
     public function isValid()
     {
-        if (!isset($this->dayObject->data['products']) || !is_array($this->dayObject->data['products'])) {
+        if (!isset($this->dayObject->data['mealList']) || !is_array($this->dayObject->data['mealList'])) {
             $this->errorList[self::DATA_ERROR] = 'Products data is empty or not an array';
         }
 
@@ -68,14 +68,20 @@ class DayRation
     private function productLoader()
     {
         $queryGuids = [];
+
         try {
-            foreach ($this->dayObject->data['products'] as $key => $eating) {
-                foreach ($eating as $product) {
+            foreach ($this->dayObject->data['mealList'] as $eating) {
+                foreach ($eating['productList']?? [] as $product) {
                     $queryGuids[$product['guid']] = $product['weight'];
-                    $this->productListData[$key][] = [
-                        'guid' => $product['guid'],
-                        'weight' => $product['weight']
-                    ];
+
+                    if(!isset($this->productListData[$eating['mealGuid']][$product['guid']])) {
+                        $this->productListData[$eating['mealGuid']][$product['guid']] = [
+                            'guid' => $product['guid'],
+                            'weight' => $product['weight']
+                        ];
+                    } else {
+                        $this->productListData[$eating['mealGuid']][$product['guid']]['weight'] += $product['weight'];
+                    }
                 }
             }
 
@@ -83,13 +89,16 @@ class DayRation
 
             /** @var Product $product */
             foreach ($productList as $product) {
-                $this->nvc->addProduct($product,  $queryGuids[$product->guid]);
                 $product->manufacturer->name;
-                foreach ($this->productListData as $key => $productList) {
-                    foreach ($productList as $key1 => $el) {
+                foreach ($this->productListData as $mealGuid => $products) {
+                    foreach ($products as $key => $el) {
                         if ($el['guid'] === $product->guid) {
-                            $this->productListData[$key][$key1]['name'] = $product->name;
-                            $this->productListData[$key][$key1]['source'] = $product;
+                            $this->nvc->addProduct(
+                                $product,
+                                $mealGuid,
+                                $this->productListData[$mealGuid][$product->guid]['weight']
+                            );
+                            $this->productListData[$mealGuid][$key]['source'] = $product;
                         }
                     }
                 }
@@ -97,7 +106,7 @@ class DayRation
                 unset($queryGuids[$product->guid]);
             }
 
-
+            //print_r($this->productListData);exit;
             if (!empty($queryGuids)) {
                 throw new \Exception('Some products not found: '. array_keys($queryGuids));
             }
@@ -110,9 +119,9 @@ class DayRation
 
     public function calculateNutritionalValue()
     {
-        foreach ($this->productListData as &$eating) {
+        foreach ($this->productListData as $mealGuid => &$eating) {
             foreach ($eating as &$productData) {
-                $productData = array_merge($productData, $this->nvc->getProductNutritionalValueByGuid($productData['guid']));
+                $productData = array_merge($productData, $this->nvc->getProductNutritionalValueByGuid($mealGuid, $productData['guid']));
             }
         }
     }

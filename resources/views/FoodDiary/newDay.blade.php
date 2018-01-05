@@ -2,7 +2,7 @@
 @section('content')
     @if(isset($day))<input type="hidden" id="product_guid" value="{{$day->guid}}"/>@endif
     <div class="row">
-        <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2 col-corrector">
             <div class="form-group">
                 <label for="to_date">Дневник на</label>
                 <div class="input-group date">
@@ -20,13 +20,13 @@
                 </script>
             </div>
         </div>
-        <div class="col-6 col-sm-6 col-md-2 col-lg-2 col-xl-2">
+        <div class="col-6 col-sm-6 col-md-2 col-lg-2 col-xl-2 col-corrector">
             <div class="form-group">
                 <label for="my_weight">Мой вес</label>
                 <input type="text" id="my_weight" value="@if(isset($day)){{$day->my_weight}}@endif" placeholder="кг" class="form-control my-weight to-float"/>
             </div>
         </div>
-        <div class="col-12 col-sm-12 col-md-6 col-lg-5 col-xl-4 ml-auto">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-5 col-xl-4 ml-auto col-corrector">
             <div class="diaryTableResultDiv">
                 <table class="table table-bordered table-sm diaryTableResult">
                     <thead>
@@ -56,102 +56,106 @@
             </div>
         </div>
     </div>
-    <table class="table table-striped table-bordered table-sm diaryTableHeader">
-        <thead>
-        <tr>
-            <th></th>
-            <th style="width: 50px; text-align: center;">Вес</th>
-            <th style="width: 44px; text-align: center;">Б</th>
-            <th style="width: 44px; text-align: center;">Ж</th>
-            <th style="width: 44px; text-align: center;">У</th>
-            <th style="width: 50px; text-align: center;">Ккал</th>
-            <th style="width: 35px; text-align: center;"></th>
-        </tr>
-        </thead>
-    </table>
+    <div class="row">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-corrector">
+            <table class="table table-striped table-bordered table-sm diaryTableHeader">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th style="width: 50px; text-align: center;">Вес</th>
+                    <th style="width: 44px; text-align: center;">Б</th>
+                    <th style="width: 44px; text-align: center;">Ж</th>
+                    <th style="width: 44px; text-align: center;">У</th>
+                    <th style="width: 40px; text-align: center;">Ккал</th>
+                    <th style="width: 35px; text-align: center;"></th>
+                </tr>
+                </thead>
+            </table>
 
-    @foreach($mealList as $key => $meal)
-        <table class="table table-striped table-bordered table-sm diaryTable" id="diaryTable_{{$key}}">
-            <thead class="thead-inverse">
-            <tr>
-                <th colspan="7">
-                    <div class="pull-left product-add-div">
-                        <input type="hidden" value="{{$key}}"/>
-                        <i class="fa fa-plus product-add" aria-hidden="true" title="Добавить продукт или блюдо"></i>
-                    </div>
-                    <div style="text-align: center;">
-                        {{$meal}}
-                    </div>
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-                @if(isset($data[$key]))
-                    @foreach($data[$key] as $product)
-                        <tr>
-                            <td style="text-overflow: ellipsis;">
-                                <input type="hidden" value="{{$product['source']}}">
-                                <a tabindex="0" role="button" data-trigger="focus" class="dish-prod-info" data-toggle="dish-prod-info_{{$product['guid']}}" data-original-title="" title="">{{$product['name']}}</a>
-                                <script type="application/javascript">
-                                    setTimeout(function () {
-                                        $('[data-toggle="dish-prod-info_{{$product['guid']}}"]').popover({
-                                            trigger: 'focus',
-                                            html: true,
-                                            content: dishProdInfo({!!json_encode($product['source'])!!})
-                                        });
-                                    }, 100);
-                                </script>
-                            </td>
-                            <td style="min-width: 40px;">
-                                <input type="integer" value="{{$product['w']}}" class="form-control input-table dishProdWeight">
-                            </td>
-                            <td style="background-color: #c3e6cb; text-align: center;">{{$product['b']}}</td>
-                            <td style="background-color: #ffeeba; text-align: center;">{{$product['j']}}</td>
-                            <td style="background-color: #f5c6cb; text-align: center;">{{$product['u']}}</td>
-                            <td style="text-align: center;">{{$product['k']}}</td>
-                            <td style="padding-left: 10px;">
-                                <i class="fa fa-ban product-delete" title="Удалить продукт или блюдо" onclick="$(this).parent().parent().remove();calculateDiary();" aria-hidden="true"></i>
-                            </td>
-                        </tr>
-                    @endforeach
-                @endif
-            <tr id="diaryTableAmount_{{$key}}" class="diaryTableAmount" style="background-color: #fff;">
-                <td>
-                    <div class="font-weight-bold pull-right">ИТОГО:</div>
-                </td>
-                <td style="text-align: center; width: 50px; ">0</td>
-                <td style="text-align: center; width: 44px; ">0</td>
-                <td style="text-align: center; width: 44px; ">0</td>
-                <td style="text-align: center; width: 44px;">0</td>
-                <td style="text-align: center; width: 50px;">0</td>
-                <td style="width: 35px;">
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    @endforeach
+            @foreach($mealList as $key => $meal)
+                <table class="table table-striped table-bordered table-sm diaryTable" id="diaryTable_{{$key}}">
+                    <thead class="thead-inverse">
+                    <tr>
+                        <th colspan="7">
+                            <div class="pull-left product-add-div">
+                                <input type="hidden" value="{{$meal['guid']}}"/>
+                                <i class="fa fa-plus product-add" aria-hidden="true" title="Добавить продукт или блюдо"></i>
+                            </div>
+                            <div style="text-align: center;">
+                                {{$meal['name']}}
+                            </div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        @if(isset($data[$meal['guid']]))
+                            @foreach($data[$meal['guid']] as $product)
+                                <tr>
+                                    <td style="text-overflow: ellipsis;">
+                                        <input type="hidden" value="{{$product['source']}}">
+                                        <a tabindex="0" role="button" data-trigger="focus" class="dish-prod-info" data-toggle="dish-prod-info_{{$product['guid']}}" data-original-title="" title="">{{$product['source']->name}}</a>
+                                        <script type="application/javascript">
+                                            setTimeout(function () {
+                                                $('[data-toggle="dish-prod-info_{{$product['guid']}}"]').popover({
+                                                    trigger: 'focus',
+                                                    html: true,
+                                                    content: dishProdInfo({!!json_encode($product['source'])!!})
+                                                });
+                                            }, 100);
+                                        </script>
+                                    </td>
+                                    <td style="min-width: 40px;">
+                                        <input type="integer" value="{{$product['w']}}" class="form-control input-table dishProdWeight">
+                                    </td>
+                                    <td style="background-color: #c3e6cb; text-align: center;">{{$product['b']}}</td>
+                                    <td style="background-color: #ffeeba; text-align: center;">{{$product['j']}}</td>
+                                    <td style="background-color: #f5c6cb; text-align: center;">{{$product['u']}}</td>
+                                    <td style="text-align: center;">{{$product['k']}}</td>
+                                    <td style="padding-left: 5px;">
+                                        <i class="fa fa-ban product-delete" title="Удалить продукт или блюдо" onclick="if(confirm('Удалить?')){$(this).parent().parent().remove();calculateDiary();}" aria-hidden="true"></i>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
+                    <tr id="diaryTableAmount_{{$meal['guid']}}" class="diaryTableAmount" style="background-color: #fff;">
+                        <td>
+                            <div class="font-weight-bold pull-right">ИТОГО:</div>
+                        </td>
+                        <td style="text-align: center; width: 40px;">0</td>
+                        <td style="text-align: center; width: 46px; font-weight: bold; background-color: #c3e6cb;">0</td>
+                        <td style="text-align: center; width: 46px; font-weight: bold; background-color: #ffeeba;">0</td>
+                        <td style="text-align: center; width: 46px; font-weight: bold; background-color: #f5c6cb;">0</td>
+                        <td style="text-align: center; width: 50px; font-weight: bold; ">0</td>
+                        <td style="width: 23px;">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            @endforeach
 
-    <script type="application/javascript">
-        $(document).ready(function () {
-            $('.dishProdWeight').keyup(function (event) {
-                this.value = this.value.replace(/[^0-9]*/g, '');
-                setTimeout(function () {
+            <script type="application/javascript">
+                $(document).ready(function () {
+                    $('.dishProdWeight').keyup(function (event) {
+                        this.value = this.value.replace(/[^0-9]*/g, '');
+                        setTimeout(function () {
+                            calculateDiary();
+                        }, 100);
+
+                    });
+
                     calculateDiary();
-                }, 100);
-
-            });
-
-            calculateDiary();
-        });
-    </script>
-    <div class="form-row">
-        <div class="form-group col-5 col-sm-7 col-md-8 col-lg-9 col-xl-9"></div>
-        <div class="form-group col-7 col-sm-5 col-md-4 col-lg-3 col-xl-3">
-            <div style="float: right;">
-                <input type="hidden" id="manufacturerToken" value="{{ csrf_token() }}" >
-                <button type="submit" style="float: right;" class="btn btn-secondary saveDiaryButton">Сохранить</button>
+                });
+            </script>
+            <div class="form-row">
+                <div class="form-group col-5 col-sm-7 col-md-8 col-lg-9 col-xl-9"></div>
+                <div class="form-group col-7 col-sm-5 col-md-4 col-lg-3 col-xl-3">
+                    <div style="float: right;">
+                        <input type="hidden" id="manufacturerToken" value="{{ csrf_token() }}" >
+                        <button type="submit" style="float: right;" class="btn btn-secondary saveDiaryButton">Сохранить</button>
+                    </div>
+                    <div id="resultSendIndicator" style="float: right; margin-right: 10px;"></div>
+                </div>
             </div>
-            <div id="resultSendIndicator" style="float: right; margin-right: 10px;"></div>
         </div>
     </div>
 @endsection

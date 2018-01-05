@@ -21,7 +21,7 @@ class FoodDiaryController extends Controller
         $user = User::where('id', Auth::id())->first();
 
         return view('FoodDiary.newDay', [
-            'mealList' => explode(',', $user->mealList)
+            'mealList' => json_decode($user->mealList, true),
         ]);
     }
 
@@ -57,7 +57,7 @@ class FoodDiaryController extends Controller
         }
 
         return view('FoodDiary.newDay', [
-            'mealList' => explode(',', $user->mealList),
+            'mealList' => json_decode($user->mealList, true),
             'day' => $day,
             'data' => $dr->getProductData()
         ]);
@@ -146,7 +146,6 @@ class FoodDiaryController extends Controller
         $day->data = $data;
 
         $dr = new DayRation($day, new NutritionalValueCalculator());
-        $error_message = null;
 
         if ($dr->isValid()) {
             $day->data = json_encode($day->data);
@@ -161,7 +160,7 @@ class FoodDiaryController extends Controller
             [
                 'guid' => $day->guid,
                 'status' => $status,
-                'error_message' => $error_message
+                'error_message' => $error_message ?? null
             ]
         );
     }

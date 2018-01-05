@@ -6,10 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Еда</title>
     <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
-    <script
-            src="http://code.jquery.com/jquery-3.2.1.min.js"
-            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-            crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
             integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
             crossorigin="anonymous"></script>
@@ -27,10 +24,10 @@
     <link rel="stylesheet" href="/css/bootstrap-datepicker.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="/js/Modal.js"></script>
-    <script src="/js/script.js"></script>
     <script src="/js/tree.jquery.js"></script>
     <script src="/js/bootstrap-datepicker.min.js"></script>
     <script src="/js/bootstrap-datepicker.ru.min.js"></script>
+    <script src="/js/script.js"></script>
 </head>
 <body>
 <div class="container">
