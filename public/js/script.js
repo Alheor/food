@@ -1,5 +1,9 @@
 $(document).ready(function () {
 
+    $('.navbar-toggler').on('touchstart', function (event) {
+        $('.navbar-collapse').parent().toggleClass('open');
+    });
+
     $(function () {
         $('[data-toggle="popover"]').popover()
     });
@@ -13,13 +17,16 @@ $(document).ready(function () {
     });
 
     $('#productCategorySelect').on('click', function () {
-        let modal = new Modal({
+
+        var modal = new modalWindow();
+
+        modal.constructor({
             title: 'Категории продуктов'
         });
 
-        let button = this;
+        var button = this;
         modal.onAgree = function () {
-            let el = $('#category_tree_' + modal.guid).tree('getSelectedNode');
+            var el = $('#category_tree_' + modal.guid).tree('getSelectedNode');
             $(button).html(el.name);
             $('#productCategoryId').attr('value', el.id);
             $('#productCategoryName').attr('value', el.name);
@@ -42,7 +49,7 @@ $(document).ready(function () {
             return true;
         };
 
-        let request = $.ajax({
+        var request = $.ajax({
             url: "/products_category",
             method: "GET",
             data: {
@@ -63,11 +70,13 @@ $(document).ready(function () {
     });
 
     $('#productManufacturersSelect').on('click', function () {
-        let modal = new Modal({
+        var modal = new modalWindow();
+
+        modal.constructor({
             title: 'Торговая марка'
         });
 
-        let button = this;
+        var button = this;
         modal.onAgree = function () {
             $('.manufacturers-list').find('tr').each(function (i, tr) {
                 if ($(tr).hasClass('manufacturers-list-selected')) {
@@ -80,7 +89,7 @@ $(document).ready(function () {
             return true;
         };
 
-        let request = $.ajax({
+        var request = $.ajax({
             url: "/products_manufacturers",
             method: "GET",
             data: {
@@ -101,14 +110,14 @@ $(document).ready(function () {
     });
 
     $('.calc_bju_field').on('keyup change', function () {
-        let parent = $(this).parent().parent();
+        var parent = $(this).parent().parent();
 
         this.value = this.value.replace(/,/, '.');
-        let sum = 0;
+        var sum = 0;
 
         $(parent).find('input').each(function (i, el) {
 
-            let cur_sum = el.value.replace(/[^0-9.,]*/g, '').replace(/,/, '.');
+            var cur_sum = el.value.replace(/[^0-9.,]*/g, '').replace(/,/, '.');
 
             if (cur_sum == '') {
                 cur_sum = 0;
@@ -138,24 +147,24 @@ $(document).ready(function () {
     });
 
     $('.product-add-div').on('click', function () {
-        let dayNumber = $(this).find('input').first().val();
 
-        let modal = new Modal({
+        var dayNumber = $(this).find('input').first().val();
+        var modal = new modalWindow();
+        modal.constructor({
             title: 'Добавить продукт или блюдо',
             successButtonLabel: 'Добавить',
             cancelButtonLabel: 'Закрыть'
         });
 
-
         modal.onAgree = function () {
-            let selectEl = $('.manufacturers-list-selected');
+            var selectEl = $('.manufacturers-list-selected');
 
             if (selectEl.length == 0 || selectEl.length > 1) {
                 alert('Выберите продуки или блюдо из списка');
                 return false;
             }
 
-            let weight = $(selectEl).find('input')[1].value;
+            var weight = $(selectEl).find('input')[1].value;
 
             if (weight == '' || Number(weight) < 1 || isNaN(Number(weight))) {
                 alert('Введите вес');
@@ -166,7 +175,7 @@ $(document).ready(function () {
             return addDishProdToDiary(selectEl, modal, dayNumber, weight);
         };
 
-        let request = $.ajax({
+        var request = $.ajax({
             url: "/food_diary/finddp",
             method: "GET",
             data: {
@@ -209,9 +218,9 @@ function strToFloat(str) {
 
 function productManufacturersSearch() {
 
-    let mName = $('#ManufacturersSearch').val();
+    var mName = $('#ManufacturersSearch').val();
 
-    let request = $.ajax({
+    var request = $.ajax({
         url: "/products_manufacturers",
         method: "GET",
         data: {
@@ -229,12 +238,12 @@ function productManufacturersSearch() {
 }
 
 function productManufacturersAdd() {
-    let modal = new Modal({
+    var modal = new Modal({
         title: 'Новая торговая марка'
     });
     modal.spinner().show();
 
-    let request = $.ajax({
+    var request = $.ajax({
         url: "/addManufacturer",
         method: "GET"
     });
@@ -252,11 +261,11 @@ function productManufacturersAdd() {
 
     modal.onAgree = function () {
 
-        let mName = $('#manufacturerName').val();
-        let mToken = $('#manufacturerToken').val();
+        var mName = $('#manufacturerName').val();
+        var mToken = $('#manufacturerToken').val();
 
         if (mName !== "undefined" && mName.length > 1) {
-            let request = $.ajax({
+            var request = $.ajax({
                 url: "/addManufacturer",
                 method: "POST",
                 data: {
@@ -280,9 +289,9 @@ function productManufacturersAdd() {
 
 function dishProdSearch() {
 
-    let el = $('#dishProdSearch');
+    var el = $('#dishProdSearch');
 
-    let request = $.ajax({
+    var request = $.ajax({
         url: "/food_diary/finddp",
         method: "POST",
         data: {
@@ -301,8 +310,8 @@ function dishProdSearch() {
 }
 
 function addDishProdToDiary(el, modal, dayNumber, weight) {
-    let id = $(el).find('td').first().find('input').val();
-    let request = $.ajax({
+    var id = $(el).find('td').first().find('input').val();
+    var request = $.ajax({
         url: "/food_diary/finddp/" + id,
         method: "POST",
         data: {
@@ -317,9 +326,9 @@ function addDishProdToDiary(el, modal, dayNumber, weight) {
     });
 
     request.done(function (msg) {
-        let bjuk = calculateBJUFromWeight(weight, msg.b, msg.j, msg.u);
+        var bjuk = calculateBJUFromWeight(weight, msg.b, msg.j, msg.u);
 
-        let html = '<tr>\n' +
+        var html = '<tr>\n' +
             '            <td style="text-overflow: ellipsis;">\n' +
             '                <input type="hidden" value=\'' + JSON.stringify(msg) + '\' />\n' +
             '                <a  tabindex="0"  role="button" data-trigger="focus" class="dish-prod-info" data-toggle="dish-prod-info">' + msg.name + '</a>' +
@@ -367,18 +376,18 @@ function addDishProdToDiary(el, modal, dayNumber, weight) {
 }
 
 function calculateBJUFromWeight(w, b, j, u) {
-    let resB = Number(b) * Number(w) / 100;
-    let resJ = Number(j) * Number(w) / 100;
-    let resU = Number(u) * Number(w) / 100;
+    var resB = Number(b) * Number(w) / 100;
+    var resJ = Number(j) * Number(w) / 100;
+    var resU = Number(u) * Number(w) / 100;
 
     if (isNaN(resB) || isNaN(resJ) || isNaN(resU) ) {
         alert('Ошибка калькуляции! Проблемы с расчетом БЖУ по весу');
         throw new Error('Calculate bju from weight problem!');
     }
 
-    let tempResB = parseInt(resB * 10) / 10;
-    let tempResJ = parseInt(resJ * 10) / 10;
-    let tempResU = parseInt(resU * 10) / 10;
+    var tempResB = parseInt(resB * 10) / 10;
+    var tempResJ = parseInt(resJ * 10) / 10;
+    var tempResU = parseInt(resU * 10) / 10;
 
     return {
         b: tempResB,
@@ -389,32 +398,32 @@ function calculateBJUFromWeight(w, b, j, u) {
 }
 
 function calculateDiary() {
-    let diaryTable = $('.diaryTable');
-    let sumW = 0;
-    let sumB = 0;
-    let sumJ = 0;
-    let sumU = 0;
-    let sumK = 0;
+    var diaryTable = $('.diaryTable');
+    var sumW = 0;
+    var sumB = 0;
+    var sumJ = 0;
+    var sumU = 0;
+    var sumK = 0;
 
     $(diaryTable).each(function (z, el) {
-        let sumTW = 0;
-        let sumTB = 0;
-        let sumTJ = 0;
-        let sumTU = 0;
-        let sumTK = 0;
+        var sumTW = 0;
+        var sumTB = 0;
+        var sumTJ = 0;
+        var sumTU = 0;
+        var sumTK = 0;
 
         $($(el).find('tbody')).find('tr').each(function (i, el) {
             if (!$(el).hasClass('diaryTableAmount')) {
-                let dPdata = JSON.parse($(el).find('td').first().find('input').val());
+                var dPdata = JSON.parse($(el).find('td').first().find('input').val());
 
                 // --- Вес ---
-                let sumTWtmp = Number($($(el).find('td')[1]).find('input').val().replace(/[^0-9]*/g, ''));
+                var sumTWtmp = Number($($(el).find('td')[1]).find('input').val().replace(/[^0-9]*/g, ''));
                 if (isNaN(sumTWtmp)) {
                     alert('Ошибка калькуляции! Проблемы с полем "Вес" таблицы '+ (z+1) +', строки '+ (i+1));
                     throw new Error('Weight value problem! Table '+ z +', tr '+ i + ', td 1.');
                 }
 
-                let bjuk = calculateBJUFromWeight(sumTWtmp, dPdata.b, dPdata.j, dPdata.u);
+                var bjuk = calculateBJUFromWeight(sumTWtmp, dPdata.b, dPdata.j, dPdata.u);
 
                 $($(el).find('td')[2]).text(bjuk.b);
                 $($(el).find('td')[3]).text(bjuk.j);
@@ -472,7 +481,7 @@ function calculateDiary() {
         sumK += sumTK;
     });
 
-    let tr = $('.diaryTableResult').find('tr')[2];
+    var tr = $('.diaryTableResult').find('tr')[2];
     $($(tr).find('td')[0]).text(Math.round(sumW));
     $($(tr).find('td')[1]).text(sumB.toFixed(1));
     $($(tr).find('td')[2]).text(sumJ.toFixed(1));
@@ -503,19 +512,19 @@ function dishProdInfo(data) {
 function saveDiaryData(obj) {
     obj.disabled = true;
 
-    let diaryTable = $('.diaryTable');
-    let _token = $(obj).parent().find('input').val();
-    let data = [];
-    let myWeight = $('#my_weight');
-    let toDate = $('#to_date');
-    let productExist = false;
-    let product_guid = $('#product_guid');
+    var diaryTable = $('.diaryTable');
+    var _token = $(obj).parent().find('input').val();
+    var data = [];
+    var myWeight = $('#my_weight');
+    var toDate = $('#to_date');
+    var productExist = false;
+    var product_guid = $('#product_guid');
 
     $(diaryTable).each(function (z, el) {
         data[z] = [];
         $($(el).find('tbody')).find('tr').each(function (i, el) {
-            let elDataInput = $(el).find('input')[0];
-            let elWeightInput = $(el).find('input')[1];
+            var elDataInput = $(el).find('input')[0];
+            var elWeightInput = $(el).find('input')[1];
 
             if (typeof elDataInput !== "undefined" ) {
                 if (typeof elWeightInput === "undefined" ) {
@@ -524,7 +533,7 @@ function saveDiaryData(obj) {
                     throw new Error('Weight value problem! Table '+ z +', tr '+ i + ', td 2.');
                 }
 
-                let elData = JSON.parse(elDataInput.value);
+                var elData = JSON.parse(elDataInput.value);
                 data[z].push({
                     'guid': elData.guid,
                     'weight': elWeightInput.value,
@@ -551,7 +560,7 @@ function saveDiaryData(obj) {
 
     $('#resultSendIndicator').html('<i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>');
 
-    let request = $.ajax({
+    var request = $.ajax({
         url: "/food_diary/save_day",
         method: "POST",
         data: {

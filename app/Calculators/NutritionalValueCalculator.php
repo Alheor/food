@@ -31,7 +31,7 @@ class NutritionalValueCalculator
     public function getProductNutritionalValueByGuid($guid)
     {
         if (!isset($this->productList[$guid])) {
-            return null;
+            return [];
         }
 
         $b = (int)(($this->productList[$guid][0]->b * $this->productList[$guid][1] / 100) * 10) / 10;

@@ -72,7 +72,7 @@ class DayRation
             foreach ($this->dayObject->data['products'] as $key => $eating) {
                 foreach ($eating as $product) {
                     $queryGuids[$product['guid']] = $product['weight'];
-                    $this->productListData[$key][$product['guid']] = [
+                    $this->productListData[$key][] = [
                         'guid' => $product['guid'],
                         'weight' => $product['weight']
                     ];
@@ -85,15 +85,18 @@ class DayRation
             foreach ($productList as $product) {
                 $this->nvc->addProduct($product,  $queryGuids[$product->guid]);
                 $product->manufacturer->name;
-                foreach (array_keys($this->productListData) as $key) {
-                    if(isset($this->productListData[$key][$product->guid])) {
-                        $this->productListData[$key][$product->guid]['name'] = $product->name;
-                        $this->productListData[$key][$product->guid]['source'] = $product;
-                        break;
+                foreach ($this->productListData as $key => $productList) {
+                    foreach ($productList as $key1 => $el) {
+                        if ($el['guid'] === $product->guid) {
+                            $this->productListData[$key][$key1]['name'] = $product->name;
+                            $this->productListData[$key][$key1]['source'] = $product;
+                        }
                     }
                 }
+
                 unset($queryGuids[$product->guid]);
             }
+
 
             if (!empty($queryGuids)) {
                 throw new \Exception('Some products not found: '. array_keys($queryGuids));

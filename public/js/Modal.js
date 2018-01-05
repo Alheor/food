@@ -1,5 +1,5 @@
-class Modal {
-    constructor(data) {
+function modalWindow() {
+    this.constructor = function(data) {
         this.title = data.title;
         this.successButtonLabel = typeof data.successButtonLabel === "undefined"? 'OK' : data.successButtonLabel;
         this.cancelButtonLabel = typeof data.cancelButtonLabel === "undefined"? 'Отмена' : data.cancelButtonLabel;
@@ -7,10 +7,10 @@ class Modal {
         this.prepareModal();
         this.onAgree = function () {
             console.log('nothing to do...');
-        }
+        };
     }
 
-    prepareModal() {
+    this.prepareModal = function() {
         this.htmlBody = '<div class="modal fade" id="'+ this.guid +'" tabindex="-1" role="dialog" aria-hidden="true">\n' +
             '        <div class="modal-dialog" role="document">\n' +
             '            <div class="modal-content">\n' +
@@ -34,12 +34,12 @@ class Modal {
             '    </div>';
     }
 
-    show() {
+    this.show = function() {
         if (!$('div').is('#modal_body_' + this.guid)) {
             $(document.body).append(this.htmlBody);
         }
         $('#'+this.guid).modal('toggle');
-        let modal = this;
+        var modal = this;
         $('#modal_agree_' + this.guid).on('click', function () {
             if (true === modal.onAgree()) {
                 modal.hide(true);
@@ -55,8 +55,8 @@ class Modal {
         });
     }
 
-    hide(flag) {
-        let guid = this.guid;
+    this.hide = function(flag) {
+        var guid = this.guid;
         if(typeof flag == "undefined") {
             $('#' + guid).remove();
 
@@ -66,16 +66,16 @@ class Modal {
         }
     }
 
-    html(data, func) {
+    this.html = function(data, func) {
         $('#modal_body_' + this.guid).html(data);
         if(typeof func !== "undefined") {
             func();
         }
     }
 
-    spinner() {
+    this.spinner = function() {
 
-        let guid = this.guid;
+        var guid = this.guid;
         return {
             success: function () {
                 $('#modal_speener_' + guid).html('<i class="fa fa-check text-success" aria-hidden="true" style="font-size:24px;"></i>');
@@ -95,11 +95,11 @@ class Modal {
         }
     }
 
-    showError(data) {
+    this.showError = function(data) {
         $('#modal_body_' + this.guid).html('<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Ошибка '+data.status+'!');
     }
 
-    guidGenerate() {
+    this.guidGenerate = function() {
         function s4() {
             return Math.floor((1 + Math.random()) * 0x10000)
                 .toString(16)
@@ -108,4 +108,6 @@ class Modal {
         return (s4() + s4() + '-' + s4() + '-' + s4() + '-' +
             s4() + '-' + s4() + s4() + s4()).toUpperCase();
     }
+
+    return this;
 }
