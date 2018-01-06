@@ -204,11 +204,11 @@ $(document).ready(function () {
 });
 
 function strToInt(str) {
-   return str.replace(/[^0-9]*/, '');
+   return str.replace(/[^0-9]*/g, '');
 }
 
 function strToFloat(str) {
-    return str.replace(/[^0-9,.]*/, '').replace(/,/, '.');
+    return str.replace(/[^0-9,.]*/g, '').replace(/,/g, '.');
 }
 
 function productManufacturersSearch() {
@@ -520,7 +520,7 @@ function saveDiaryData(obj) {
     var myWeight = $('#my_weight');
     var toDate = $('#to_date');
     var productExist = false;
-    var product_guid = $('#product_guid');
+    var day_guid = $('#day_guid');
 
     $(diaryTable).each(function (z, el) {
         var mealGuid = $(el).find('input').first().val();
@@ -572,7 +572,7 @@ function saveDiaryData(obj) {
         method: "POST",
         data: {
             'data': {'mealList': data, 'weight': myWeight.val()},
-            'guid' : product_guid.length === 0? null : product_guid.val(),
+            'guid' : day_guid.length === 0? null : day_guid.val(),
             'to_date' : toDate.val(),
             '_token':_token
         }

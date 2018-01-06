@@ -1,6 +1,6 @@
 @extends('layout')
 @section('content')
-    @if(isset($day))<input type="hidden" id="product_guid" value="{{$day->guid}}"/>@endif
+    @if(isset($day))<input type="hidden" id="day_guid" value="{{$day->guid}}"/>@endif
     <div class="row">
         <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2 col-corrector">
             <div class="form-group">

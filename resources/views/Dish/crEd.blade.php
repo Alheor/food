@@ -55,7 +55,6 @@
                     </tr>
                     </thead>
                     <tbody>
-
                     <tr id="dishTableAmount" class="diaryTableAmount" style="background-color: #fff;">
                         <td>
                             <div class="font-weight-bold pull-right">ИТОГО:</div>
@@ -73,19 +72,6 @@
                     </tr>
                     </tbody>
                 </table>
-                <script type="application/javascript">
-                    $(document).ready(function () {
-                        $('.dishProdWeight').keyup(function (event) {
-                            this.value = this.value.replace(/[^0-9]*/g, '');
-                            setTimeout(function () {
-                                calculateDiary();
-                            }, 100);
-
-                        });
-
-                        calculateDiary();
-                    });
-                </script>
             </div>
         </div>
         <div class="form-row">
@@ -94,8 +80,7 @@
                     <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top"
                        title="Получившийся вес блюда, после его приготовления. По умолчанию равен весу всех ингредиентов."></i>
                 </label>
-                <input type="text" value="{{ old('b') }}" autocomplete="off" class="form-control calc_bju_field" id="b"
-                       name="b"/>
+                <input type="text" value="{{ old('b') }}" autocomplete="off" class="form-control calc_bju_field" id="dish_weight"/>
             </div>
         </div>
         <div class="form-row">
@@ -105,35 +90,35 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="suitable_for">
             <h5>Подходит для <span class="text-danger font-weight-bold">*</span></h5>
             <div class="btn-group" data-toggle="buttons" style="margin-bottom: 5px;">
                 <label class="btn" style="background-color: #7ed7d4;">
-                    <input class="my-input-checkbox" @if(old('sh')) checked="" @endif type="checkbox" name="sh"
+                    <input class="my-input-checkbox" @if(old('sh')) checked="" @endif type="checkbox" id="sh"
                            autocomplete="off">Сушка
                 </label>
             </div>
             <div class="btn-group" data-toggle="buttons" style="margin-bottom: 5px;">
                 <label class="btn" style="background-color: #81d877;">
-                    <input class="my-input-checkbox" @if(old('ph')) checked="" @endif type="checkbox" name="ph"
+                    <input class="my-input-checkbox" @if(old('ph')) checked="" @endif type="checkbox" id="ph"
                            autocomplete="off">Похудение
                 </label>
             </div>
             <div class="btn-group" data-toggle="buttons" style="margin-bottom: 5px;">
                 <label class="btn" style="background-color: #f2d638;">
-                    <input class="my-input-checkbox" @if(old('pd')) checked="" @endif type="checkbox" name="pd"
+                    <input class="my-input-checkbox" @if(old('pd')) checked="" @endif type="checkbox" id="pd"
                            autocomplete="off">Поддержка
                 </label>
             </div>
             <div class="btn-group" data-toggle="buttons" style="margin-bottom: 5px;">
                 <label class="btn" style="background-color: #eb9a53;">
-                    <input class="my-input-checkbox" @if(old('nm')) checked="" @endif type="checkbox" name="nm"
+                    <input class="my-input-checkbox" @if(old('nm')) checked="" @endif type="checkbox" id="nm"
                            autocomplete="off">Набор массы
                 </label>
             </div>
             <div class="btn-group" data-toggle="buttons" style="margin-bottom: 5px;">
                 <label class="btn" style="background-color: #e66161;">
-                    <input class="my-input-checkbox" @if(old('cm')) checked="" @endif type="checkbox" name="cm"
+                    <input class="my-input-checkbox" @if(old('cm')) checked="" @endif type="checkbox" id="cm"
                            autocomplete="off">Cheat meal
                 </label>
             </div>
@@ -141,7 +126,8 @@
         <div class="form-row">
             <div class="form-group col-sm-10"></div>
             <div class="form-group col-sm-2">
-                <button type="submit" style="float: right;" class="btn btn-secondary">Создать продукт</button>
+                <input type="hidden" id="manufacturerToken" value="{{ csrf_token() }}" >
+                <button type="submit" style="float: right;" class="btn btn-secondary" id="create_dish">Создать продукт</button>
             </div>
         </div>
     @endif

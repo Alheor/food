@@ -21,14 +21,22 @@ class DishController extends Controller
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function crEd(Request $request)
+    public function crEd(Request $request, $oper)
     {
         if ($request->method() == 'GET') {
-            return view('Dish.crEd', [
-                'form' => 'new_form'
-            ]);
-        } else {
+            if($oper == 'new') {
+                return view('Dish.crEd', [
+                    'form' => 'new_form'
+                ]);
+            } else {
 
+            }
+        } else {
+            if($oper == 'new') {
+                print_r($request->all());
+            } else {
+
+            }
         }
     }
 
