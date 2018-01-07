@@ -31,10 +31,10 @@
         <thead class="thead-inverse">
         <tr>
             <th>Наименование</th>
-            <th style="width: 37px;">Б</th>
-            <th style="width: 37px;">Ж</th>
-            <th style="width: 37px;">У</th>
-            <th style="width: 37px;">Ккал</th>
+            <th style="width: 37px; text-align: center;">Б</th>
+            <th style="width: 37px; text-align: center;">Ж</th>
+            <th style="width: 37px; text-align: center;">У</th>
+            <th style="width: 37px; text-align: center;">Ккал</th>
             <th style="width: 35px;"></th>
         </tr>
         </thead>
@@ -52,7 +52,7 @@
                     <div class="dropdown">
                         <i style="cursor: pointer;" class="material-icons" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">view_headline</i>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a href="{{ route('new_dish', [$dish->id]) }}" class="dropdown-item">
+                            <a href="{{ route('new_dish', [$dish->guid]) }}" class="dropdown-item">
                                 <i class="material-icons">mode_edit</i> Изменить
                             </a>
                         </div>

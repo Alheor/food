@@ -102,6 +102,7 @@ function saveDishData(obj) {
 
     var diaryTable = $('.diaryTable');
     var _token = $(obj).parent().find('input').val();
+    var dishGuid = $('#dish_guid');
     var productList = [];
     var productExist = false;
     var suitable_for = [];
@@ -147,8 +148,6 @@ function saveDishData(obj) {
         throw new Error('Add product!');
     }
 
-    $('#resultSendIndicator').html('<i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>');
-
     $('#suitable_for').find('input').each(function (i, el) {
         if($(el).prop("checked")) {
             suitable_for.push(el.id);
@@ -161,16 +160,18 @@ function saveDishData(obj) {
         throw new Error('Suitable for not selected!');
     }
 
+    $('#resultSendIndicator').html('<i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>');
+
     var request = $.ajax({
-        url: "/dishes/new",
+        url: "/dishes/" + (dishGuid.length > 0? dishGuid.val() : 'new'),
         method: "POST",
         data: {
-            'prod_name': prodName,
+            'dish_name': prodName,
             'cat_id': dish_category,
             'draft': $('#draft').prop( "checked" ),
             'comment': $('#comment').val(),
             'suitable_for': suitable_for,
-            'data': {'product_list': productList, 'ready_made_width': $('#dish_weight').val()},
+            'data': {'product_list': productList, 'weight_after': $('#dish_weight').val()},
             '_token':_token
         }
     });
@@ -214,12 +215,12 @@ function addProductToDish(el, modal, dayGuid, weight) {
     request.done(function (msg) {
         var bjuk = calculateBJUFromWeight(weight, msg.b, msg.j, msg.u);
 
-        var html = '<tr>\n' +
-            '            <td style="text-overflow: ellipsis;">\n' +
+        var html = '<tr class="tabel-td">\n' +
+            '            <td style="text-overflow: ellipsis; padding-left: 5px;">\n' +
             '                <input type="hidden" value=\'' + JSON.stringify(msg) + '\' />\n' +
             '                <a  tabindex="0"  role="button" data-trigger="focus" class="dish-prod-info" data-toggle="dish-prod-info">' + msg.name + '</a>' +
             '            </td>\n' +
-            '            <td style="min-width: 40px;">\n' +
+            '            <td style="min-width: 42px;">\n' +
             '                <input type="integer" value="' + weight + '" class="form-control input-table dishProdWeight"/>\n' +
             '            </td>\n' +
             '            <td style="background-color: #c3e6cb; text-align: center;">' + bjuk.b + '</td>\n' +
@@ -228,7 +229,7 @@ function addProductToDish(el, modal, dayGuid, weight) {
             '            <td style="text-align: center;">' + bjuk.k +
             '            </td>\n' +
             '            <td style="padding-left: 5px;">\n' +
-            '                <i class="fa fa-ban product-delete"  title="Удалить продукт"  onclick="if(confirm(\'Удалить?\')){$(this).parent().parent().remove();calculateDish();}" aria-hidden="true"></i>\n' +
+            '                <i class="fa fa-ban product-delete"  title="Удалить продукт"  onclick="if(confirm(\'Удалить?\')){$(this).parent().parent().remove();recalcDish();}" aria-hidden="true"></i>\n' +
             '            </td>\n' +
             '        </tr>';
 
@@ -247,21 +248,26 @@ function addProductToDish(el, modal, dayGuid, weight) {
         $('.dishProdWeight').keyup(function (event) {
             this.value = this.value.replace(/[^0-9]*/g, '');
             setTimeout(function () {
-                calculateDish();
+                recalcDish();
             }, 100);
 
         });
 
         modal.spinner().success();
         setTimeout(function () {
-            calculateDish();
+            recalcDish();
         }, 100);
     });
 
     return false;
 }
 
-function calculateDishFromReadyMadeWidth(weight) {
+function recalcDish() {
+    calculateDish();
+    calculateDishFromReadyMadeWidth();
+}
+
+function calculateDishFromReadyMadeWidth() {
     var sumTW = 0;
     var sumTB = 0;
     var sumTJ = 0;
@@ -315,6 +321,7 @@ function calculateDishFromReadyMadeWidth(weight) {
             }
             // --- Ккал ---
         } else {
+            var weight = $('#dish_weight').val()
             var coeff = 1;
             if(weight !== '' && Number(weight) !== 0) {
                 coeff = sumTW / Number(weight);
@@ -323,7 +330,7 @@ function calculateDishFromReadyMadeWidth(weight) {
             $($(el).find('td')[2]).html((sumTB * coeff).toFixed(1));
             $($(el).find('td')[3]).html((sumTJ * coeff).toFixed(1));
             $($(el).find('td')[4]).html((sumTU * coeff).toFixed(1));
-            $($(el).find('td')[5]).html(Math.round((sumTK * coeff).toFixed(1)));
+            $($(el).find('td')[5]).html((Math.ceil(sumTK * coeff)));
         }
     });
 }
@@ -357,7 +364,7 @@ function calculateDish() {
             // --- Вес ---
 
             // --- Белки ---
-            sumTB += Number($($(el).find('td')[2]).text());
+            sumTB += bjuk.b;
             if (isNaN(sumTWtmp)) {
                 alert('Ошибка калькуляции! Проблемы с полем "Белки", строки '+ (i+1));
                 throw new Error('Protein value problem! Tr '+ i + ', td 1.');
@@ -365,7 +372,7 @@ function calculateDish() {
             // --- Белки ---
 
             // --- Жиры ---
-            sumTJ += Number($($(el).find('td')[3]).text());
+            sumTJ += bjuk.j;
             if (isNaN(sumTWtmp)) {
                 alert('Ошибка калькуляции! Проблемы с полем "Жиры", строки '+ (i+1));
                 throw new Error('Fat value problem! Tr '+ i + ', td 1.');
@@ -373,7 +380,7 @@ function calculateDish() {
             // --- Жиры ---
 
             // --- Углеводы ---
-            sumTU += Number($($(el).find('td')[4]).text());
+            sumTU += bjuk.u;
             if (isNaN(sumTWtmp)) {
                 alert('Ошибка калькуляции! Проблемы с полем "Углеводы", строки '+ (i+1));
                 throw new Error('Carbohydrates value problem! Tr '+ i + ', td 1.');
@@ -381,7 +388,7 @@ function calculateDish() {
             // --- Углеводы ---
 
             // --- Ккал ---
-            sumTK += Number($($(el).find('td')[5]).text());
+            sumTK += bjuk.k;
             if (isNaN(sumTWtmp)) {
                 alert('Ошибка калькуляции! Проблемы с полем "Ккал", строки '+ (i+1));
                 throw new Error('Kcal value problem! Tr '+ i + ', td 1.');
@@ -389,13 +396,11 @@ function calculateDish() {
             // --- Ккал ---
 
         } else {
-            $($(el).find('td')[1]).html(Math.round(sumTW));
+            $($(el).find('td')[1]).html(sumTW);
             $($(el).find('td')[2]).html(sumTB.toFixed(1));
             $($(el).find('td')[3]).html(sumTJ.toFixed(1));
             $($(el).find('td')[4]).html(sumTU.toFixed(1));
-            $($(el).find('td')[5]).html(Math.round(sumTK.toFixed(1)));
-
-            $('#dish_weight').val(Math.round(sumTW));
+            $($(el).find('td')[5]).html(sumTK);
         }
     });
 }

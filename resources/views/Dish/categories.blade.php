@@ -1,9 +1,9 @@
 @if($tplName == 'button')
     <button type="button" class="btn btn-dark" id="dishCategorySelect">
-        @if(old('category_name')) {{old('category_name')}} @else Не выбрано @endif
+        @if(isset($category_name)) {{$category_name}} @else Не выбрано @endif
     </button>
-    <input type="hidden" name="category" value="{{ old('category') }}" id="dishCategoryId" />
-    <input type="hidden" name="category_name" value="{{ old('category_name') }}" id="dishCategoryName" />
+    <input type="hidden" name="category" value="@if(isset($category)){{$category}}@endif" id="dishCategoryId" />
+    <input type="hidden" name="category_name" value="@if(isset($category_name)){{$category_name}}@endif" id="dishCategoryName" />
 @elseif($tplName == 'dishCategories')
     <div id="category_tree_{{$jsguid}}"></div>
     <script type="application/javascript">

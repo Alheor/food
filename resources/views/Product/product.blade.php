@@ -31,10 +31,10 @@
         <thead class="thead-inverse">
         <tr>
             <th>Наименование</th>
-            <th style="width: 37px;">Б</th>
-            <th style="width: 37px;">Ж</th>
-            <th style="width: 37px;">У</th>
-            <th style="width: 37px;">Ккал</th>
+            <th style="width: 37px; text-align: center;">Б</th>
+            <th style="width: 37px; text-align: center;">Ж</th>
+            <th style="width: 37px; text-align: center;">У</th>
+            <th style="width: 37px; text-align: center;">Ккал</th>
             <th style="width: 35px;"></th>
         </tr>
         </thead>
@@ -42,7 +42,7 @@
         @foreach($products as $product)
             <tr>
                 <td>
-                    <div>{{$product->name}}
+                    <div style="word-break: break-all;">{{$product->name}}
                         <span class="small"><sup>{{$product->manufacturer->name}}</sup></span>
                     </div>
                 </td>

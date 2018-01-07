@@ -6,20 +6,13 @@
                 <br/>
                 <a href="{{ route('new_dish', ['new']) }}" target="_blank" class="text-success" style="display: none;">Новое блюдо</a>
             </div>
-            <div class="pull-right">
-                <i class="fa fa-refresh"
-                   aria-hidden="true"
-                   style="font-size: 20px; margin:5px; margin-top: 10px; margin-right: 0px; cursor: pointer;"
-                   onclick="dishProdSearch(this, '{{$type}}');"
-                ></i>
-            </div>
-            <div class="col-6 pull-right">
+            <div class="col-6 pull-right" style="padding-right: 0;">
                 {{ csrf_field() }}
-                <input class="form-control" id="dishProdSearch" onkeyup="dishProdSearch(this, '{{$type}}');" type="text" placeholder="Найти" aria-label="Найти">
+                <input style="padding: 5px" class="form-control" id="dishProdSearch" onkeyup="dishProdSearch(this, '{{$type}}');" type="text" placeholder="Найти" aria-label="Найти">
             </div>
         </div>
     </nav>
-    <table class="table table-striped table-bordered table-sm">
+    <table class="table table-striped table-bordered table-sm" style="margin-bottom: 0;">
         <thead class="thead-dark">
         <tr>
             <td scope="col" style="font-size: 14px; color: #777;">Наименование</td>

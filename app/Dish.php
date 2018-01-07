@@ -11,17 +11,12 @@ class Dish extends Model
 
     public function dishCategory()
     {
-        return $this->hasOne('App\DishCategory', 'category_id');
+        return $this->hasOne('App\DishCategory', 'id', 'category_id');
     }
 
     public function products()
     {
         return $this->belongsToMany('App\Product', 'dishes_products', 'id_dish', 'id_product');
-    }
-
-    public function manufacturer()
-    {
-        return $this->hasOne('App\Manufacturer', 'manufacturer_id');
     }
 
     public function user()
@@ -31,6 +26,6 @@ class Dish extends Model
 
     public function attributes()
     {
-        return $this->hasOne('App\Attributes', 'attribute_id');
+        return $this->hasOne('App\Attributes', 'id', 'attribute_id');
     }
 }

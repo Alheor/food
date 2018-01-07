@@ -82,7 +82,7 @@
     </nav>
 
     <div class="jumbotron">
-        <div class="col-sm-12">
+        <div class="col-sm-12 col-corrector">
             @yield('content')
         </div>
     </div>

@@ -2,12 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Attributes;
+use App\Calculators\DishCalculator;
+use App\Calculators\NutritionalValueCalculator;
 use App\Dish;
 use App\DishCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DishController extends Controller
 {
+    const STATUS_SUCCESS = 'success';
+    const STATUS_ERROR = 'error';
+
     public function list()
     {
         $dishList = Dish::orderBy('name', 'asc')->get();
@@ -19,6 +27,7 @@ class DishController extends Controller
 
     /**
      * @param Request $request
+     * @param string $oper
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function crEd(Request $request, $oper)
@@ -26,17 +35,132 @@ class DishController extends Controller
         if ($request->method() == 'GET') {
             if($oper == 'new') {
                 return view('Dish.crEd', [
-                    'form' => 'new_form'
+                    'dish' => null
                 ]);
             } else {
+                $dish = Dish::where('guid', $oper)
+                    ->where('user_id', Auth::id())
+                    ->first();
 
+                if(is_null($dish)) {
+                    return abort(404);
+                }
+
+                $dish->dishCategory->id;
+                $dish->attributes->id;
+                $dish->data = json_decode($dish->data,true);
+                $dc = new DishCalculator(new NutritionalValueCalculator(), $dish);
+
+                return view('Dish.crEd', [
+                    'dish' => $dish,
+                    'productList' => $dc->getProductData()
+                ]);
             }
-        } else {
+        } elseif ($request->method() == 'POST') {
+            $data = $request->all();
+            $error_message = null;
+            $status = null;
+
             if($oper == 'new') {
-                print_r($request->all());
+                $dish = new Dish();
+                $dish->guid = strtoupper(guid());
+                $dish->user_id = Auth::id();
             } else {
-
+                $dish = Dish::where('guid', $oper)
+                    ->where('user_id', Auth::id())
+                    ->first();
             }
+
+            if (!isset($data['dish_name']) || empty($data['dish_name'])){
+                $error_message = [DishCalculator::DATA_ERROR => 'dish_name is empty'];
+                $status = self::STATUS_ERROR;
+            }
+
+            if (!isset($data['cat_id']) || empty($data['cat_id'])){
+                $error_message = [DishCalculator::DATA_ERROR => 'cat_id is empty'];
+                $status = self::STATUS_ERROR;
+            }
+
+            if (!isset($data['draft']) || empty($data['draft'])){
+                $error_message = [DishCalculator::DATA_ERROR => 'draft is empty'];
+                $status = self::STATUS_ERROR;
+            }
+
+            if (!isset($data['comment']) || empty($data['comment'])){
+                $error_message = [DishCalculator::DATA_ERROR => 'comment is empty'];
+                $status = self::STATUS_ERROR;
+            }
+
+            if (!isset($data['suitable_for']) || empty($data['suitable_for'])){
+                $error_message = [DishCalculator::DATA_ERROR => 'suitable_for is empty'];
+                $status = self::STATUS_ERROR;
+            }
+
+            if($status !== null) {
+                return response()->json(
+                    [
+                        'guid' => $dish->guid,
+                        'status' => $status,
+                        'error_message' => $error_message
+                    ]
+                );
+            }
+
+            if(is_null($dish)) {
+                return abort(404);
+            }
+
+            $dish->data = $data;
+            $dc = new DishCalculator(new NutritionalValueCalculator(), $dish);
+
+            if ($dc->isValid()) {
+                DB::beginTransaction();
+                try {
+                    $attributes = new Attributes();
+                    $attributes->name = 'dish_purpose';
+                    $attributes->guid = strtoupper(guid());
+
+                    $attributes->food_sushka = in_array('sh', $data['suitable_for']);
+                    $attributes->food_pohudenie = in_array('ph', $data['suitable_for']);
+                    $attributes->food_podderjka = in_array('pd', $data['suitable_for']);
+                    $attributes->food_nabor_massi = in_array('nm', $data['suitable_for']);
+                    $attributes->food_cheat_meal = in_array('cm', $data['suitable_for']);
+
+                    $attributes->save();
+
+                    $dish->name = $data['dish_name'];
+                    $dish->category_id = $data['cat_id'];
+                    $dish->attribute_id = $attributes->id;
+                    $dish->draft = $data['draft'] === 'true' ? 1 : 0;
+                    $dish->comment = $data['comment'];
+                    $dish->data = json_encode($dish->data);
+                    $dish->weight_after = $data['data']['weight_after'];
+                    //print_r($dish);
+                    $dish->save();
+
+                    $status = self::STATUS_SUCCESS;
+                } catch (\Throwable $e) {
+                    DB::rollBack();
+
+                    $error_message = [DishCalculator::DATA_ERROR => $e->getMessage()];
+                    $status = self::STATUS_ERROR;
+                }
+
+                DB::commit();
+            } else {
+                $error_message = $dc->getErrors();
+                $status = self::STATUS_ERROR;
+            }
+
+            return response()->json(
+                [
+                    'guid' => $dish->guid,
+                    'status' => $status,
+                    'error_message' => $error_message
+                ]
+            );
+        } else {
+            abort(403);
         }
     }
 

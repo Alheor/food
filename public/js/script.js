@@ -288,23 +288,25 @@ function dishProdSearch(obj, type) {
 
     var el = $('#dishProdSearch');
 
-    var request = $.ajax({
-        url: "/food_diary/finddp",
-        method: "POST",
-        data: {
-            search: el.val(),
-            type: type,
-            _token: el.parent().find('input').first().val()
-        }
-    });
+    if(el.val().length > 1) {
+        var request = $.ajax({
+            url: "/food_diary/finddp",
+            method: "POST",
+            data: {
+                search: el.val(),
+                type: type,
+                _token: el.parent().find('input').first().val()
+            }
+        });
 
-    request.fail(function (jqXHR) {
-        console.log(jqXHR);
-    });
+        request.fail(function (jqXHR) {
+            console.log(jqXHR);
+        });
 
-    request.done(function (msg) {
-        $('.dish-prod-list').html(msg);
-    });
+        request.done(function (msg) {
+            $('.dish-prod-list').html(msg);
+        });
+    }
 }
 
 function addDishProdToDiary(el, modal, dayGuid, weight) {
@@ -384,9 +386,9 @@ function calculateBJUFromWeight(w, b, j, u) {
         throw new Error('Calculate bju from weight problem!');
     }
 
-    var tempResB = parseInt(resB * 10) / 10;
-    var tempResJ = parseInt(resJ * 10) / 10;
-    var tempResU = parseInt(resU * 10) / 10;
+    var tempResB = parseFloat(resB.toFixed(1));
+    var tempResJ = parseFloat(resJ.toFixed(1));
+    var tempResU = parseFloat(resU.toFixed(1));
 
     return {
         b: tempResB,
@@ -433,43 +435,43 @@ function calculateDiary() {
                 // --- Вес ---
 
                 // --- Белки ---
-                sumTB += Number($($(el).find('td')[2]).text());
-                if (isNaN(sumTWtmp)) {
+                sumTB += bjuk.b;
+                if (isNaN(sumTB)) {
                     alert('Ошибка калькуляции! Проблемы с полем "Белки" таблицы '+ (z+1) +', строки '+ (i+1));
                     throw new Error('Protein value problem! Table '+ z +', tr '+ i + ', td 1.');
                 }
                 // --- Белки ---
 
                 // --- Жиры ---
-                sumTJ += Number($($(el).find('td')[3]).text());
-                if (isNaN(sumTWtmp)) {
+                sumTJ += bjuk.j;
+                if (isNaN(sumTJ)) {
                     alert('Ошибка калькуляции! Проблемы с полем "Жиры" таблицы '+ (z+1) +', строки '+ (i+1));
                     throw new Error('Fat value problem! Table '+ z +', tr '+ i + ', td 1.');
                 }
                 // --- Жиры ---
 
                 // --- Углеводы ---
-                sumTU += Number($($(el).find('td')[4]).text());
-                if (isNaN(sumTWtmp)) {
+                sumTU += bjuk.u;
+                if (isNaN(sumTU)) {
                     alert('Ошибка калькуляции! Проблемы с полем "Углеводы" таблицы '+ (z+1) +', строки '+ (i+1));
                     throw new Error('Carbohydrates value problem! Table '+ z +', tr '+ i + ', td 1.');
                 }
                 // --- Углеводы ---
 
                 // --- Ккал ---
-                sumTK += Number($($(el).find('td')[5]).text());
-                if (isNaN(sumTWtmp)) {
+                sumTK += bjuk.k;
+                if (isNaN(sumTK)) {
                     alert('Ошибка калькуляции! Проблемы с полем "Ккал" таблицы '+ (z+1) +', строки '+ (i+1));
                     throw new Error('Kcal value problem! Table '+ z +', tr '+ i + ', td 1.');
                 }
                 // --- Ккал ---
 
             } else {
-                $($(el).find('td')[1]).html(Math.round(sumTW));
+                $($(el).find('td')[1]).html(sumTW);
                 $($(el).find('td')[2]).html(sumTB.toFixed(1));
                 $($(el).find('td')[3]).html(sumTJ.toFixed(1));
                 $($(el).find('td')[4]).html(sumTU.toFixed(1));
-                $($(el).find('td')[5]).html(Math.round(sumTK.toFixed(1)));
+                $($(el).find('td')[5]).html(sumTK);
             }
         });
 
@@ -483,11 +485,11 @@ function calculateDiary() {
     var tr = $('.diaryTableResult').find('tr')[2];
 
     if($(tr).length > 0) {
-        $($(tr).find('td')[0]).text(Math.round(sumW));
+        $($(tr).find('td')[0]).text(sumW);
         $($(tr).find('td')[1]).text(sumB.toFixed(1));
         $($(tr).find('td')[2]).text(sumJ.toFixed(1));
         $($(tr).find('td')[3]).text(sumU.toFixed(1));
-        $($(tr).find('td')[4]).text(Math.round(sumK));
+        $($(tr).find('td')[4]).text(sumK);
     }
 }
 

@@ -2,7 +2,7 @@
 @section('content')
     @if(isset($day))<input type="hidden" id="day_guid" value="{{$day->guid}}"/>@endif
     <div class="row">
-        <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2 col-corrector">
+        <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <div class="form-group">
                 <label for="to_date">Дневник на</label>
                 <div class="input-group date">
@@ -20,13 +20,13 @@
                 </script>
             </div>
         </div>
-        <div class="col-6 col-sm-6 col-md-2 col-lg-2 col-xl-2 col-corrector">
+        <div class="col-6 col-sm-6 col-md-2 col-lg-2 col-xl-2">
             <div class="form-group">
                 <label for="my_weight">Мой вес</label>
                 <input type="text" id="my_weight" value="@if(isset($day)){{$day->my_weight}}@endif" placeholder="кг" class="form-control my-weight to-float"/>
             </div>
         </div>
-        <div class="col-12 col-sm-12 col-md-6 col-lg-5 col-xl-4 ml-auto col-corrector">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-5 col-xl-4 ml-auto">
             <div class="diaryTableResultDiv">
                 <table class="table table-bordered table-sm diaryTableResult">
                     <thead>
@@ -57,7 +57,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-corrector">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
             <table class="table table-striped table-bordered table-sm diaryTableHeader">
                 <thead>
                 <tr>

@@ -14,6 +14,7 @@ class NutritionalValueCalculator
     private $amountU = 0;
     private $amountK = 0;
     private $amountW = 0;
+    private $amountCellulose = 0;
 
     /**
      * @param Product $product
@@ -46,12 +47,14 @@ class NutritionalValueCalculator
         $j = (int)(($this->productList[$elIndex][0]->j * $this->productList[$elIndex][1] / 100) * 10) / 10;
         $u = (int)(($this->productList[$elIndex][0]->u * $this->productList[$elIndex][1] / 100) * 10) / 10;
         $k = (int)(($this->productList[$elIndex][0]->k * $this->productList[$elIndex][1] / 100) * 10) / 10;
+        $cellulose = (int)(($this->productList[$elIndex][0]->cellulose * $this->productList[$elIndex][1] / 100) * 10) / 10;
 
         return [
             'b' => $b,
             'j' => $j,
             'u' => $u,
             'k' => $k,
+            'cellulose' => $cellulose,
             'w' => $this->productList[$elIndex][1],
         ];
     }
@@ -86,6 +89,16 @@ class NutritionalValueCalculator
             $this->amountU += (int)($amount * 10) / 10;
 
             //echo 'u: (', $el[0]->u, ') ', (int)($amount * 10) / 10, "\n";
+        }
+    }
+
+    private function getAmountCellulose()
+    {
+        foreach ($this->productList as $el) {
+            $amount = $el[0]->cellulose * $el[1] / 100;
+            $this->amountCellulose += (int)($amount * 10) / 10;
+
+            //echo 'u: (', $el[0]->cellulose, ') ', (int)($amount * 10) / 10, "\n";
         }
     }
 
@@ -128,12 +141,42 @@ class NutritionalValueCalculator
         $this->getAmountU();
         $this->getAmountW();
         $this->getAmountK();
+        $this->getAmountCellulose();
 
         return [
             'b' => $this->amountB,
             'j' => $this->amountJ,
             'u' => $this->amountU,
             'k' => $this->amountK,
+            'cellulose' => $this->amountCellulose,
+            'w' => $this->amountW
+        ];
+    }
+
+    /**
+     * @param int $weight
+     * @return array
+     */
+    public function getAmountNutritionalValueFromDifferentWeight(int $weight)
+    {
+        $this->getAmountB();
+        $this->getAmountJ();
+        $this->getAmountU();
+        $this->getAmountW();
+        $this->getAmountK();
+        $this->getAmountCellulose();
+
+        $coeff = 1;
+        if ($weight > 0) {
+            $coeff = $this->amountW / $weight;
+        }
+
+        return [
+            'b' => round($this->amountB * $coeff,1),
+            'j' => round($this->amountJ * $coeff, 1),
+            'u' => round($this->amountU * $coeff, 1),
+            'k' => ceil($this->amountK * $coeff),
+            'cellulose' => $this->amountCellulose,
             'w' => $this->amountW,
         ];
     }

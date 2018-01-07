@@ -4,7 +4,9 @@ namespace App\Diary;
 
 use App\Calculators\NutritionalValueCalculator;
 use App\DayDiary;
+use App\Dish;
 use App\Product;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class DayRation
@@ -85,7 +87,11 @@ class DayRation
                 }
             }
 
+            /** @var Collection $productList */
             $productList = Product::whereIn('guid', array_keys($queryGuids))->get();
+            $dishList = Dish::whereIn('guid', array_keys($queryGuids))->get();
+
+            $productList->merge($dishList);
 
             /** @var Product $product */
             foreach ($productList as $product) {
