@@ -67,7 +67,7 @@ class DishCalculator
         }
 
         if (!isset($this->dish->data['data']['weight_after']) || !is_numeric($this->dish->data['data']['weight_after'])) {
-            $this->errorList[self::DATA_ERROR] = 'Ready made weight is empty or not an numeric';
+            $this->errorList[self::DATA_ERROR] = 'Weight after is empty or not an numeric';
         }
 
         return empty($this->errorList);

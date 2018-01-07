@@ -118,16 +118,12 @@
                             <td>
                                 <div class="font-weight-bold pull-right">ИТОГО:</div>
                             </td>
-                            <td style="text-align: center; width: 42px; padding: .1rem;">0</td>
-                            <td style="text-align: center; width: 40px; font-weight: bold; background-color: #c3e6cb; padding: .1rem;">0
-                            </td>
-                            <td style="text-align: center; width: 40px; font-weight: bold; background-color: #ffeeba; padding: .1rem;">0
-                            </td>
-                            <td style="text-align: center; width: 40px; font-weight: bold; background-color: #f5c6cb; padding: .1rem;">0
-                            </td>
-                            <td style="text-align: center; width: 40px; font-weight: bold; padding: .1rem;">0</td>
-                            <td style="width: 23px;">
-                            </td>
+                            <td style="text-align: center; width: 42px;" id="products_weight">0</td>
+                            <td style="text-align: center; width: 40px; font-weight: bold; background-color: #c3e6cb;">0</td>
+                            <td style="text-align: center; width: 40px; font-weight: bold; background-color: #ffeeba;">0</td>
+                            <td style="text-align: center; width: 40px; font-weight: bold; background-color: #f5c6cb;">0</td>
+                            <td style="text-align: center; width: 40px; font-weight: bold;">0</td>
+                            <td style="width: 23px;"></td>
                         </tr>
                     </tbody>
                 </table>

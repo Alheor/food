@@ -162,6 +162,8 @@ function saveDishData(obj) {
 
     $('#resultSendIndicator').html('<i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>');
 
+    var weight_after = $('#dish_weight').val() !== ''? $('#dish_weight').val() : $('#products_weight').text();
+
     var request = $.ajax({
         url: "/dishes/" + (dishGuid.length > 0? dishGuid.val() : 'new'),
         method: "POST",
@@ -171,7 +173,7 @@ function saveDishData(obj) {
             'draft': $('#draft').prop( "checked" ),
             'comment': $('#comment').val(),
             'suitable_for': suitable_for,
-            'data': {'product_list': productList, 'weight_after': $('#dish_weight').val()},
+            'data': {'product_list': productList, 'weight_after': weight_after},
             '_token':_token
         }
     });

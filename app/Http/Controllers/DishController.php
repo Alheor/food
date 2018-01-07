@@ -86,11 +86,6 @@ class DishController extends Controller
                 $status = self::STATUS_ERROR;
             }
 
-            if (!isset($data['comment']) || empty($data['comment'])){
-                $error_message = [DishCalculator::DATA_ERROR => 'comment is empty'];
-                $status = self::STATUS_ERROR;
-            }
-
             if (!isset($data['suitable_for']) || empty($data['suitable_for'])){
                 $error_message = [DishCalculator::DATA_ERROR => 'suitable_for is empty'];
                 $status = self::STATUS_ERROR;
