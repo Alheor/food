@@ -2,13 +2,16 @@
     <nav class="navbar navbar-expand-xs navbar-light bg-light">
         <div class="navbar-collapse">
             <div class="pull-left" style="font-size: 13px;">
-                <a href="{{ route('new_product') }}" target="_blank" class="text-info">Новый продукт</a>
+                <a href="{{ route('new_product') }}" target="_blank" class="text-info">Добавить продукт</a>
                 <br/>
-                <a href="{{ route('new_dish', ['new']) }}" target="_blank" class="text-success" style="display: none;">Новое блюдо</a>
+                <a href="{{ route('new_dish', ['new']) }}" target="_blank" class="text-success">Добавить блюдо</a>
             </div>
-            <div class="col-6 pull-right" style="padding-right: 0;">
+            <div class="col-4 pull-right" style="padding-right: 0;">
                 {{ csrf_field() }}
-                <input style="padding: 5px" class="form-control" id="dishProdSearch" onkeyup="dishProdSearch(this, '{{$type}}');" type="text" placeholder="Найти" aria-label="Найти">
+                <input style="padding: 8px" class="form-control" id="dishProdSearch" onkeyup="dishProdSearch(this, '{{$type}}');" type="text" placeholder="Найти" aria-label="Найти">
+            </div>
+            <div class="pull-right" style="margin-top: 6px;">
+                <div id="searchSendIndicator" style="float: right; margin-right: 5px;"></div>
             </div>
         </div>
     </nav>
@@ -37,8 +40,12 @@
     @forelse ($productList as $product)
     <tr>
         <td class="prod-search-name">
-            <div>{{$product->name}}</div>
-            <div>{{$product->manufacturer->name}}</div>
+            <div>
+                {{$product->name}}
+                @if(get_class($product) == 'App\Product')<span class="product" title="Продукт">П</span>@endif
+                @if(get_class($product) == 'App\Dish')<span class="dish" title="Блюдо">Б</span>@endif
+            </div>
+            @if($product->manufacturer)<div>{{$product->manufacturer->name}}</div>@endif
             <input type="hidden" value="{{$product->id}}" />
         </td>
         <td>

@@ -7,7 +7,7 @@
                 <div class="navbar-collapse">
                     <ul class="navbar-nav mr-auto">
                         <li>
-                            <a href="{{ route('new_product') }}" class="btn btn-success">Новый</a>
+                            <a href="{{ route('new_product') }}" class="btn btn-info">Новый</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav">

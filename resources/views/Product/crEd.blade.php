@@ -15,7 +15,7 @@
             <input type="hidden" name="_token" value="{{ csrf_token() }}" >
             <div class="form-group">
                 <label for="prodName">Наименование <span class="text-danger font-weight-bold">*</span></label>
-                <input type="text" value="{{ old('prodName') }}" autocomplete="off" class="form-control col-sm-12" id="prodName" name="prodName">
+                <input type="text" value="{{ old('prodName') }}" autocomplete="off" class="form-control" id="prodName" name="prodName">
             </div>
             <div class="form-group">
                 <h5>Категория <span class="text-danger font-weight-bold">*</span></h5>

@@ -86,7 +86,7 @@ class DayRation
             $productList = Product::whereIn('guid', array_keys($queryGuids))->get();
             $dishList = Dish::whereIn('guid', array_keys($queryGuids))->get();
 
-            $productList->merge($dishList);
+            $productList = $productList->merge($dishList);
 
             /** @var Product $product */
             foreach ($productList as $product) {

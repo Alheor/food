@@ -59,29 +59,46 @@ function strToFloat(str) {
     return str.replace(/[^0-9,.]*/g, '').replace(/,/g, '.');
 }
 
+var timerProdSearch = false;
 function dishProdSearch(obj, type) {
+    function request() {
+        var el = $('#dishProdSearch');
 
-    var el = $('#dishProdSearch');
+        if(el.val().length > 1) {
+            $('#searchSendIndicator').html('<i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>');
 
-    if(el.val().length > 1) {
-        var request = $.ajax({
-            url: "/food_diary/finddp",
-            method: "POST",
-            data: {
-                search: el.val(),
-                type: type,
-                _token: el.parent().find('input').first().val()
-            }
-        });
+            var request = $.ajax({
+                url: "/food_diary/finddp",
+                method: "POST",
+                data: {
+                    search: el.val(),
+                    type: type,
+                    _token: el.parent().find('input').first().val()
+                }
+            });
 
-        request.fail(function (jqXHR) {
-            console.log(jqXHR);
-        });
+            request.fail(function (jqXHR) {
+                $('#searchSendIndicator').html('<i class="fa fa-exclamation-triangle text-danger" aria-hidden="true" style="font-size:24px;"></i>');
+                console.log(jqXHR);
+            });
 
-        request.done(function (msg) {
-            $('.dish-prod-list').html(msg);
-        });
+            request.done(function (msg) {
+                $('#searchSendIndicator').html('<i class="fa fa-check text-success" aria-hidden="true" style="font-size:24px;"></i>');
+                setTimeout(function () {
+                    //$('#searchSendIndicator').html('');
+                }, 1000);
+                $('.dish-prod-list').html(msg);
+            });
+        }
     }
+
+    if(timerProdSearch !== false) {
+        clearTimeout(timerProdSearch);
+    }
+
+    timerProdSearch = setTimeout(function () {
+        request();
+    }, 500);
 }
 
 function addDishProdToDiary(el, modal, dayGuid, weight) {

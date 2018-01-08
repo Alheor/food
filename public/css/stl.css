@@ -255,3 +255,20 @@
     padding-top: 2px;
     padding-bottom: 2px;
 }
+.product {
+    display: block;
+    float: right;
+    margin-right: 2px;
+    color: #17a2b8 !important;
+    font-weight: bold;
+
+}
+
+.dish {
+    display: block;
+    float: right;
+    margin-right: 2px;
+    color: #28a745 !important;
+    font-weight: bold;
+
+}

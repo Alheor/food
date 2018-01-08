@@ -120,7 +120,7 @@ class FoodDiaryController extends Controller
                         ->take(10)
                         ->get();
 
-                    $objList->merge($objList2);
+                    $objList = $objList->merge($objList2);
                 }
 
                 return view('FoodDiary.DPAddition', [
