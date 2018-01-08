@@ -171,11 +171,17 @@ class NutritionalValueCalculator
             $coeff = $this->amountW / $weight;
         }
 
+        $resB = $this->amountB * $coeff * 100 / $this->amountW;
+        $resJ = $this->amountJ * $coeff * 100 / $this->amountW;
+        $resU = $this->amountU * $coeff * 100 / $this->amountW;
+        $resK = $this->amountK * $coeff * 100 / $this->amountW;
+
+
         return [
-            'b' => round($this->amountB * $coeff,1),
-            'j' => round($this->amountJ * $coeff, 1),
-            'u' => round($this->amountU * $coeff, 1),
-            'k' => ceil($this->amountK * $coeff),
+            'b' => round($resB,1),
+            'j' => round($resJ, 1),
+            'u' => round($resU, 1),
+            'k' => ceil($resK),
             'cellulose' => $this->amountCellulose,
             'w' => $this->amountW,
         ];

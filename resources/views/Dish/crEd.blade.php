@@ -2,10 +2,10 @@
 @section('content')
     @if(isset($dish))<input type="hidden" id="dish_guid" value="{{$dish->guid}}"/>@endif
         <div class="row">
-            <div class="col">
+            <div class="col-8">
                 <h2>Новое блюдо</h2>
             </div>
-            <div class="col">
+            <div class="col-4">
                 <div class="btn-group pull-right" data-toggle="buttons" style="margin-bottom: 5px;">
                     <label class="btn btn-dark @if(!$dish || $dish && $dish->draft === 1)active @endif">
                         <input class="my-input-checkbox" @if(!$dish || $dish && $dish->draft === 1)checked=""@endif type="checkbox" id="draft" autocomplete="off">Черновик
@@ -15,25 +15,16 @@
         </div>
         <div class="row">
             <div class="col">
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <div class="form-group">
                     <label for="prodName">Наименование <span class="text-danger font-weight-bold">*</span></label>
-                    <input type="text" value="@if($dish){{$dish->name}}@endif" autocomplete="off" class="form-control col-sm-12"
+                    <input type="text" value="@if($dish){{$dish->name}}@endif" autocomplete="off" class="form-control"
                            id="prodName" name="prodName">
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col">
+            <div class="form-group col">
                 <h5>Категория <span class="text-danger font-weight-bold">*</span></h5>
                 @if($dish)
                     @include('Dish.categories', [
@@ -48,28 +39,28 @@
         </div>
         <div class="row">
             <div class="form-group col">
-                <table class="table table-striped table-bordered table-sm diaryTableHeader">
+                <table class="table table-striped table-bordered table-sm diaryTableHeader diaryTable">
                     <thead>
                     <tr>
                         <th></th>
-                        <th style="width: 42px; text-align: center; padding: .1rem;">Вес</th>
-                        <th style="width: 40px; text-align: center; padding: .1rem;">Б</th>
-                        <th style="width: 40px; text-align: center; padding: .1rem;">Ж</th>
-                        <th style="width: 40px; text-align: center; padding: .1rem;">У</th>
-                        <th style="width: 40px; text-align: center; padding: .1rem;">Ккал</th>
-                        <th style="width: 23px; text-align: center;"></th>
+                        <th style="width: 37px;">Вес</th>
+                        <th style="width: 37px;">Б</th>
+                        <th style="width: 37px;">Ж</th>
+                        <th style="width: 37px;">У</th>
+                        <th style="width: 37px;">Ккал</th>
+                        <th style="width: 25px;"></th>
                     </tr>
                     </thead>
                 </table>
-                <table class="table table-striped table-bordered table-sm diaryTable" style="margin-bottom: 0px;" id="dishTable">
+                <table class="table table-striped table-bordered table-sm diaryTable" style="margin-bottom: 0;" id="dishTable">
                     <thead class="thead-inverse">
                     <tr>
-                        <th colspan="7">
+                        <th colspan="7" style="padding-left: 4px;">
                             <div class="pull-left dish-add-div">
                                 <i class="fa fa-plus product-add" aria-hidden="true"
                                    title="Добавить продукт или блюдо"></i>
                             </div>
-                            <div style="text-align: center;">Ингредиенты</div>
+                            <div class="pull-left" style="text-align: center; padding-left: 1px;">Ингредиенты</div>
                         </th>
                     </tr>
                     </thead>
@@ -93,11 +84,11 @@
                                     <td style="min-width: 42px;">
                                         <input type="integer" value="{{$product['w']}}" class="form-control input-table dishProdWeight"/>
                                     </td>
-                                    <td style="background-color: #c3e6cb; text-align: center;">{{$product['b']}}</td>
-                                    <td style="background-color: #ffeeba; text-align: center;">{{$product['j']}}</td>
-                                    <td style="background-color: #f5c6cb; text-align: center;">{{$product['u']}}</td>
-                                    <td style="text-align: center;">{{$product['k']}}</td>
-                                    <td style="padding-left: 5px;">
+                                    <td style="background-color: #c3e6cb;">{{$product['b']}}</td>
+                                    <td style="background-color: #ffeeba;">{{$product['j']}}</td>
+                                    <td style="background-color: #f5c6cb;">{{$product['u']}}</td>
+                                    <td>{{$product['k']}}</td>
+                                    <td>
                                         <i class="fa fa-ban product-delete"  title="Удалить продукт"  onclick="if(confirm('Удалить?')){$(this).parent().parent().remove();recalcDish();}" aria-hidden="true"></i>
                                     </td>
                                 </tr>
@@ -116,21 +107,21 @@
                         @endif
                         <tr id="dishTableAmount" class="diaryTableAmount tabel-td" style="background-color: #fff;">
                             <td>
-                                <div class="font-weight-bold pull-right">ИТОГО:</div>
+                                <div class="font-weight-bold pull-right" style="margin-right: 4px;">ИТОГО:</div>
                             </td>
-                            <td style="text-align: center; width: 42px;" id="products_weight">0</td>
-                            <td style="text-align: center; width: 40px; font-weight: bold; background-color: #c3e6cb;">0</td>
-                            <td style="text-align: center; width: 40px; font-weight: bold; background-color: #ffeeba;">0</td>
-                            <td style="text-align: center; width: 40px; font-weight: bold; background-color: #f5c6cb;">0</td>
-                            <td style="text-align: center; width: 40px; font-weight: bold;">0</td>
-                            <td style="width: 23px;"></td>
+                            <td style="text-align: center; width: 37px;" id="products_weight">0</td>
+                            <td style="text-align: center; width: 37px; font-weight: bold; background-color: #c3e6cb;">0</td>
+                            <td style="text-align: center; width: 37px; font-weight: bold; background-color: #ffeeba;">0</td>
+                            <td style="text-align: center; width: 37px; font-weight: bold; background-color: #f5c6cb;">0</td>
+                            <td style="text-align: center; width: 37px; font-weight: bold;">0</td>
+                            <td style="width: 25px;"></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
         <div class="row">
-            <div class="form-group col-5 col-sm-5 col-md-4 col-lg-3 col-xl-3">
+            <div class="form-group col-7 col-sm-5 col-md-4 col-lg-3 col-xl-3">
                 <label for="b" class="col-form-label">Вес готового блюда, гр.
                     <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top"
                        title="Получившийся вес блюда, после его приготовления. По умолчанию равен весу всех ингредиентов."></i>
@@ -141,7 +132,7 @@
         <div class="row">
             <div class="form-group col">
                 <label for="comment" class="col-form-label">Комментарий</label>
-                <textarea class="form-control" id="comment">@if($dish){{$dish->comment}}@endif</textarea>
+                <textarea class="form-control" id="comment" style="height: 100px;">@if($dish){{$dish->comment}}@endif</textarea>
             </div>
         </div>
         <div class="row" id="suitable_for">
@@ -179,7 +170,7 @@
                 </div>
             </div>
         </div>
-        <div class="form-row">
+        <div class="row">
             <div class="form-group col-5 col-sm-7 col-md-8 col-lg-9 col-xl-9"></div>
             <div class="form-group col-7 col-sm-5 col-md-4 col-lg-3 col-xl-3">
                 <div style="float: right;">

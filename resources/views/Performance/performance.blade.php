@@ -1,13 +1,13 @@
 @extends('layout')
 @section('content')
-    <h1>Блюда</h1>
+    <h1>Физические показатели</h1>
     <div class="pos-f-t">
         <div class="collapse" id="navbarToggleExternalContent">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <div class="navbar-collapse">
                     <ul class="navbar-nav mr-auto">
                         <li>
-                            <a href="{{ route('new_dish', ['new']) }}" class="btn btn-success">Новое</a>
+                            <a href="{{ route('performance_cred', ['new']) }}" class="btn btn-success">Новая запись</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav">
@@ -30,29 +30,29 @@
     <table class="table table-striped table-bordered table-sm diaryTable">
         <thead class="thead-inverse">
         <tr>
-            <th>Наименование</th>
-            <th style="width: 37px;">Б</th>
-            <th style="width: 37px;">Ж</th>
-            <th style="width: 37px;">У</th>
-            <th style="width: 37px;">Ккал</th>
+            <th>Дата</th>
+            <th style="width: 37px;">Вес</th>
+            <th style="width: 64px;">Мышцы</th>
+            <th style="width: 37px;">Жир</th>
+            <th style="width: 39px;">Вода</th>
             <th style="width: 25px;"></th>
         </tr>
         </thead>
         <tbody>
-        @foreach($dishList as $dish)
+        @foreach($performanceList as $performance)
             <tr>
                 <td>
-                    <div>{{$dish->name}}</div>
+                    <div style="word-break: break-all;">@rusiandate($performance->to_date)</div>
                 </td>
-                <td style="background-color: #c3e6cb">{{$dish->b}}</td>
-                <td style="background-color: #ffeeba">{{$dish->j}}</td>
-                <td style="background-color: #f5c6cb">{{$dish->u}}</td>
-                <td>{{(int)$dish->k}}</td>
+                <td>{{$performance->weight}}</td>
+                <td>{{$performance->general_musculature}}</td>
+                <td>{{$performance->general_fat}}</td>
+                <td>{{$performance->general_wather}}</td>
                 <td>
                     <div class="dropdown">
                         <i style="cursor: pointer; font-size: 18px;" class="material-icons" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">view_headline</i>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a href="{{ route('new_dish', [$dish->guid]) }}" class="dropdown-item">
+                            <a href="{{ route('performance_cred', [$performance->guid]) }}" class="dropdown-item">
                                 <i class="material-icons">mode_edit</i> Изменить
                             </a>
                         </div>

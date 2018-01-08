@@ -20,12 +20,6 @@
                 </script>
             </div>
         </div>
-        <div class="col-6 col-sm-6 col-md-2 col-lg-2 col-xl-2">
-            <div class="form-group">
-                <label for="my_weight">Мой вес</label>
-                <input type="text" id="my_weight" value="@if(isset($day)){{$day->my_weight}}@endif" placeholder="кг" class="form-control my-weight to-float"/>
-            </div>
-        </div>
         <div class="col-12 col-sm-12 col-md-6 col-lg-5 col-xl-4 ml-auto">
             <div class="diaryTableResultDiv">
                 <table class="table table-bordered table-sm diaryTableResult">
@@ -58,16 +52,16 @@
     </div>
     <div class="row">
         <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-            <table class="table table-striped table-bordered table-sm diaryTableHeader">
+            <table class="table table-striped table-bordered table-sm diaryTableHeader diaryTable">
                 <thead>
                 <tr>
                     <th></th>
-                    <th style="width: 50px; text-align: center;">Вес</th>
-                    <th style="width: 44px; text-align: center;">Б</th>
-                    <th style="width: 44px; text-align: center;">Ж</th>
-                    <th style="width: 44px; text-align: center;">У</th>
-                    <th style="width: 40px; text-align: center;">Ккал</th>
-                    <th style="width: 35px; text-align: center;"></th>
+                    <th style="width: 40px;">Вес</th>
+                    <th style="width: 37px;">Б</th>
+                    <th style="width: 37px;">Ж</th>
+                    <th style="width: 37px;">У</th>
+                    <th style="width: 37px;">Ккал</th>
+                    <th style="width: 25px;"></th>
                 </tr>
                 </thead>
             </table>
@@ -76,12 +70,12 @@
                 <table class="table table-striped table-bordered table-sm diaryTable" id="diaryTable_{{$key}}">
                     <thead class="thead-inverse">
                     <tr>
-                        <th colspan="7">
+                        <th colspan="7" style="padding-left: 4px;">
                             <div class="pull-left product-add-div">
                                 <input type="hidden" value="{{$meal['guid']}}"/>
                                 <i class="fa fa-plus product-add" aria-hidden="true" title="Добавить продукт или блюдо"></i>
                             </div>
-                            <div style="text-align: center;">
+                            <div class="pull-left" style="text-align: center; padding-left: 1px;">
                                 {{$meal['name']}}
                             </div>
                         </th>
@@ -111,7 +105,7 @@
                                     <td style="background-color: #ffeeba; text-align: center;">{{$product['j']}}</td>
                                     <td style="background-color: #f5c6cb; text-align: center;">{{$product['u']}}</td>
                                     <td style="text-align: center;">{{$product['k']}}</td>
-                                    <td style="padding-left: 5px;">
+                                    <td>
                                         <i class="fa fa-ban product-delete" title="Удалить продукт или блюдо" onclick="if(confirm('Удалить?')){$(this).parent().parent().remove();calculateDiary();}" aria-hidden="true"></i>
                                     </td>
                                 </tr>
@@ -122,11 +116,11 @@
                             <div class="font-weight-bold pull-right">ИТОГО:</div>
                         </td>
                         <td style="text-align: center; width: 40px;">0</td>
-                        <td style="text-align: center; width: 46px; font-weight: bold; background-color: #c3e6cb;">0</td>
-                        <td style="text-align: center; width: 46px; font-weight: bold; background-color: #ffeeba;">0</td>
-                        <td style="text-align: center; width: 46px; font-weight: bold; background-color: #f5c6cb;">0</td>
-                        <td style="text-align: center; width: 50px; font-weight: bold; ">0</td>
-                        <td style="width: 23px;">
+                        <td style="text-align: center; width: 37px; font-weight: bold; background-color: #c3e6cb;">0</td>
+                        <td style="text-align: center; width: 37px; font-weight: bold; background-color: #ffeeba;">0</td>
+                        <td style="text-align: center; width: 37px; font-weight: bold; background-color: #f5c6cb;">0</td>
+                        <td style="text-align: center; width: 37px; font-weight: bold; ">0</td>
+                        <td style="width: 25px;">
                         </td>
                     </tr>
                     </tbody>

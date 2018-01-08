@@ -27,15 +27,15 @@
             </button>
         </nav>
     </div>
-    <table class="table table-striped table-bordered table-sm">
+    <table class="table table-striped table-bordered table-sm diaryTable">
         <thead class="thead-inverse">
         <tr>
             <th>Наименование</th>
-            <th style="width: 37px; text-align: center;">Б</th>
-            <th style="width: 37px; text-align: center;">Ж</th>
-            <th style="width: 37px; text-align: center;">У</th>
-            <th style="width: 37px; text-align: center;">Ккал</th>
-            <th style="width: 35px;"></th>
+            <th style="width: 37px;">Б</th>
+            <th style="width: 37px;">Ж</th>
+            <th style="width: 37px;">У</th>
+            <th style="width: 37px;">Ккал</th>
+            <th style="width: 25px;"></th>
         </tr>
         </thead>
         <tbody>
@@ -49,10 +49,10 @@
                 <td style="background-color: #c3e6cb">{{$product->b}}</td>
                 <td style="background-color: #ffeeba">{{$product->j}}</td>
                 <td style="background-color: #f5c6cb">{{$product->u}}</td>
-                <td>{{$product->k}}</td>
+                <td>{{(int)$product->k}}</td>
                 <td>
                     <div class="dropdown">
-                        <i style="cursor: pointer;" class="material-icons" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">view_headline</i>
+                        <i style="cursor: pointer; font-size: 18px;" class="material-icons" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">view_headline</i>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <a href="#" class="dropdown-item">
                                 <i class="material-icons">mode_edit</i> Изменить

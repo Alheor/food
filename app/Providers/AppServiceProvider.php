@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
             
             $date = new \DateTime('.$expression.');
             $month = (int)$date->format("n") - 1;
-            echo $date->format("d") . " " . $monthNames[$month]  . " " .  $date->format("Y");
+            echo (int)$date->format("d") . " " . $monthNames[$month]  . " " .  $date->format("Y");
              ?> г.';
         });
 

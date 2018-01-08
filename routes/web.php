@@ -15,7 +15,8 @@ Route::get('/home', 'IndexController@index');
 Route::middleware('auth')->group(function () {
     Route::get('/statistic', 'IndexController@statistic')->name('statistic');
 
-    Route::get('/plan', 'PlanController@index')->name('plan');
+    Route::get('/performance/list', 'PerformanceController@list')->name('performance_list');
+    Route::match(['get', 'post'],'/performance/{oper}', 'PerformanceController@crEd')->name('performance_cred');
 
     Route::get('/dishes/list', 'DishController@list')->name('dishes');
     Route::match(['get', 'post'],'/dishes/{oper}', 'DishController@crEd')->name('new_dish');

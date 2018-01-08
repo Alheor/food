@@ -208,7 +208,10 @@ class FoodDiaryController extends Controller
     public function list()
     {
         return view('FoodDiary.list', [
-                'diaryList' => DayDiary::where('user_id', Auth::id())->take(30)->get()
+                'diaryList' => DayDiary::where('user_id', Auth::id())
+                    ->orderBy('to_date', 'DESC')
+                    ->take(30)
+                    ->get()
         ]);
     }
 }

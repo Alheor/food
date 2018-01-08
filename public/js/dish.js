@@ -89,7 +89,7 @@ $(document).ready(function () {
 
     $('#dish_weight').on('keyup', function () {
         this.value = strToInt(this.value);
-        calculateDishFromReadyMadeWidth(this.value);
+        calculateDish();
     });
 
     $('#create_dish').on('click', function () {
@@ -266,10 +266,9 @@ function addProductToDish(el, modal, dayGuid, weight) {
 
 function recalcDish() {
     calculateDish();
-    calculateDishFromReadyMadeWidth();
 }
 
-function calculateDishFromReadyMadeWidth() {
+function calculateDish() {
     var sumTW = 0;
     var sumTB = 0;
     var sumTJ = 0;
@@ -286,10 +285,16 @@ function calculateDishFromReadyMadeWidth() {
                 alert('Ошибка калькуляции! Проблемы с полем "Вес", строки '+ (i+1));
                 throw new Error('Weight value problem! Tr '+ i + ', td 1.');
             }
+
             sumTW += sumTWtmp;
             // --- Вес ---
 
             var bjuk = calculateBJUFromWeight(sumTWtmp, dPdata.b, dPdata.j, dPdata.u);
+
+            $($(el).find('td')[2]).text(bjuk.b);
+            $($(el).find('td')[3]).text(bjuk.j);
+            $($(el).find('td')[4]).text(bjuk.u);
+            $($(el).find('td')[5]).text(bjuk.k);
 
             // --- Белки ---
             sumTB += bjuk.b;
@@ -329,80 +334,17 @@ function calculateDishFromReadyMadeWidth() {
                 coeff = sumTW / Number(weight);
             }
 
-            $($(el).find('td')[2]).html((sumTB * coeff).toFixed(1));
-            $($(el).find('td')[3]).html((sumTJ * coeff).toFixed(1));
-            $($(el).find('td')[4]).html((sumTU * coeff).toFixed(1));
-            $($(el).find('td')[5]).html((Math.ceil(sumTK * coeff)));
-        }
-    });
-}
+            sumTW = sumTW === 0? 1: sumTW;
+            var resB = sumTB * coeff * 100 / sumTW;
+            var resJ = sumTJ * coeff * 100 / sumTW;
+            var resU = sumTU * coeff * 100 / sumTW;
+            var resK = sumTK * coeff * 100 / sumTW;
 
-function calculateDish() {
-    var sumTW = 0;
-    var sumTB = 0;
-    var sumTJ = 0;
-    var sumTU = 0;
-    var sumTK = 0;
-
-     $('.diaryTable').find('tbody').find('tr').each(function (i, el) {
-        if (!$(el).hasClass('diaryTableAmount')) {
-            var dPdata = JSON.parse($(el).find('td').first().find('input').val());
-
-            // --- Вес ---
-            var sumTWtmp = Number($($(el).find('td')[1]).find('input').val().replace(/[^0-9]*/g, ''));
-            if (isNaN(sumTWtmp)) {
-                alert('Ошибка калькуляции! Проблемы с полем "Вес", строки '+ (i+1));
-                throw new Error('Weight value problem! Tr '+ i + ', td 1.');
-            }
-
-            var bjuk = calculateBJUFromWeight(sumTWtmp, dPdata.b, dPdata.j, dPdata.u);
-
-            $($(el).find('td')[2]).text(bjuk.b);
-            $($(el).find('td')[3]).text(bjuk.j);
-            $($(el).find('td')[4]).text(bjuk.u);
-            $($(el).find('td')[5]).text(bjuk.k);
-
-            sumTW += sumTWtmp;
-            // --- Вес ---
-
-            // --- Белки ---
-            sumTB += bjuk.b;
-            if (isNaN(sumTWtmp)) {
-                alert('Ошибка калькуляции! Проблемы с полем "Белки", строки '+ (i+1));
-                throw new Error('Protein value problem! Tr '+ i + ', td 1.');
-            }
-            // --- Белки ---
-
-            // --- Жиры ---
-            sumTJ += bjuk.j;
-            if (isNaN(sumTWtmp)) {
-                alert('Ошибка калькуляции! Проблемы с полем "Жиры", строки '+ (i+1));
-                throw new Error('Fat value problem! Tr '+ i + ', td 1.');
-            }
-            // --- Жиры ---
-
-            // --- Углеводы ---
-            sumTU += bjuk.u;
-            if (isNaN(sumTWtmp)) {
-                alert('Ошибка калькуляции! Проблемы с полем "Углеводы", строки '+ (i+1));
-                throw new Error('Carbohydrates value problem! Tr '+ i + ', td 1.');
-            }
-            // --- Углеводы ---
-
-            // --- Ккал ---
-            sumTK += bjuk.k;
-            if (isNaN(sumTWtmp)) {
-                alert('Ошибка калькуляции! Проблемы с полем "Ккал", строки '+ (i+1));
-                throw new Error('Kcal value problem! Tr '+ i + ', td 1.');
-            }
-            // --- Ккал ---
-
-        } else {
             $($(el).find('td')[1]).html(sumTW);
-            $($(el).find('td')[2]).html(sumTB.toFixed(1));
-            $($(el).find('td')[3]).html(sumTJ.toFixed(1));
-            $($(el).find('td')[4]).html(sumTU.toFixed(1));
-            $($(el).find('td')[5]).html(sumTK);
+            $($(el).find('td')[2]).html(resB.toFixed(1));
+            $($(el).find('td')[3]).html(resJ.toFixed(1));
+            $($(el).find('td')[4]).html(resU.toFixed(1));
+            $($(el).find('td')[5]).html((Math.ceil(resK)));
         }
     });
 }

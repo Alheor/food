@@ -44,10 +44,6 @@ class DayRation
             $this->errorList[self::DATA_ERROR] = 'Products data is empty or not an array';
         }
 
-        if (!isset($this->dayObject->data['weight'])) {
-            $this->errorList[self::DATA_ERROR] = 'Myself weight is empty';
-        }
-
         return empty($this->errorList);
     }
 
@@ -63,7 +59,6 @@ class DayRation
         $this->dayObject->u = $bjuc['u'];
         $this->dayObject->k = $bjuc['k'];
         $this->dayObject->w = $bjuc['w'];
-        $this->dayObject->my_weight = $this->dayObject->data['weight'];
         //var_dump($bjuc);
     }
 
