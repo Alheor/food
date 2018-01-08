@@ -102,13 +102,13 @@ function dishProdSearch(obj, type) {
 }
 
 function addDishProdToDiary(el, modal, dayGuid, weight) {
-    var id = $(el).find('td').first().find('input').val();
+    var guid = $(el).find('td').first().find('input').val();
     var request = $.ajax({
-        url: "/food_diary/finddp/" + id,
+        url: "/food_diary/finddp/" + guid,
         type: "all",
         method: "POST",
         data: {
-            id: id,
+            guid: guid,
             _token: el.parent().parent().parent().parent().find('input').first().val()
         }
     });
@@ -192,7 +192,7 @@ function calculateBJUFromWeight(w, b, j, u) {
 
 function dishProdInfo(data) {
     return '<h6>' + data.name +
-        '</h6><i>' + data.manufacturer.name +
+        '</h6><i>' + (typeof data.manufacturer === 'undefined'? '' : data.manufacturer.name) +
         '</i><br>Пищевая ценность на 100 гр.' +
         '<table class="table table-bordered table-sm diaryTableResult">' +
         '<tr>' +

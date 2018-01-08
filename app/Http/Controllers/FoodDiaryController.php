@@ -96,9 +96,9 @@ class FoodDiaryController extends Controller
         if ($request->method() == 'POST') {
             $search = trim($request->get('search'));
 
-            $id = $request->get('id');
+            $guid = $request->get('guid');
 
-            if (is_null($id)) {
+            if (is_null($guid)) {
                 if($type === 'product') {
                     $objList = Product::where('name', 'LIKE', "%{$search}%")
                         ->orderBy('name', 'asc')
@@ -129,17 +129,17 @@ class FoodDiaryController extends Controller
                 ]);
             } else {
                 if ($type === 'product') {
-                    $obj = Product::where('id', $id)->first();
+                    $obj = Product::where('guid', $guid)->first();
                     $obj->manufacturer->name; //LAZYLOAD что бы загрузился производитель
                 } else if($type === 'dish') {
-                    $obj = Dish::where('id', $id)->first();
+                    $obj = Dish::where('guid', $guid)->first();
                 } else {
-                    $obj = Product::where('id', $id)->first();
+                    $obj = Product::where('guid', $guid)->first();
 
                     if (!is_null($obj)) {
                         $obj->manufacturer->name;
                     } else {
-                        $obj = Dish::where('id', $id)->first();
+                        $obj = Dish::where('guid', $guid)->first();
                     }
                 }
 

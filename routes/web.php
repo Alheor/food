@@ -36,7 +36,6 @@ Route::middleware('auth')->group(function () {
         ['get', 'post'],
         '/food_diary/finddp/{id?}',
         'FoodDiaryController@findDishesOrProduct')
-        ->name('find_dp')
-        ->where('id', '[0-9]+');
+        ->name('find_dp');
     Route::post('/food_diary/save_day', 'FoodDiaryController@saveDay')->name('foodDiarySaveDay');
 });

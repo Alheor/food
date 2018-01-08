@@ -46,7 +46,7 @@
                 @if(get_class($product) == 'App\Dish')<span class="dish" title="Блюдо">Б</span>@endif
             </div>
             @if($product->manufacturer)<div>{{$product->manufacturer->name}}</div>@endif
-            <input type="hidden" value="{{$product->id}}" />
+            <input type="hidden" value="{{$product->guid}}" />
         </td>
         <td>
             <input type="text" class="form-control input-table" onkeyup="this.value = strToFloat(this.value);"/>
