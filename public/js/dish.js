@@ -198,13 +198,13 @@ function saveDishData(obj) {
 }
 
 function addProductToDish(el, modal, dayGuid, weight) {
-    var id = $(el).find('td').first().find('input').val();
+    var guid = $(el).find('td').first().find('input').val();
     var request = $.ajax({
-        url: "/food_diary/finddp/" + id,
+        url: "/food_diary/finddp/" + guid,
         type: "product",
         method: "POST",
         data: {
-            id: id,
+            guid: guid,
             _token: el.parent().parent().parent().parent().find('input').first().val()
         }
     });
@@ -215,6 +215,8 @@ function addProductToDish(el, modal, dayGuid, weight) {
     });
 
     request.done(function (msg) {
+
+        console.log(msg);
         var bjuk = calculateBJUFromWeight(weight, msg.b, msg.j, msg.u);
 
         var html = '<tr class="tabel-td">\n' +
@@ -230,7 +232,7 @@ function addProductToDish(el, modal, dayGuid, weight) {
             '            <td style="background-color: #f5c6cb; text-align: center;">' + bjuk.u + '</td>\n' +
             '            <td style="text-align: center;">' + bjuk.k +
             '            </td>\n' +
-            '            <td style="padding-left: 5px;">\n' +
+            '            <td>\n' +
             '                <i class="fa fa-ban product-delete"  title="Удалить продукт"  onclick="if(confirm(\'Удалить?\')){$(this).parent().parent().remove();recalcDish();}" aria-hidden="true"></i>\n' +
             '            </td>\n' +
             '        </tr>';

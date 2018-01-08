@@ -107,7 +107,7 @@
                         @endif
                         <tr id="dishTableAmount" class="diaryTableAmount tabel-td" style="background-color: #fff;">
                             <td>
-                                <div class="font-weight-bold pull-right" style="margin-right: 4px;">ИТОГО:</div>
+                                <div class="font-weight-bold pull-right" style="margin-right: 4px;">ИТОГО на 100 гр.</div>
                             </td>
                             <td style="text-align: center; width: 37px;" id="products_weight">0</td>
                             <td style="text-align: center; width: 37px; font-weight: bold; background-color: #c3e6cb;">0</td>

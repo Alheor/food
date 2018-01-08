@@ -60,7 +60,7 @@
 @elseif($tplName == 'addManufacturer')
     <div class="form-group">
         <label for="manufacturerName">Наименование <span class="text-danger font-weight-bold">*</span></label>
-        <input type="text"class="form-control col-sm-12" id="manufacturerName">
+        <input type="text"class="form-control" id="manufacturerName">
     </div>
     <input type="hidden" id="manufacturerToken" value="{{ csrf_token() }}" >
 @endif
