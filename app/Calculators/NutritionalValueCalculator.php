@@ -17,11 +17,10 @@ class NutritionalValueCalculator
     private $amountCellulose = 0;
 
     /**
-     * @param Product $product
      * @param $mealGuid
      * @param int $weight
      */
-    public function addProduct(Product $product, $mealGuid, int $weight)
+    public function addProduct($product, $mealGuid, int $weight) //todo один интерфейс для продуктов и блюд
     {
         $elIndex = md5($mealGuid . $product->guid);
 
