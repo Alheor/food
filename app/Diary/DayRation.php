@@ -84,19 +84,10 @@ class DayRation
 
             /** @var Collection $productList */
             $productList = Product::whereIn('guid', array_keys($queryGuids))->get();
-            $dishList = Dish::whereIn('guid', array_keys($queryGuids))->get();
-
-            if(!is_null($productList)) {
-                $productList = $productList->merge($dishList);
-            } else {
-                $productList = $dishList;
-            }
 
             /** @var Product $product */
             foreach ($productList as $product) {
-                if(isset($product->manufacturer)) {
-                    $product->manufacturer->name;
-                }
+                $product->manufacturer->name;
                 foreach ($this->productListData as $mealGuid => $products) {
                     foreach ($products as $key => $el) {
                         if ($el['guid'] === $product->guid) {
@@ -113,9 +104,29 @@ class DayRation
                 unset($queryGuids[$product->guid]);
             }
 
+            $dishList = Dish::whereIn('guid', array_keys($queryGuids))->get();
+
+            /** @var Dish $dish */
+            foreach ($dishList as $dish) {
+                foreach ($this->productListData as $mealGuid => $products) {
+                    foreach ($products as $key => $el) {
+                        if ($el['guid'] === $dish->guid) {
+                            $this->nvc->addProduct(
+                                $dish,
+                                $mealGuid,
+                                $this->productListData[$mealGuid][$dish->guid]['weight']
+                            );
+                            $this->productListData[$mealGuid][$key]['source'] = $dish;
+                        }
+                    }
+                }
+
+                unset($queryGuids[$dish->guid]);
+            }
+
             //print_r($this->productListData);exit;
             if (!empty($queryGuids)) {
-                throw new \Exception('Some products not found: '. array_keys($queryGuids));
+                throw new \Exception('Some products not found: '. json_encode(array_keys($queryGuids)));
             }
 
         } catch (\Throwable $t) {

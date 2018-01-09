@@ -14,12 +14,13 @@ use Nathanmac\GUID\Facades\GUID;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $products = Product::orderBy('name', 'asc')->get();
 
         return view('Product.product', [
-            'products' => $products
+            'products' => $products,
+            'success' => $request->get('success')
         ]);
     }
 
@@ -100,9 +101,7 @@ class ProductController extends Controller
 
             DB::commit();
 
-            return view('Product.crEd', [
-                'form' => 'success_form'
-            ]);
+            return redirect()->route('products', ['success' => 'new']);
         }
     }
 

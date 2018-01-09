@@ -1,6 +1,8 @@
 @extends('layout')
 @section('content')
-    @if(isset($dish))<input type="hidden" id="dish_guid" value="{{$dish->guid}}"/>@endif
+    <div id="dish_guid_div">
+        @if(isset($dish))<input type="hidden" id="dish_guid" value="{{$dish->guid}}"/>@endif
+    </div>
         <div class="row">
             <div class="col-8">
                 <h2>Новое блюдо</h2>

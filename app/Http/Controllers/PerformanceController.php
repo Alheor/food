@@ -10,11 +10,14 @@ use Illuminate\Support\Facades\Validator;
 
 class PerformanceController extends Controller
 {
-    public function list() {
-        $products = Performance::orderBy('to_date', 'DESC')->get();
+    public function list(Request $request) {
+        $products = Performance::orderBy('to_date', 'DESC')
+            ->where('user_id', Auth::id())
+            ->get();
 
         return view('Performance.performance', [
-            'performanceList' => $products
+            'performanceList' => $products,
+            'success' => $request->get('success')
         ]);
     }
 
@@ -49,6 +52,9 @@ class PerformanceController extends Controller
 
             if($oper == 'new') {
                 $performance = new Performance();
+                $performance->user_id = Auth::id();
+                $performance->guid = strtoupper(guid());
+                $performance->to_date = $toDate;
             } else {
                 $performance = Performance::where('guid', $oper)->first();
 
@@ -60,15 +66,12 @@ class PerformanceController extends Controller
             DB::beginTransaction();
 
             try {
-                $performance->user_id = Auth::id();
-                $performance->guid = strtoupper(guid());
                 $performance->weight = (float)$request->get('weight');
                 $performance->general_musculature = (float)$request->get('general_musculature');
                 $performance->general_fat = (float)$request->get('general_fat');
                 $performance->general_fat_percent = (float)$request->get('general_fat_percent');
                 $performance->general_wather = (float)$request->get('general_wather');
                 $performance->metabolism = (float)$request->get('metabolism');
-                $performance->to_date = $toDate;
 
                 $performance->save();
             } catch (\Throwable $e) {
@@ -81,9 +84,7 @@ class PerformanceController extends Controller
 
             DB::commit();
 
-            return view('Product.crEd', [
-                'form' => 'success_form'
-            ]);
+            return redirect()->route('performance_list', ['success' => $oper == 'new'? 'new': 'edit']);
         } else {
             abort(403);
         }

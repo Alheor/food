@@ -43,7 +43,7 @@ class DishController extends Controller
                     ->first();
 
                 if(is_null($dish)) {
-                    return abort(404);
+                    return abort(403);
                 }
 
                 $dish->dishCategory->id;

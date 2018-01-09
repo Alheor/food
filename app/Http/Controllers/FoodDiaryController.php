@@ -115,12 +115,17 @@ class FoodDiaryController extends Controller
                         ->orderBy('name', 'asc')
                         ->take(10)
                         ->get();
+                    /** @var Collection $objList2 */
                     $objList2 = Dish::where('name', 'LIKE', "%{$search}%")
                         ->orderBy('name', 'asc')
                         ->take(10)
                         ->get();
 
-                    $objList = $objList->merge($objList2);
+                    foreach ($objList as $obj) {
+                        $obj->manufacturer->name; //Костыль LAZYLOAD
+                    }
+
+                    $objList = array_merge($objList->toArray(), $objList2->toArray());
                 }
 
                 return view('FoodDiary.DPAddition', [

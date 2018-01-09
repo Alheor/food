@@ -6,7 +6,7 @@
             <div class="form-group">
                 <label for="to_date">Дневник на</label>
                 <div class="input-group date">
-                    <input type="text" class="form-control" value="@if(isset($day))@date($day->to_date)@endif"@if(isset($day))disabled=""@endif id="to_date">
+                    <input type="text" placeholder="Сегодня" class="form-control" value="@if(isset($day))@date($day->to_date)@endif"@if(isset($day))disabled=""@endif id="to_date">
                     <span class="input-group-addon">
                         <i class="fa fa-calendar" aria-hidden="true" style="cursor: pointer;"></i>
                     </span>

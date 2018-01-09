@@ -1,7 +1,11 @@
 @extends('layout')
 @section('content')
     @if($form == 'new_form')
-        <h2>Новая запись</h2>
+        @if(isset($performance))
+            <h2>Запись на</h2>
+        @else
+            <h2>Новая запись</h2>
+        @endif
         <form method="post">
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -16,7 +20,7 @@
                 <div class="form-group">
                     <label for="to_date">Дата</label>
                     <div class="input-group date">
-                        <input type="text" placeholder="Сегодня" class="form-control" value="@if(isset($performance))@date($performance->to_date)@endif"@if(isset($performance))disabled=""@endif id="to_date">
+                        <input type="text" placeholder="Сегодня" class="form-control" value="@if(isset($performance))@date($performance->to_date)@endif"@if(isset($performance))disabled=""@endif name="to_date" id="to_date">
                         <span class="input-group-addon">
                             <i class="fa fa-calendar" aria-hidden="true" style="cursor: pointer;"></i>
                         </span>
@@ -71,9 +75,5 @@
                 </div>
             </div>
         </form>
-    @endif
-
-    @if($form == 'success_form')
-        <h2 class="text-success">Новая запись успешно создана!</h2>
     @endif
 @endsection

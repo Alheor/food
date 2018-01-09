@@ -21,6 +21,12 @@
                 </div>
             </nav>
         </div>
+        @if(isset($success) && $success == 'new')
+            <h2 class="text-success" style="font-size: 20px; text-align: center">Новая запись успешно создана!</h2>
+        @endif
+        @if(isset($success) && $success == 'edit')
+            <h2 class="text-success" style="font-size: 20px; text-align: center">Запись успешно изменена!</h2>
+        @endif
         <nav class="navbar navbar-light bg-light">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>

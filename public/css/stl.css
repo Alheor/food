@@ -257,18 +257,30 @@
 }
 .product {
     display: block;
-    float: right;
+    float: left;
     margin-right: 2px;
     color: #17a2b8 !important;
     font-weight: bold;
-
+    border-radius: 6px;
+    line-height: 0.9;
+    border: 1px solid;
+    margin-top: 3px;
+    width: 14px;
+    text-align: center;
+    font-family: "Courier";
 }
 
 .dish {
     display: block;
-    float: right;
+    float: left;
     margin-right: 2px;
     color: #28a745 !important;
     font-weight: bold;
-
+    border-radius: 2px;
+    line-height: 0.9;
+    border: 1px solid;
+    margin-top: 3px;
+    width: 14px;
+    text-align: center;
+    font-family: "Courier";
 }

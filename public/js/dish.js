@@ -186,6 +186,7 @@ function saveDishData(obj) {
     request.done(function (msg) {
         if (typeof msg.status !== "undefined" && msg.status === 'success') {
             $('#resultSendIndicator').html('<i class="fa fa-check text-success" aria-hidden="true" style="font-size:24px;"></i>');
+            $('#dish_guid_div').html('<input type="hidden" id="dish_guid" value="'+ msg.guid +'"/>');
             setTimeout(function () {
                 $('#resultSendIndicator').html('');
             }, 1000);
@@ -215,8 +216,6 @@ function addProductToDish(el, modal, dayGuid, weight) {
     });
 
     request.done(function (msg) {
-
-        console.log(msg);
         var bjuk = calculateBJUFromWeight(weight, msg.b, msg.j, msg.u);
 
         var html = '<tr class="tabel-td">\n' +

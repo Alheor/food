@@ -85,7 +85,7 @@ function dishProdSearch(obj, type) {
             request.done(function (msg) {
                 $('#searchSendIndicator').html('<i class="fa fa-check text-success" aria-hidden="true" style="font-size:24px;"></i>');
                 setTimeout(function () {
-                    //$('#searchSendIndicator').html('');
+                    $('#searchSendIndicator').html('');
                 }, 1000);
                 $('.dish-prod-list').html(msg);
             });
