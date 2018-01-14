@@ -131,7 +131,7 @@ class DishController extends Controller
 
                     $attributes->save();
 
-                    $dish->name = $data['dish_name'];
+                    $dish->name = trim($data['dish_name']);
                     $dish->category_id = $data['cat_id'];
                     $dish->attribute_id = $attributes->id;
                     $dish->draft = $data['draft'] === 'true' ? 1 : 0;

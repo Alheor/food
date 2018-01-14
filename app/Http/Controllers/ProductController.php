@@ -65,6 +65,17 @@ class ProductController extends Controller
                     $validator->errors()->add('field', '"Подходит для" не указано');
                 }
             });
+            $validator->validate();
+
+            $exist = Product::where('name', trim($request->get('prodName')))
+               ->where('manufacturer_id', $request->get('manufacturer'))
+                ->first();
+
+            $validator->after(function ($validator) use ($exist) {
+                if(!is_null($exist)) {
+                    $validator->errors()->add('prodName', 'Такой продукт уже существует');
+                }
+            });
 
             $validator->validate();
 
@@ -84,7 +95,7 @@ class ProductController extends Controller
 
                 $product = new Product();
                 $product->attribute_id = $attributes->id;
-                $product->name = $request->get('prodName');
+                $product->name = trim($request->get('prodName'));
                 $product->user_id = Auth::id();
                 $product->guid = strtoupper(guid());
                 $product->b = (float)$request->get('b');
