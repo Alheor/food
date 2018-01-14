@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Performance;
+use Faker\Provider\DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -10,14 +11,31 @@ use Illuminate\Support\Facades\Validator;
 
 class PerformanceController extends Controller
 {
-    public function list(Request $request) {
-        $products = Performance::orderBy('to_date', 'DESC')
-            ->where('user_id', Auth::id())
-            ->get();
+    public function list(Request $request)
+    {
+        $to_date = $request->get('to_date');
+
+        if(!empty($to_date)) {
+            try {
+                $date =  new \DateTime($to_date);
+            } catch (\Throwable $t) {
+                $date = new \DateTime();
+            }
+
+            $products = Performance::orderBy('to_date', 'DESC')
+                ->where('user_id', Auth::id())
+                ->where('to_date', $date)
+                ->simplePaginate(30);
+        } else {
+            $products = Performance::orderBy('to_date', 'DESC')
+                ->where('user_id', Auth::id())
+                ->simplePaginate(30);
+        }
 
         return view('Performance.performance', [
             'performanceList' => $products,
-            'success' => $request->get('success')
+            'success' => $request->get('success'),
+            'to_date' => $to_date
         ]);
     }
 

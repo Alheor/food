@@ -6,7 +6,7 @@
         @else
             <h2>Новая запись</h2>
         @endif
-        <form method="post">
+        <form method="post" onsubmit="$('#submit_dutton')[0].disabled = true;">
             @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul>
@@ -71,7 +71,7 @@
             <div class="row">
                 <div class="form-group col-sm-10"></div>
                 <div class="form-group col-sm-2">
-                    <button type="submit" style="float: right;" class="btn btn-secondary">Сохранить</button>
+                    <button type="submit" style="float: right;" id="submit_dutton" class="btn btn-secondary">Сохранить</button>
                 </div>
             </div>
         </form>

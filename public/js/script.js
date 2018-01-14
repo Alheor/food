@@ -126,7 +126,7 @@ function addDishProdToDiary(el, modal, dayGuid, weight) {
             '                <input type="hidden" value=\'' + JSON.stringify(msg) + '\' />\n' +
             '                <a  tabindex="0"  role="button" data-trigger="focus" class="dish-prod-info" data-toggle="dish-prod-info">' + msg.name + '</a>' +
             '            </td>\n' +
-            '            <td style="min-width: 40px;">\n' +
+            '            <td style="min-width: 38px;">\n' +
             '                <input type="integer" value="' + weight + '" class="form-control input-table dishProdWeight"/>\n' +
             '            </td>\n' +
             '            <td style="background-color: #c3e6cb; text-align: center;">' + bjuk.b + '</td>\n' +
@@ -134,7 +134,7 @@ function addDishProdToDiary(el, modal, dayGuid, weight) {
             '            <td style="background-color: #f5c6cb; text-align: center;">' + bjuk.u + '</td>\n' +
             '            <td style="text-align: center;">' + bjuk.k +
             '            </td>\n' +
-            '            <td style="padding-left: 5px;">\n' +
+            '            <td>\n' +
             '                <i class="fa fa-ban product-delete"  title="Удалить продукт или блюдо"  onclick="if(confirm(\'Удалить?\')){$(this).parent().parent().remove();calculateDiary();}" aria-hidden="true"></i>\n' +
             '            </td>\n' +
             '        </tr>';

@@ -56,11 +56,11 @@
                 <thead>
                 <tr>
                     <th></th>
-                    <th style="width: 40px;">Вес</th>
-                    <th style="width: 37px;">Б</th>
-                    <th style="width: 37px;">Ж</th>
-                    <th style="width: 37px;">У</th>
-                    <th style="width: 37px;">Ккал</th>
+                    <th style="width: 38px;">Вес</th>
+                    <th style="width: 34px;">Б</th>
+                    <th style="width: 34px;">Ж</th>
+                    <th style="width: 34px;">У</th>
+                    <th style="width: 34px;">Ккал</th>
                     <th style="width: 25px;"></th>
                 </tr>
                 </thead>
@@ -113,13 +113,13 @@
                         @endif
                     <tr id="diaryTableAmount_{{$meal['guid']}}" class="diaryTableAmount" style="background-color: #fff;">
                         <td>
-                            <div class="font-weight-bold pull-right">ИТОГО:</div>
+                            <div class="font-weight-bold pull-right" style="padding-right: 5px;">ИТОГО:</div>
                         </td>
-                        <td style="text-align: center; width: 40px;">0</td>
-                        <td style="text-align: center; width: 37px; font-weight: bold; background-color: #c3e6cb;">0</td>
-                        <td style="text-align: center; width: 37px; font-weight: bold; background-color: #ffeeba;">0</td>
-                        <td style="text-align: center; width: 37px; font-weight: bold; background-color: #f5c6cb;">0</td>
-                        <td style="text-align: center; width: 37px; font-weight: bold; ">0</td>
+                        <td style="text-align: center; width: 38px; height: 25px;">0</td>
+                        <td style="text-align: center; width: 34px; font-weight: bold; background-color: #c3e6cb;">0</td>
+                        <td style="text-align: center; width: 34px; font-weight: bold; background-color: #ffeeba;">0</td>
+                        <td style="text-align: center; width: 34px; font-weight: bold; background-color: #f5c6cb;">0</td>
+                        <td style="text-align: center; width: 34px; font-weight: bold; ">0</td>
                         <td style="width: 25px;">
                         </td>
                     </tr>

@@ -16,12 +16,20 @@ class DishController extends Controller
     const STATUS_SUCCESS = 'success';
     const STATUS_ERROR = 'error';
 
-    public function list()
+    public function list(Request $request)
     {
-        $dishList = Dish::orderBy('name', 'asc')->get();
+        $search = $request->get('search');
+
+        if(!empty($search)) {
+            $dishList = Dish::where('name', 'LIKE', "%{$search}%")->orderBy('name', 'asc')->simplePaginate(30);
+        }else{
+            $dishList = Dish::orderBy('name', 'asc')->simplePaginate(30);
+        }
+
 
         return view('Dish.dish', [
-            'dishList' => $dishList
+            'dishList' => $dishList,
+            'search' => $search
         ]);
     }
 

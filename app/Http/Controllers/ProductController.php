@@ -16,11 +16,18 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $products = Product::orderBy('name', 'asc')->get();
+        $search = $request->get('search');
+
+        if(!empty($search)) {
+            $products = Product::where('name', 'LIKE', "%{$search}%")->orderBy('name', 'asc')->simplePaginate(30);
+        }else{
+            $products = Product::orderBy('name', 'asc')->simplePaginate(30);
+        }
 
         return view('Product.product', [
             'products' => $products,
-            'success' => $request->get('success')
+            'success' => $request->get('success'),
+            'search' => $search
         ]);
     }
 

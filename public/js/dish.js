@@ -66,6 +66,8 @@ $(document).ready(function () {
             return addProductToDish(selectEl, modal, dayGuid, weight);
         };
 
+        modal.show();
+
         var request = $.ajax({
             url: "/food_diary/finddp",
             method: "GET",
@@ -75,8 +77,6 @@ $(document).ready(function () {
             }
         });
 
-        modal.show();
-
         request.fail(function (jqXHR) {
             modal.spinner().error();
             modal.showError(jqXHR);
@@ -84,6 +84,9 @@ $(document).ready(function () {
 
         request.done(function (msg) {
             modal.html(msg);
+            setTimeout(function () {
+                $('#dishProdSearch')[0].focus();
+            },400);
         });
     });
 
@@ -277,7 +280,7 @@ function calculateDish() {
     var sumTK = 0;
 
     $('.diaryTable').find('tbody').find('tr').each(function (i, el) {
-        if (!$(el).hasClass('diaryTableAmount')) {
+        if (!$(el).hasClass('diaryTableAmount') && !$(el).hasClass('dishTableAmountPer100')) {
             var dPdata = JSON.parse($(el).find('td').first().find('input').val());
 
             // --- Вес ---
@@ -328,7 +331,7 @@ function calculateDish() {
                 throw new Error('Kcal value problem! Tr '+ i + ', td 1.');
             }
             // --- Ккал ---
-        } else {
+        } else if ($(el).hasClass('dishTableAmountPer100')) {
             var weight = $('#dish_weight').val()
             var coeff = 1;
             if(weight !== '' && Number(weight) !== 0) {
@@ -341,11 +344,25 @@ function calculateDish() {
             var resU = sumTU * coeff * 100 / sumTW;
             var resK = sumTK * coeff * 100 / sumTW;
 
-            $($(el).find('td')[1]).html(sumTW);
             $($(el).find('td')[2]).html(resB.toFixed(1));
             $($(el).find('td')[3]).html(resJ.toFixed(1));
             $($(el).find('td')[4]).html(resU.toFixed(1));
             $($(el).find('td')[5]).html((Math.ceil(resK)));
+
+        } else if ($(el).hasClass('diaryTableAmount')) {
+            var weight = $('#dish_weight').val()
+            var coeff = 1;
+            if(weight !== '' && Number(weight) !== 0) {
+                coeff = sumTW / Number(weight);
+            }
+
+            sumTW = sumTW === 0? 1: sumTW;
+
+            $($(el).find('td')[1]).html(sumTW);
+            $($(el).find('td')[2]).html(sumTB.toFixed(1));
+            $($(el).find('td')[3]).html(sumTJ.toFixed(1));
+            $($(el).find('td')[4]).html(sumTU.toFixed(1));
+            $($(el).find('td')[5]).html((Math.ceil(sumTK)));
         }
     });
 }

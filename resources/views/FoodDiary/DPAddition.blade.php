@@ -1,17 +1,23 @@
 @if($oper == 'get_form')
     <nav class="navbar navbar-expand-xs navbar-light bg-light">
-        <div class="navbar-collapse">
-            <div class="pull-left" style="font-size: 13px;">
+        <div class="navbar-collapse row">
+            <div class="col-5" style="font-size: 13px;">
                 <a href="{{ route('new_product') }}" target="_blank" class="text-info">Создать продукт</a>
                 <br/>
                 <a href="{{ route('new_dish', ['new']) }}" target="_blank" class="text-success">Создать блюдо</a>
             </div>
-            <div class="col-4 pull-right" style="padding-right: 0;">
-                {{ csrf_field() }}
-                <input style="padding: 8px" class="form-control" id="dishProdSearch" onkeyup="dishProdSearch(this, '{{$type}}');" type="text" placeholder="Найти" aria-label="Найти">
-            </div>
-            <div class="pull-right" style="margin-top: 6px;">
+            <div class="col-1" style="margin-top: 6px;">
                 <div id="searchSendIndicator" style="float: right; margin-right: 5px;"></div>
+            </div>
+            <div class="col-5" style="padding-right: 0;">
+                {{ csrf_field() }}
+                <input style="padding: 8px;" class="form-control pull-left" id="dishProdSearch" onkeyup="dishProdSearch(this, '{{$type}}');" type="text" placeholder="Найти" aria-label="Найти">
+
+            </div>
+            <div class="col-1" style="padding-right: 0;">
+                <div class="text-clear btn btn-light btn-sm" title="Очистить" onclick="$('#dishProdSearch').val(''); $('#dishProdSearch')[0].focus();">
+                    <i class="fa fa-eraser" aria-hidden="true"></i>
+                </div>
             </div>
         </div>
     </nav>

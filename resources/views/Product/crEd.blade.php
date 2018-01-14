@@ -2,7 +2,7 @@
 @section('content')
     @if($form == 'new_form')
         <h2>Новый продукт</h2>
-        <form method="post">
+        <form method="post" onsubmit="$('#submit_dutton')[0].disabled = true;">
             @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul>
@@ -103,7 +103,7 @@
             <div class="form-row">
                 <div class="form-group col-sm-10"></div>
                 <div class="form-group col-sm-2">
-                    <button type="submit" style="float: right;" class="btn btn-secondary">Создать продукт</button>
+                    <button type="submit" style="float: right;" class="btn btn-secondary" id="submit_dutton">Создать продукт</button>
                 </div>
             </div>
         </form>

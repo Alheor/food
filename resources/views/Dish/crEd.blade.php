@@ -45,7 +45,7 @@
                     <thead>
                     <tr>
                         <th></th>
-                        <th style="width: 37px;">Вес</th>
+                        <th style="width: 42px;">Вес</th>
                         <th style="width: 37px;">Б</th>
                         <th style="width: 37px;">Ж</th>
                         <th style="width: 37px;">У</th>
@@ -109,9 +109,20 @@
                         @endif
                         <tr id="dishTableAmount" class="diaryTableAmount tabel-td" style="background-color: #fff;">
                             <td>
-                                <div class="font-weight-bold pull-right" style="margin-right: 4px;">ИТОГО на 100 гр.</div>
+                                <div class="font-weight-bold pull-right" style="margin-right: 4px;">ИТОГО:</div>
                             </td>
-                            <td style="text-align: center; width: 37px;" id="products_weight">0</td>
+                            <td style="padding-top: 2px; text-align: center; font-size: 12px; font-weight: bold;" id="products_weight">0</td>
+                            <td style="text-align: center; font-size: 12px; font-weight: bold; background-color: #c3e6cb;">0</td>
+                            <td style="text-align: center; font-size: 12px; font-weight: bold; background-color: #ffeeba;">0</td>
+                            <td style="text-align: center; font-size: 12px; font-weight: bold; background-color: #f5c6cb;">0</td>
+                            <td style="text-align: center; font-size: 12px; font-weight: bold;">0</td>
+                            <td style="width: 25px;"></td>
+                        </tr>
+                        <tr id="dishTableAmountPer100" class="dishTableAmountPer100 tabel-td" style="background-color: #fff;">
+                            <td>
+                                <div class="font-weight-bold pull-right" style="margin-right: 4px;"></div>
+                            </td>
+                            <td style="text-align: center; width: 42px;">100</td>
                             <td style="text-align: center; width: 37px; font-weight: bold; background-color: #c3e6cb;">0</td>
                             <td style="text-align: center; width: 37px; font-weight: bold; background-color: #ffeeba;">0</td>
                             <td style="text-align: center; width: 37px; font-weight: bold; background-color: #f5c6cb;">0</td>
