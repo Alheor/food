@@ -4,36 +4,10 @@ html {
 
 body{
     height: 100%;
-}
-
-.wrapper {
-    position: relative;
-    min-height: 100%;
     background-color: #e9ecef;
+    background-image: url("../img/bg.png");
 }
 
-.footer {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 150px;
-    margin-top: -150px;
-}
-.footer .container {
-    padding: 5px !important;
-    color: #aaa;
-    font-size: 14px;
-}
-.footer .info {
-    margin: 0 auto;
-    width:100%;
-    text-align: center;
-    margin-top: 16px;
-}
-.footer a {
-    text-decoration: underline;
-}
 .counter-footer {
     width: 100%;
     height: 150px;
@@ -164,7 +138,8 @@ body{
 
 .prod-search-name div:nth-child(1){
     font-size: 14px;
-    word-break: break-all;
+    /*word-break: break-all;*/
+    word-wrap:break-word;
 }
 
 .prod-search-name div:nth-child(2){
@@ -200,9 +175,6 @@ body{
     height: 24px;
     font-size: 14px;
     text-align: center;
-}
-.diaryTableResultDiv {
-    margin-bottom: 10px;
 }
 
 .diaryTableResult{
@@ -267,19 +239,6 @@ body{
     max-width: 200px;
 }
 
-.jumbotron {
-    padding: 5px !important;
-    padding-top: 10px !important;
-    margin-bottom: 0 !important;
-    padding-bottom: 10px;
-}
-.container {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    padding-top: 54px;
-    height: 100%;
-}
-
 .row{
     margin: 0 !important;
 }
@@ -289,8 +248,8 @@ body{
     padding-left: 0;
 }
 .modal-header {
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .modal-body {
@@ -298,9 +257,9 @@ body{
 }
 
 .modal-footer {
-    padding-top: 10px;
+    padding-top: 5px;
     padding-right: 5px;
-    padding-bottom: 10px;
+    padding-bottom: 5px;
 }
 
 .tabel-td td {
@@ -322,6 +281,7 @@ body{
     width: 14px;
     text-align: center;
     font-family: "Courier";
+    padding-top: 2px;
 }
 
 .dish {
@@ -337,6 +297,7 @@ body{
     width: 14px;
     text-align: center;
     font-family: "Courier";
+    padding-top: 2px;
 }
 .text-clear {
     margin-left: 5px;
@@ -348,11 +309,150 @@ body{
     margin-top: 15px !important;
 }
 .pagination-div {
-    width: 200px;
+    width: 145px;
     margin: 0 auto;
     text-align: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
 }
+.pagination-div ul {
+    margin: 0 !important;
+}
+
 .pagination li {
     margin-left: 5px;
     margin-right: 5px;
+}
+
+.wrapper {
+    min-height: 100%;
+    padding-top: 50px;
+    box-shadow: 0 0 5px #777;
+    background-color: #e9ecef;
+}
+.footer {
+    margin-top: -150px;
+    height: 150px;
+    width: 100%;
+}
+.counter-footer {
+    height: 150px;
+    width: 100%;
+}
+
+.footer .container {
+    padding: 5px !important;
+    color: #aaa;
+    font-size: 14px;
+}
+
+.footer .info {
+    margin: 0 auto;
+    width:100%;
+    text-align: center;
+    margin-top: 16px;
+}
+.footer a {
+    text-decoration: underline;
+}
+
+.jumbotron {
+    padding: 5px !important;
+    padding-top: 10px !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 10px;
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    h1 {
+        margin-top: 0px !important;
+        margin-bottom: 10px !important;
+    }
+    .main-header-box {
+        padding: 5px !important;
+    }
+    .main-body-box {
+        padding: 5px !important;
+    }
+    .main-footer-box {
+        padding: 5px !important;
+    }
+}
+
+h1{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 24px;
+}
+h2{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 22px;
+}
+h3{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+h4{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+h5{
+    margin-top: 0px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.main-header-box {
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 5px;
+}
+
+.main-widget-box {
+    padding: 10px;
+    background-color: #fff;
+    border-radius: .25rem;
+    border: 1px solid #ddd;
+}
+
+.main-body-box {
+    padding: 0px;
+}
+
+.main-footer-box {
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+    margin-bottom: 10px !important;
+}
+
+.main-body-box .table {
+    margin-bottom: 0 !important;
+}
+
+.modal-dialog {
+    margin: 0 auto;
+}
+
+.small {
+    font-size: 12px;
+    color: #666;
+}
+.tree {
+    padding-left: 10px;
+    font-size: 18px;
+}
+.login-box {
+    color: #fff;
+}
+.login-box span {
+
 }

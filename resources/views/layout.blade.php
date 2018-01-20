@@ -33,7 +33,15 @@
     <script src="/js/foodDiary.js"></script>
 </head>
 <body>
-<div class="wrapper">
+
+{{--<div class="wrapper1">--}}
+{{--asd<br/>--}}
+    {{--<div class="counter-footer1"></div>--}}
+{{--</div>--}}
+{{--<div class="footer1">--}}
+    {{--asd--}}
+{{--</div>--}}
+<div class="wrapper container">
     <div class="container">
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top rounded">
             <a class="navbar-brand" href="{{ route('index') }}" style="padding: 0 !important;"><img
@@ -69,8 +77,8 @@
                     </ul>
                     <ul class="navbar-nav">
                         @auth
-                            <li>
-                                <a href="{{ url('logout') }}" class="btn btn-danger">Выход</a>
+                            <li class="login-box">
+                               <span>Привет {{ Auth::user()->name }}!</span> <a href="{{ url('logout') }}" class="text-danger">выйти</a>
                             <li>
                         @else
                             <li>
@@ -93,12 +101,12 @@
         </div>
         <div class="counter-footer"></div>
     </div>
-    <div class="footer rounded bg-dark">
-        <div class="container">
-            <div class="info">
-                <img src="{{asset('img/full_logo.png')}}"/><br/>
-                © {{date('Y')}} FoodBalance | <a href="mailto:support@foodbalance.pro" style="color: inherit;">support@foodbalance.pro</a>
-            </div>
+</div>
+<div class="footer rounded bg-dark">
+    <div class="container">
+        <div class="info">
+            <img src="{{asset('img/full_logo.png')}}"/><br/>
+            © {{date('Y')}} FoodBalance | <a href="mailto:support@foodbalance.pro" style="color: inherit;">support@foodbalance.pro</a>
         </div>
     </div>
 </div>

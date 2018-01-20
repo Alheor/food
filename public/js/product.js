@@ -22,7 +22,8 @@ $(document).ready(function () {
                 el.id === 9 ||
                 el.id === 14 ||
                 el.id === 15 ||
-                el.id === 16
+                el.id === 16 ||
+                el.id === 31
             ) {
                 $('.cellulose').show();
             } else {
@@ -32,6 +33,8 @@ $(document).ready(function () {
             return true;
         };
 
+        modal.show();
+
         var request = $.ajax({
             url: "/products_category",
             method: "GET",
@@ -39,8 +42,6 @@ $(document).ready(function () {
                 guid: modal.guid
             }
         });
-
-        modal.show();
 
         request.fail(function (jqXHR) {
             modal.spinner().error();
@@ -127,6 +128,8 @@ $(document).ready(function () {
             return addDishProdToDiary(selectEl, modal, dayGuid, weight);
         };
 
+        modal.show();
+
         var request = $.ajax({
             url: "/food_diary/finddp",
             method: "GET",
@@ -135,8 +138,6 @@ $(document).ready(function () {
             }
         });
 
-        modal.show();
-
         request.fail(function (jqXHR) {
             modal.spinner().error();
             modal.showError(jqXHR);
@@ -144,6 +145,9 @@ $(document).ready(function () {
 
         request.done(function (msg) {
             modal.html(msg);
+            setTimeout(function () {
+                $('#dishProdSearch')[0].focus();
+            },400);
         });
     });
 });
@@ -177,12 +181,12 @@ function productManufacturersAdd() {
 
     modal.spinner().show();
 
+    modal.show();
+
     var request = $.ajax({
         url: "/addManufacturer",
         method: "GET"
     });
-
-    modal.show();
 
     request.fail(function (jqXHR) {
         modal.spinner().error();

@@ -17,6 +17,8 @@ $(document).ready(function () {
             return true;
         };
 
+        modal.show();
+
         var request = $.ajax({
             url: "/dish_category",
             method: "GET",
@@ -24,8 +26,6 @@ $(document).ready(function () {
                 guid: modal.guid
             }
         });
-
-        modal.show();
 
         request.fail(function (jqXHR) {
             modal.spinner().error();

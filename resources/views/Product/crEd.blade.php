@@ -1,7 +1,11 @@
 @extends('layout')
 @section('content')
     @if($form == 'new_form')
-        <h2>Новый продукт</h2>
+        <div class="row">
+            <div class="col-12 main-header-box">
+                <h1>Новый продукт</h1>
+            </div>
+        </div>
         <form method="post" onsubmit="$('#submit_dutton')[0].disabled = true;">
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -25,7 +29,7 @@
                 <h5>Торговая марка <span class="text-danger font-weight-bold">*</span></h5>
                 @include('Product.manufacturers', ['tplName' => 'button'])
             </div>
-            <h5>Пищевая ценность в граммах на 100 грамм продукта</h5>
+            <h5 style="margin-bottom: 0;">Пищевая ценность в граммах на 100 грамм продукта</h5>
             <div class="form-row">
                 <div class="form-group col-sm-2">
                     <label for="b" class="col-form-label">Белки <span class="text-danger font-weight-bold">*</span></label>
@@ -49,9 +53,10 @@
                                                                 old('category') != 9 &&
                                                                 old('category') != 14 &&
                                                                 old('category') != 15 &&
-                                                                old('category') != 16
+                                                                old('category') != 16 &&
+                                                                old('category') != 31
                                                                 ) style="display: none;" @endif>
-                    <label for="cellulose" class="col-form-label">Клч.<span class="text-danger font-weight-bold">*</span>
+                    <label for="cellulose" class="col-form-label">Клтч.<span class="text-danger font-weight-bold">*</span>
                         <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Клетчатка (пищевые волокна), при расчетах это значение вычитается из углеводов."></i>
                     </label>
                     <input type="text" autocomplete="off"  @if(!empty(old('cellulose'))) value="{{ old('cellulose') }}" @else value="0" @endif class="form-control calc_bju_field" id="cellulose" name="cellulose"/>
@@ -61,7 +66,7 @@
                     <input type="text" value="{{ old('k') }}" autocomplete="off" class="form-control calc_bju_k_res" id="k" name="k"/>
                 </div>
             </div>
-            <h5>Добавки</h5>
+            <h5 style="margin: 0;">Добавки</h5>
             <div class="form-row">
                 <div class="form-group col-xs-1">
                     <label for="sugar" class="col-form-label">Сахар</label>
@@ -73,7 +78,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <h5>Подходит для <span class="text-danger font-weight-bold">*</span></h5>
+                <h5 style="margin-top: 0;">Подходит для <span class="text-danger font-weight-bold">*</span></h5>
                 <div class="btn-group" data-toggle="buttons" style="margin-bottom: 5px;">
                     <label class="btn" style="background-color: #7ed7d4;">
                         <input class="my-input-checkbox" @if(old('sh')) checked="" @endif type="checkbox" name="sh" autocomplete="off">Сушка
@@ -100,10 +105,9 @@
                     </label>
                 </div>
             </div>
-            <div class="form-row">
-                <div class="form-group col-sm-10"></div>
-                <div class="form-group col-sm-2">
-                    <button type="submit" style="float: right;" class="btn btn-secondary" id="submit_dutton">Создать продукт</button>
+            <div class="form-row main-footer-box">
+                <div class="form-group col-sm-12">
+                    <button type="submit" style="float: right;" class="btn btn-success" id="submit_dutton">Создать</button>
                 </div>
             </div>
         </form>

@@ -5,14 +5,14 @@
     <input type="hidden" name="category" value="{{ old('category') }}" id="productCategoryId" />
     <input type="hidden" name="category_name" value="{{ old('category_name') }}" id="productCategoryName" />
 @elseif($tplName == 'productCategories')
-    <div id="category_tree_{{$jsguid}}"></div>
+    <div id="category_tree_{{$jsguid}}" class="tree"></div>
     <script type="application/javascript">
           $('#category_tree_{{$jsguid}}').tree({
             data: {!! $categories !!},
             autoOpen: false,
             dragAndDrop: false,
-            closedIcon: '+',
-            openedIcon:'-'
+            closedIcon: '&#9655;',
+            openedIcon:'&#9661;'
         });
     </script>
 @endif

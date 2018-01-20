@@ -1,7 +1,7 @@
 @extends('layout')
 @section('content')
     <h1>Статистика</h1>
-    <div class="navbar-collapse row bg-light header-menu">
+    <div class="row main-widget-box">
         <form method="GET">
             <div class="form-group pull-left" style="margin-right: 5px; margin-bottom: 2px;">
                 <label for="type">Тип:</label>
@@ -40,7 +40,7 @@
             </div>
         </form>
     </div>
-    <div class="navbar-collapse row bg-light header-menu">
+    <div class="row">
         <div class="col-12 col-xl-12">
             Нет данных
         </div>

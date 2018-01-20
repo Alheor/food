@@ -69,12 +69,22 @@ class PerformanceController extends Controller
             }
 
             if($oper == 'new') {
+                $performance = Performance::where('to_date', $toDate)
+                    ->where('user_id', Auth::id())
+                    ->first();
+
+                if(!is_null($performance)) {
+                    return abort(403, 'Access Denied');
+                }
+
                 $performance = new Performance();
                 $performance->user_id = Auth::id();
                 $performance->guid = strtoupper(guid());
                 $performance->to_date = $toDate;
             } else {
-                $performance = Performance::where('guid', $oper)->first();
+                $performance = Performance::where('guid', $oper)
+                    ->where('user_id', Auth::id())
+                    ->first();
 
                 if (is_null($performance)) {
                     abort(404);

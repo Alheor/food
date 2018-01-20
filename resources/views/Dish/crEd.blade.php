@@ -3,9 +3,9 @@
     <div id="dish_guid_div">
         @if(isset($dish))<input type="hidden" id="dish_guid" value="{{$dish->guid}}"/>@endif
     </div>
-        <div class="row">
+        <div class="row main-header-box">
             <div class="col-8">
-                <h2>Новое блюдо</h2>
+                <h1>Новое блюдо</h1>
             </div>
             <div class="col-4">
                 <div class="btn-group pull-right" data-toggle="buttons" style="margin-bottom: 5px;">
@@ -18,7 +18,7 @@
         <div class="row">
             <div class="col">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                <div class="form-group">
+                <div class="form-group" style="margin-top: 5px;">
                     <label for="prodName">Наименование <span class="text-danger font-weight-bold">*</span></label>
                     <input type="text" value="@if($dish){{$dish->name}}@endif" autocomplete="off" class="form-control"
                            id="prodName" name="prodName">
@@ -26,7 +26,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="form-group col">
+            <div class="col">
                 <h5>Категория <span class="text-danger font-weight-bold">*</span></h5>
                 @if($dish)
                     @include('Dish.categories', [
@@ -40,7 +40,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="form-group col">
+            <div class="col">
                 <table class="table table-striped table-bordered table-sm diaryTableHeader diaryTable">
                     <thead>
                     <tr>
@@ -134,7 +134,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="form-group col-7 col-sm-5 col-md-4 col-lg-3 col-xl-3">
+            <div class="col-7 col-sm-5 col-md-4 col-lg-3 col-xl-3">
                 <label for="b" class="col-form-label">Вес готового блюда, гр.
                     <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top"
                        title="Получившийся вес блюда, после его приготовления. По умолчанию равен весу всех ингредиентов."></i>
@@ -148,7 +148,7 @@
                 <textarea class="form-control" id="comment" style="height: 100px;">@if($dish){{$dish->comment}}@endif</textarea>
             </div>
         </div>
-        <div class="row" id="suitable_for">
+        <div class="form-group" id="suitable_for">
             <div class="col">
                 <h5>Подходит для <span class="text-danger font-weight-bold">*</span></h5>
                 <div class="btn-group" data-toggle="buttons" style="margin-bottom: 5px;">
@@ -183,13 +183,13 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row main-footer-box">
             <div class="form-group col-5 col-sm-7 col-md-8 col-lg-9 col-xl-9"></div>
             <div class="form-group col-7 col-sm-5 col-md-4 col-lg-3 col-xl-3">
                 <div style="float: right;">
                     <input type="hidden" id="manufacturerToken" value="{{ csrf_token() }}" >
-                    <button type="submit" style="float: right;" class="btn btn-secondary" id="create_dish">
-                        @if($dish)Сохранить@elseСоздать продукт@endif
+                    <button type="submit" style="float: right;" class="btn btn-success" id="create_dish">
+                        @if($dish)Сохранить@elseСоздать@endif
                     </button>
                 </div>
                 <div id="resultSendIndicator" style="float: right; margin-right: 10px;"></div>

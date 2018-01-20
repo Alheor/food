@@ -59,6 +59,18 @@ function strToFloat(str) {
     return str.replace(/[^0-9,.]*/g, '').replace(/,/g, '.');
 }
 
+function escapeHtml(text) {
+    var map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+
+    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
 var timerProdSearch = false;
 function dishProdSearch(obj, type) {
     function request() {
@@ -121,9 +133,11 @@ function addDishProdToDiary(el, modal, dayGuid, weight) {
     request.done(function (msg) {
         var bjuk = calculateBJUFromWeight(weight, msg.b, msg.j, msg.u);
 
+        //var json = JSON.stringify(msg).replace(/'/g, "&#039");
+        var json = escapeHtml(JSON.stringify(msg));
         var html = '<tr>\n' +
             '            <td style="text-overflow: ellipsis;">\n' +
-            '                <input type="hidden" value=\'' + JSON.stringify(msg) + '\' />\n' +
+            '                <input type="hidden" value=\'' + json+ '\' />\n' +
             '                <a  tabindex="0"  role="button" data-trigger="focus" class="dish-prod-info" data-toggle="dish-prod-info">' + msg.name + '</a>' +
             '            </td>\n' +
             '            <td style="min-width: 38px;">\n' +

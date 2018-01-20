@@ -1,10 +1,15 @@
 @extends('layout')
 @section('content')
+    <div class="row">
+        <div class="col-12 main-header-box">
+            <h1>Дневник питания</h1>
+        </div>
+    </div>
     @if(isset($day))<input type="hidden" id="day_guid" value="{{$day->guid}}"/>@endif
     <div class="row">
         <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <div class="form-group">
-                <label for="to_date">Дневник на</label>
+                <label for="to_date">Дата</label>
                 <div class="input-group date">
                     <input type="text" placeholder="Сегодня" class="form-control" value="@if(isset($day))@date($day->to_date)@endif"@if(isset($day))disabled=""@endif id="to_date">
                     <span class="input-group-addon">
@@ -140,16 +145,16 @@
                     calculateDiary();
                 });
             </script>
-            <div class="form-row">
-                <div class="form-group col-5 col-sm-7 col-md-8 col-lg-9 col-xl-9"></div>
-                <div class="form-group col-7 col-sm-5 col-md-4 col-lg-3 col-xl-3">
-                    <div style="float: right;">
-                        <input type="hidden" id="manufacturerToken" value="{{ csrf_token() }}" >
-                        <button type="submit" style="float: right;" class="btn btn-secondary saveDiaryButton">Сохранить</button>
-                    </div>
-                    <div id="resultSendIndicator" style="float: right; margin-right: 10px;"></div>
-                </div>
-            </div>
         </div>
+    </div>
+    <div class="row main-footer-box">
+    <div class="col-5 col-sm-7 col-md-8 col-lg-9 col-xl-9"></div>
+    <div class="col-7 col-sm-5 col-md-4 col-lg-3 col-xl-3">
+        <div style="float: right;">
+            <input type="hidden" id="manufacturerToken" value="{{ csrf_token() }}" >
+            <button type="submit" style="float: right;" class="btn btn-success saveDiaryButton">Сохранить</button>
+        </div>
+        <div id="resultSendIndicator" style="float: right; margin-right: 10px;"></div>
+    </div>
     </div>
 @endsection

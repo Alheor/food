@@ -1,23 +1,31 @@
 @extends('layout')
 @section('content')
-    <h1>Продукты</h1>
-    <div class="navbar-collapse row bg-light header-menu">
-        <div class="col-12 col-xl-12">
-            @if(isset($success) && $success == 'new')
-                <h2 class="text-success" style="font-size: 20px; text-align: center;">Новая запись успешно создана!</h2>
-            @endif
-            @if(isset($success) && $success == 'edit')
-                <h2 class="text-success" style="font-size: 20px; text-align: center">Запись успешно изменена!</h2>
-            @endif
+    <div class="row">
+        <div class="col-12">
+            <h1>Продукты</h1>
         </div>
-        <div class="col-3 col-xl-3">
-            <a href="{{ route('new_product') }}" class="btn btn-info">Новый</a>
-        </div>
-        <div class="col-9 col-xl-9">
-            <form class="form-inline pull-right" method="get">
-                <input class="form-control" value="{{$search}}" name="search" style="width: 150px; margin-right: 5px;" type="text" placeholder="Найти" aria-label="Найти">
-                <button class="btn btn-outline-info" type="submit">Найти</button>
-            </form>
+    </div>
+    <div class="row">
+        <div class="col-12 main-widget-box">
+            <div class="navbar-collapse row">
+                <div class="col-12 col-xl-12">
+                    @if(isset($success) && $success == 'new')
+                        <h2 class="text-success" style="font-size: 20px; text-align: center;">Новая запись успешно создана!</h2>
+                    @endif
+                    @if(isset($success) && $success == 'edit')
+                        <h2 class="text-success" style="font-size: 20px; text-align: center">Запись успешно изменена!</h2>
+                    @endif
+                </div>
+                <div class="col-3 col-xl-3">
+                    <a href="{{ route('new_product') }}" class="btn btn-success">Новый</a>
+                </div>
+                <div class="col-9 col-xl-9">
+                    <form class="form-inline pull-right" method="get">
+                        <input class="form-control" value="{{$search}}" name="search" style="width: 150px; margin-right: 5px;" type="text" placeholder="Найти" aria-label="Найти">
+                        <button class="btn btn-outline-info" type="submit">Найти</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">
@@ -59,9 +67,14 @@
                 @endforeach
                 </tbody>
             </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-xl-12">
             <div class="pagination-div">
                 {{ $products->links() }}
             </div>
         </div>
     </div>
+
 @endsection

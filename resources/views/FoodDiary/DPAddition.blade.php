@@ -26,11 +26,11 @@
         <tr>
             <td scope="col" style="font-size: 14px; color: #777;">Наименование</td>
             <td style="width: 50px; text-align: center; font-size: 14px; color: #777;">Вес</td>
-            <td style="width: 140px; font-size: 14px; color: #777;">
+            <td style="width: 132px; font-size: 14px; color: #777;">
                 <div class="prod-search-el">Б</div>
                 <div class="prod-search-el">Ж</div>
                 <div class="prod-search-el">У</div>
-                <div class="prod-search-el">Ккал</div>
+                <div class="prod-search-el" style="margin-right: 0px !important; width: 25px; font-size: 12px">Ккал</div>
             </td>
         </tr>
         </thead>
@@ -45,7 +45,7 @@
 @if($oper == 'search_form')
     @forelse ($productList as $product)
     <tr>
-        <td class="prod-search-name" style="padding-left: 2px;">
+        <td class="prod-search-name" style="padding: 0px; padding-left: 2px;">
             <div>
                 @if(!isset($product['weight_after']))
                     <span class="product" title="Продукт">П</span>
@@ -64,7 +64,7 @@
             <div class="prod-search-el" style="background-color: #c3e6cb; font-size: 14px;">{{$product['b']}}</div>
             <div class="prod-search-el" style="background-color: #ffeeba; font-size: 14px;">{{$product['j']}}</div>
             <div class="prod-search-el" style="background-color: #f5c6cb; font-size: 14px;">{{$product['u']}}</div>
-            <div class="prod-search-el" style="font-size: 14px;">{{$product['k']}}</div>
+            <div class="prod-search-el" style="font-size: 14px; margin-right: 0px !important; width: 25px; padding-left: 4px;">{{(int)$product['k']}}</div>
         </td>
     </tr>
     @empty

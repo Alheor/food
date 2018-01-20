@@ -46,13 +46,7 @@ class DishController extends Controller
                     'dish' => null
                 ]);
             } else {
-                $dish = Dish::where('guid', $oper)
-                    ->where('user_id', Auth::id())
-                    ->first();
-
-                if(is_null($dish)) {
-                    return abort(403);
-                }
+                $dish = Dish::where('guid', $oper)->first();
 
                 $dish->dishCategory->id;
                 $dish->attributes->id;
@@ -77,6 +71,10 @@ class DishController extends Controller
                 $dish = Dish::where('guid', $oper)
                     ->where('user_id', Auth::id())
                     ->first();
+
+                if(is_null($dish)) {
+                    return abort(403, 'Access Denied');
+                }
             }
 
             if (!isset($data['dish_name']) || empty($data['dish_name'])){
