@@ -31,6 +31,7 @@
     <script src="/js/dish.js"></script>
     <script src="/js/product.js"></script>
     <script src="/js/foodDiary.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
 </head>
 <body>
 
@@ -57,11 +58,14 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('foodDiaryList') }}">Дневник питания</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('products') }}">Продукты</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('dishes') }}">Блюда</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Еда
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    <a class="dropdown-item" href="{{ route('products') }}">Продукты</a>
+                                    <a class="dropdown-item" href="{{ route('dishes') }}">Блюда</a>
+                                </div>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('performance_list') }}">Физические показатели</a>

@@ -12,9 +12,8 @@ Route::get('logout', function(){
 
 Route::get('/', 'IndexController@index')->name('index');
 Route::get('/home', 'IndexController@index');
+Route::get('/statistic', 'IndexController@statistic')->name('statistic');
 Route::middleware('auth')->group(function () {
-    Route::get('/statistic', 'IndexController@statistic')->name('statistic');
-
     Route::get('/performance/list', 'PerformanceController@list')->name('performance_list');
     Route::match(['get', 'post'],'/performance/{oper}', 'PerformanceController@crEd')->name('performance_cred');
 
