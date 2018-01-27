@@ -72,11 +72,35 @@ class IndexController extends Controller
         }
 
         if ($type == 'physical_performance') {
-            $statistic = $this->perfomancesStatistic($from_date, $to_date, $group, $user_id);
-            $yAxesStepSize = 5;
+            $statistic = $this->performanceStatistic($from_date, $to_date, $group, $user_id);
+
+            $statistic = [
+                $statistic[0],
+                [
+                    'weight' => [$statistic[1]['weight']],
+                    'metabolism' => [$statistic[1]['metabolism']],
+                    'general_musculature' => [$statistic[1]['general_musculature']],
+                    'general_fat_percent' => [$statistic[1]['general_fat_percent']],
+                    'general_wather' => [$statistic[1]['general_wather']]
+                ]
+            ];
         } else {
             $statistic = $this->dayDiaryStatistic($from_date, $to_date, $group, $user_id);
-            $yAxesStepSize = 10;
+
+            $statistic = [
+                $statistic[0],
+                [
+                    'bju' => [
+                        $statistic[1]['b'],
+                        $statistic[1]['j'],
+                        $statistic[1]['u']
+                    ],
+                    'wk' => [
+                    $statistic[1]['w'],
+                    $statistic[1]['k']
+                ]
+                ]
+            ];
         }
 
         return view('Statistic.statistic', [
@@ -85,11 +109,21 @@ class IndexController extends Controller
             'to_date' => $to_date->format('d.m.Y'),
             'group' => $group,
             'labels' => $statistic[0],
-            'data' => $statistic[1],
-            'yAxesStepSize' => $yAxesStepSize,
+            'statistic' => $statistic[1],
             'userName' => $userName,
             'token' => $token
         ]);
+    }
+    
+    private function getNotZeroCount(array $arr, $index) {
+        $count = 0;
+        foreach ($arr as $el) {
+            if ($el->$index > 0) {
+                $count++;
+            }
+        }
+
+        return $count == 0 ? 1 : $count;
     }
 
     /**
@@ -99,38 +133,39 @@ class IndexController extends Controller
      * @param $user_id
      * @return array
      */
-    private function perfomancesStatistic($from_date, $to_date, $group, $user_id)
+    private function performanceStatistic($from_date, $to_date, $group, $user_id)
     {
-        $perfomances = Performance::where('user_id', $user_id)
+        $performances = Performance::where('user_id', $user_id)
             ->whereBetween('to_date', [$from_date, $to_date])
+            ->orderBy('to_date')
             ->get();
 
-        if ($perfomances->isEmpty()) {
+        if ($performances->isEmpty()) {
             return [[],[]];
         }
 
-        $newPerfomances = [];
-        foreach ($perfomances as $perfomance) {
+        $newPerformances = [];
+        foreach ($performances as $performance) {
             if ($group == 'week') {
-                $_group = (new \DateTime($perfomance->to_date))->format('W');
-                $_date = (new \DateTime($perfomance->to_date))->modify('monday this week')->format('d-m-Y');
+                $_group = (new \DateTime($performance->to_date))->format('W/m-Y');
+                $_date = (new \DateTime($performance->to_date))->modify('monday this week')->format('d-m-Y');
 
             } else if ($group == 'month') {
-                $_group = (new \DateTime($perfomance->to_date))->format('m');
-                $_date = '01-'.(new \DateTime($perfomance->to_date))->format('m-Y');
+                $_group = (new \DateTime($performance->to_date))->format('m-Y');
+                $_date = '01-'.(new \DateTime($performance->to_date))->format('m-Y');
             } else if ($group == 'year') {
-                $_group = (new \DateTime($perfomance->to_date))->format('Y');
-                $_date = '01-01-'.(new \DateTime($perfomance->to_date))->format('Y');
+                $_group = (new \DateTime($performance->to_date))->format('Y');
+                $_date = '01-01-'.(new \DateTime($performance->to_date))->format('Y');
             } else {
-                $_group = (new \DateTime($perfomance->to_date))->format('d');
-                $_date = (new \DateTime($perfomance->to_date))->format('d-m-Y');
+                $_group = (new \DateTime($performance->to_date))->format('d-m-Y');
+                $_date = (new \DateTime($performance->to_date))->format('d-m-Y');
             }
 
-            $newPerfomances[$_group]['date'] = $_date;
-            $newPerfomances[$_group]['info'][] = $perfomance;
+            $newPerformances[$_group]['date'] = $_date;
+            $newPerformances[$_group]['info'][] = $performance;
         }
 
-        foreach ($newPerfomances as &$perfomance) {
+        foreach ($newPerformances as &$performance) {
             $weight = 0;
             $general_musculature = 0;
             $general_fat = 0;
@@ -138,7 +173,7 @@ class IndexController extends Controller
             $general_wather = 0;
             $metabolism = 0;
 
-            foreach ($perfomance['info'] as $el) {
+            foreach ($performance['info'] as $el) {
                 $weight += $el->weight;
                 $general_musculature += $el->general_musculature;
                 $general_fat += $el->general_fat;
@@ -147,16 +182,16 @@ class IndexController extends Controller
                 $metabolism += $el->metabolism;
             }
 
-            $perfomance['info'] = [
-                'weight' => round($weight / count($perfomance['info'] ), 1),
-                'general_musculature' => round($general_musculature / count($perfomance['info'] ), 1),
-                'general_fat' => round($general_fat / count($perfomance['info'] ), 1),
-                'general_fat_percent' => round($general_fat_percent / count($perfomance['info'] ), 1),
-                'general_wather' => round($general_wather / count($perfomance['info'] ), 1),
-                'metabolism' => round($metabolism / count($perfomance['info'] ), 1),
+            $performance['info'] = [
+                'weight' => round($weight / $this->getNotZeroCount($performance['info'], 'weight'), 1),
+                'general_musculature' => round($general_musculature / $this->getNotZeroCount($performance['info'], 'general_musculature'), 1),
+                'general_fat' => round($general_fat / $this->getNotZeroCount($performance['info'], 'general_fat'), 1),
+                'general_fat_percent' => round($general_fat_percent / $this->getNotZeroCount($performance['info'], 'general_fat_percent'), 1),
+                'general_wather' => round($general_wather / $this->getNotZeroCount($performance['info'], 'general_wather'), 1),
+                'metabolism' => round($metabolism / $this->getNotZeroCount($performance['info'], 'metabolism'), 1),
             ];
         }
-        unset($perfomance);
+        unset($performance);
 
         $labels = [];
         $data = [];
@@ -188,24 +223,24 @@ class IndexController extends Controller
                 'borderColor' => '#7ed7d4'
             ],
             'metabolism' => [
-                'name' => 'Метаболизм, Ккал. x 10',
+                'name' => 'Метаболизм, Ккал.',
                 'backgroundColor' => '#777',
                 'borderColor' => '#777',
                 'params' => [
-                    'hidden' => true
+                    //'hidden' => true
                 ]
             ],
 
         ];
 
-        foreach ($newPerfomances as $perfomance) {
-            $labels[] = $perfomance['date'];
-            $data['weight']['data'][] = $perfomance['info']['weight'];
-            $data['general_musculature']['data'][] = $perfomance['info']['general_musculature'];
+        foreach ($newPerformances as $performance) {
+            $labels[] = $performance['date'];
+            $data['weight']['data'][] = $performance['info']['weight'];
+            $data['general_musculature']['data'][] = $performance['info']['general_musculature'];
             //$data['general_fat']['data'][] = $perfomance['info']['general_fat'];
-            $data['general_fat_percent']['data'][] = $perfomance['info']['general_fat_percent'];
-            $data['general_wather']['data'][] = $perfomance['info']['general_wather'];
-            $data['metabolism']['data'][] = round($perfomance['info']['metabolism']/10, 1);
+            $data['general_fat_percent']['data'][] = $performance['info']['general_fat_percent'];
+            $data['general_wather']['data'][] = $performance['info']['general_wather'];
+            $data['metabolism']['data'][] = $performance['info']['metabolism'];
         }
 
         $data['weight'] = array_merge($data['weight'], $config['weight']);
@@ -215,6 +250,7 @@ class IndexController extends Controller
         $data['general_wather'] = array_merge($data['general_wather'], $config['general_wather']);
         $data['metabolism'] = array_merge($data['metabolism'], $config['metabolism']);
 
+        //dump($data);exit;
         return [$labels, $data];
     }
 
@@ -272,11 +308,11 @@ class IndexController extends Controller
             }
 
             $day['info'] = [
-                'b' => round($b / count($day['info'] ), 1),
-                'j' => round($j / count($day['info'] ), 1),
-                'u' => round($u / count($day['info'] ), 1),
-                'w' => round($w / count($day['info'] ), 1),
-                'k' => round($k / count($day['info'] ), 1)
+                'b' => round($b / $this->getNotZeroCount($day['info'], 'b'), 1),
+                'j' => round($j / $this->getNotZeroCount($day['info'], 'j'), 1),
+                'u' => round($u / $this->getNotZeroCount($day['info'], 'u'), 1),
+                'w' => round($w / $this->getNotZeroCount($day['info'], 'w'), 1),
+                'k' => round($k / $this->getNotZeroCount($day['info'], 'k'), 1)
             ];
         }
         unset($day);
@@ -301,15 +337,15 @@ class IndexController extends Controller
                 'borderColor' => '#e66161'
             ],
             'w' => [
-                'name' => 'Вес еды,  г. x 10',
+                'name' => 'Вес еды,  г.',
                 'backgroundColor' => '#7ed7d4',
                 'borderColor' => '#7ed7d4',
                 'params' => [
-                    'hidden' => true
+                    //'hidden' => true
                 ]
             ],
             'k' => [
-                'name' => 'Ккал,  г. x 10',
+                'name' => 'Ккал,  г.',
                 'backgroundColor' => '#777',
                 'borderColor' => '#777'
             ]
@@ -320,8 +356,8 @@ class IndexController extends Controller
             $data['b']['data'][] = $day['info']['b'];
             $data['j']['data'][] = $day['info']['j'];
             $data['u']['data'][] = $day['info']['u'];
-            $data['w']['data'][] = round($day['info']['w']/10, 1);
-            $data['k']['data'][] = round($day['info']['k']/10, 1);
+            $data['w']['data'][] = $day['info']['w'];
+            $data['k']['data'][] = $day['info']['k'];
         }
 
         $data['b'] = array_merge($data['b'], $config['b']);

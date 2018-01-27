@@ -52,74 +52,187 @@
             </div>
         </form>
     </div>
-    <div class="row">
-        <div class="col-12 col-xl-12 main-widget-box">
-            @if(!empty($data))
-                <canvas id="myChart"></canvas>
-                <script type="application/javascript">
-                    var ctx = document.getElementById("myChart").getContext('2d');
-                    var data = {!! json_encode($data) !!};
+    <script type="application/javascript">
+        var height = $('.container').height() - 900;
 
-                    var json = {
-                        type: 'line',
-                        data: {
-                            labels: {!! json_encode($labels) !!},
-                            datasets: []
-                        },
-                        options: {
-                            scales: {
-                                yAxes: [{
-                                    ticks: {
-                                        beginAtZero:true,
-                                        stepSize: {{$yAxesStepSize}}
-                                    }
-                                }],
-                                xAxes: [{
-                                    stacked: false,
-                                    ticks: {
-                                        autoSkip: false
-                                    }
-                                }]
+        function renderChart(canvas_id, data, labels, yAxesStepSize) {
+            var ctx = document.getElementById(canvas_id).getContext('2d');
+
+            var json = {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: []
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                //stepSize: yAxesStepSize
                             }
-                        }
-                    };
-
-                    var res = [];
-                    for (var i in data) {
-                        var el = {fill: false};
-                        el['label'] =  data[i]['name'];
-                        el['backgroundColor'] = data[i]['backgroundColor'];
-                        el['borderColor'] = data[i]['borderColor'];
-                        el['data'] = data[i]['data'];
-                        el['radius'] = 5;
-                        el['pointStyle'] = 'rect';
-
-                        if (typeof data[i]['params'] !== "undefined") {
-                            for (var z in data[i]['params']) {
-                                el[z] = data[i]['params'][z];
+                        }],
+                        xAxes: [{
+                            stacked: false,
+                            ticks: {
+                                autoSkip: false
                             }
-                        }
-
-                        res.push(el);
+                        }]
                     }
+                }
+            };
 
-                    json.data.datasets = res;
+            var res = [];
+            for (var i in data) {
+                var el = {fill: false};
+                el['label'] =  data[i]['name'];
+                el['backgroundColor'] = data[i]['backgroundColor'];
+                el['borderColor'] = data[i]['borderColor'];
+                el['data'] = data[i]['data'];
+                el['radius'] = 5;
+                el['pointStyle'] = 'rect';
 
-                    ctx.canvas.width  = window.innerWidth;
-                    ctx.canvas.height = window.innerHeight;
+                if (typeof data[i]['params'] !== "undefined") {
+                    for (var z in data[i]['params']) {
+                        el[z] = data[i]['params'][z];
+                    }
+                }
 
-                    var height = $('.container').height() - 500;
-                    $('#myChart').attr('height', height < 300? 500 : height);
+                res.push(el);
+            }
 
+            json.data.datasets = res;
 
-                    var myChart = new Chart(ctx, json);
+            ctx.canvas.width  = window.innerWidth;
+            ctx.canvas.height = window.innerHeight;
+
+            $('#' + canvas_id).attr('height', height < 300? 300 : height);
+
+            new Chart(ctx, json);
+        }
+    </script>
+    @php
+        function modifyStatisticData($data, $labels) {
+            $newLabels = [];
+            $newData = [];
+            $first = true;
+
+            foreach ($data as $key1 => $el1) {
+                $newData[$key1] = $el1;
+                unset($newData[$key1]['data']);
+                foreach ($el1['data'] as $key => $el) {
+                    if ($el > 0) {
+                        if ($first) {
+                            $newLabels[] = $labels[$key];
+                        }
+                        $newData[$key1]['data'][] = $el;
+                    }
+                }
+                $first = false;
+            }
+
+            return [$newData, $newLabels];
+        }
+    @endphp
+
+    @if(!empty($statistic['weight']))
+        <div class="row">
+            <div class="col-12 col-xl-12 main-widget-box">
+                <canvas id="myChartWeight"></canvas>
+                <script type="application/javascript">
+                    @php
+                        $data = modifyStatisticData($statistic['weight'], $labels);
+                        $statistic['weight'] = $data[0];
+                    @endphp
+                    renderChart('myChartWeight', {!! json_encode($statistic['weight']) !!}, {!! json_encode($data[1]) !!});
                 </script>
-            @else
-                Нет данных
-            @endif
         </div>
     </div>
-    <div class="row">
+    @endif
+    @if(!empty($statistic['metabolism']))
+        <div class="row">
+            <div class="col-12 col-xl-12 main-widget-box">
+                <canvas id="myChartMetabolism"></canvas>
+                <script type="application/javascript">
+                    @php
+                        $data = modifyStatisticData($statistic['metabolism'], $labels);
+                        $statistic['metabolism'] = $data[0];
+                    @endphp
+                    renderChart('myChartMetabolism', {!! json_encode($statistic['metabolism']) !!}, {!! json_encode($data[1]) !!});
+                </script>
+            </div>
+        </div>
+    @endif
+    @if(!empty($statistic['general_musculature']))
+        <div class="row">
+            <div class="col-12 col-xl-12 main-widget-box">
+                <canvas id="myChartMusculature"></canvas>
+                <script type="application/javascript">
+                    @php
+                        $data = modifyStatisticData($statistic['general_musculature'], $labels);
+                        $statistic['general_musculature'] = $data[0];
+                    @endphp
+                    renderChart('myChartMusculature', {!! json_encode($statistic['general_musculature']) !!}, {!! json_encode($data[1]) !!});
+                </script>
+            </div>
+        </div>
+    @endif
+    @if(!empty($statistic['general_fat_percent']))
+        <div class="row">
+            <div class="col-12 col-xl-12 main-widget-box">
+                <canvas id="myChartFat"></canvas>
+                <script type="application/javascript">
+                    @php
+                        $data = modifyStatisticData($statistic['general_fat_percent'], $labels);
+                        $statistic['general_fat_percent'] = $data[0];
+                    @endphp
+                    renderChart('myChartFat', {!! json_encode($statistic['general_fat_percent']) !!}, {!! json_encode($data[1]) !!});
+                </script>
+            </div>
+        </div>
+    @endif
+    @if(!empty($statistic['general_wather']))
+        <div class="row">
+            <div class="col-12 col-xl-12 main-widget-box">
+                <canvas id="myChartWater"></canvas>
+                <script type="application/javascript">
+                    @php
+                        $data = modifyStatisticData($statistic['general_wather'], $labels);
+                        $statistic['general_wather'] = $data[0];
+                    @endphp
+                    renderChart('myChartWater', {!! json_encode($statistic['general_wather']) !!}, {!! json_encode($data[1]) !!});
+                </script>
+            </div>
+        </div>
+    @endif
+    @if(!empty($statistic['bju']))
+        <div class="row">
+            <div class="col-12 col-xl-12 main-widget-box">
+                <canvas id="myChartBju"></canvas>
+                <script type="application/javascript">
+                    @php
+                        $data = modifyStatisticData($statistic['bju'], $labels);
+                        $statistic['bju'] = $data[0];
+                    @endphp
+                    renderChart('myChartBju', {!! json_encode($statistic['bju']) !!}, {!! json_encode($data[1]) !!});
+                </script>
+            </div>
+        </div>
+    @endif
+    @if(!empty($statistic['wk']))
+        <div class="row">
+            <div class="col-12 col-xl-12 main-widget-box">
+                <canvas id="myChartWk"></canvas>
+                <script type="application/javascript">@php
+                        $data = modifyStatisticData($statistic['wk'], $labels);
+                        $statistic['wk'] = $data[0];
+                    @endphp
+
+                    renderChart('myChartWk', {!! json_encode($statistic['wk']) !!}, {!! json_encode($data[1]) !!});
+                </script>
+            </div>
+        </div>
+    @endif
+    <div class="row" style="margin-top: 10px !important; margin-bottom: 10px !important;">
         <div class="col-12">
             Поделиться: {{url('statistic')}}?token={{$token}}
         </div>
