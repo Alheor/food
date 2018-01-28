@@ -29,7 +29,12 @@
                 @foreach($dishList as $dish)
                     <tr>
                         <td>
-                            <div>{{$dish->name}}</div>
+                            <div style="word-break: break-all;">
+                                {{$dish->name}}<br>
+                                <span class="small">
+                                    <sup> Автор: <b>{{$dish->user->name}}</b></sup>
+                                </span>
+                            </div>
                         </td>
                         <td style="background-color: #c3e6cb">{{$dish->b}}</td>
                         <td style="background-color: #ffeeba">{{$dish->j}}</td>

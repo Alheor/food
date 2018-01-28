@@ -26,7 +26,7 @@
             </div>
         </div>
         <div class="col-12 col-sm-12 col-md-6 col-lg-5 col-xl-4 ml-auto">
-            <div class="diaryTableResultDiv">
+            <div>
                 <table class="table table-bordered table-sm diaryTableResult">
                     <thead>
                     <tr>
@@ -49,6 +49,13 @@
                         <td style="width: 44px; text-align: center; background-color: #ffeeba; " class="resultJ">@if(isset($day)) {{$day->j}} @else 0 @endif</td>
                         <td style="width: 44px; text-align: center; background-color: #f5c6cb;" class="resultU">@if(isset($day)) {{$day->u}} @else 0 @endif</td>
                         <td style="width: 50px; text-align: center;" class="resultK">@if(isset($day)) {{$day->k}} @else 0 @endif</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 50px; text-align: center;"></td>
+                        <td style="width: 44px; text-align: center; background-color: #c3e6cb;" class="resultB">0</td>
+                        <td style="width: 44px; text-align: center; background-color: #ffeeba;" class="resultJ">0</td>
+                        <td style="width: 44px; text-align: center; background-color: #f5c6cb;" class="resultU">0</td>
+                        <td style="width: 50px; text-align: center;"></td>
                     </tr>
                     </tbody>
                 </table>

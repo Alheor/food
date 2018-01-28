@@ -11,7 +11,7 @@ class Product extends Model
 
     public function productCategory()
     {
-        return $this->hasOne('App\ProductCategory', 'category_id');
+        return $this->hasOne('App\ProductCategory',  'id', 'category_id');
     }
 
     public function dishes()
@@ -26,7 +26,7 @@ class Product extends Model
 
     public function user()
     {
-        return $this->hasOne('App\User', 'user_id');
+        return $this->hasOne('App\User', 'id', 'user_id');
     }
 
     public function attributes()

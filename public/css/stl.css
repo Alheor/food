@@ -156,6 +156,7 @@ body{
 .diaryTable td {
     padding: 0;
     padding-top: 1px;
+    vertical-align: middle;
 }
 
 .diaryTable td:first-child {
@@ -188,17 +189,24 @@ body{
     margin: 0;
 }
 
-.diaryTableResult tr:nth-child(1) td{
+.diaryTableResult tr:nth-child(1) td {
     padding: 0;
     margin: 0;
     text-align: center;
     font-size: 10px;
 }
-.diaryTableResult tr:nth-child(2) td{
+.diaryTableResult tr:nth-child(2) td {
     padding: 0;
     margin: 0;
     text-align: center;
     background-color: #ddd;
+}
+
+.diaryTableResult tr:nth-child(3) td {
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    font-size: 12px;
 }
 
 .diaryTableResult th{
@@ -443,7 +451,7 @@ h5{
 }
 
 .small {
-    font-size: 12px;
+    font-size: 13px;
     color: #666;
 }
 .tree {

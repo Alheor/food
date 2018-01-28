@@ -6,18 +6,18 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-12 col-xl-12">
+        @if(isset($success) && $success == 'new')
+            <h2 class="text-success" style="font-size: 20px; text-align: center;">Новая запись успешно создана!</h2>
+        @endif
+        @if(isset($success) && $success == 'edit')
+            <h2 class="text-success" style="font-size: 20px; text-align: center">Запись успешно изменена!</h2>
+        @endif
+    </div>
         <div class="col-12 main-widget-box">
             <div class="navbar-collapse row">
-                <div class="col-12 col-xl-12">
-                    @if(isset($success) && $success == 'new')
-                        <h2 class="text-success" style="font-size: 20px; text-align: center;">Новая запись успешно создана!</h2>
-                    @endif
-                    @if(isset($success) && $success == 'edit')
-                        <h2 class="text-success" style="font-size: 20px; text-align: center">Запись успешно изменена!</h2>
-                    @endif
-                </div>
                 <div class="col-3 col-xl-3">
-                    <a href="{{ route('new_product') }}" class="btn btn-success">Новый</a>
+                    <a href="{{ route('new_product', ['oper' => 'new']) }}" class="btn btn-success">Новый</a>
                 </div>
                 <div class="col-9 col-xl-9">
                     <form class="form-inline pull-right" method="get">
@@ -45,8 +45,13 @@
                 @foreach($products as $product)
                     <tr>
                         <td>
-                            <div style="word-break: break-all;">{{$product->name}}
-                                <span class="small"><sup>{{$product->manufacturer->name}}</sup></span>
+                            <div style="word-break: break-all;">
+
+                                {{$product->name}}<br>
+                                <span class="small">
+                                    <sup>TM: <b>{{$product->manufacturer->name}}</b> |
+                                    Автор: <b>{{$product->user->name}}</b></sup>
+                                </span>
                             </div>
                         </td>
                         <td style="background-color: #c3e6cb">{{$product->b}}</td>
@@ -57,7 +62,7 @@
                             <div class="dropdown">
                                 <i style="cursor: pointer; font-size: 18px;" class="material-icons" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">view_headline</i>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a href="#" class="dropdown-item">
+                                    <a href="{{ route('new_product', ['oper' => $product->guid]) }}" class="dropdown-item">
                                         <i class="material-icons">mode_edit</i> Изменить
                                     </a>
                                 </div>

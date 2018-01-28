@@ -1,9 +1,13 @@
 @if($tplName == 'button')
     <button type="button" name="manufacturer" class="btn btn-dark" id="productManufacturersSelect">
-        @if(old('manufacturer_name')) {{old('manufacturer_name')}} @else Не выбрано @endif
+        @if(old('manufacturer_name')) {{old('manufacturer_name')}} @else @if(isset($product)) {{$product->manufacturer->name}} @else Не выбрано @endif @endif
     </button>
-    <input type="hidden" name="manufacturer" value="{{ old('manufacturer') }}" id="productManufacturerId" />
-    <input type="hidden" name="manufacturer_name" value="{{ old('manufacturer_name') }}" id="productManufacturerName" />
+    <input type="hidden" name="manufacturer"
+           @if(old('manufacturer')) value="{{ old('manufacturer') }}" @else @if(isset($product)) value="{{$product->manufacturer->id}}" @endif @endif
+           id="productManufacturerId" />
+    <input type="hidden" name="manufacturer_name"
+           @if(old('manufacturer_name')) value="{{ old('manufacturer_name') }}" @else @if(isset($product)) value="{{$product->manufacturer->name}}" @endif @endif
+           id="productManufacturerName" />
 @elseif($tplName == 'productManufacturers')
     <nav class="navbar navbar-expand-xs navbar-light bg-light">
         <div class="navbar-collapse">

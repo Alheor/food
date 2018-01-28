@@ -88,14 +88,25 @@ function calculateDiary() {
         sumK += sumTK;
     });
 
-    var tr = $('.diaryTableResult').find('tr')[2];
+    var dtr = $('.diaryTableResult');
+    var tr = dtr.find('tr')[2];
 
-    if($(tr).length > 0) {
+    if ($(tr).length > 0) {
         $($(tr).find('td')[0]).text(sumW);
         $($(tr).find('td')[1]).text(sumB.toFixed(1));
         $($(tr).find('td')[2]).text(sumJ.toFixed(1));
         $($(tr).find('td')[3]).text(sumU.toFixed(1));
         $($(tr).find('td')[4]).text(sumK);
+    }
+
+    tr = dtr.find('tr')[3];
+
+    var sum = Math.ceil(parseFloat(sumB)) + Math.ceil(parseFloat(sumJ)) + Math.ceil(parseFloat(sumU));
+
+    if ($(tr).length > 0) {
+        $($(tr).find('td')[1]).text((Math.ceil(parseFloat(sumB)) * 100 / sum).toFixed(1) + '%');
+        $($(tr).find('td')[2]).text((Math.ceil(parseFloat(sumJ)) * 100 / sum).toFixed(1) + '%');
+        $($(tr).find('td')[3]).text((Math.ceil(parseFloat(sumU)) * 100 / sum).toFixed(1) + '%');
     }
 }
 

@@ -19,9 +19,12 @@ class ProductController extends Controller
         $search = $request->get('search');
 
         if(!empty($search)) {
-            $products = Product::where('name', 'LIKE', "%{$search}%")->orderBy('name', 'asc')->simplePaginate(30);
-        }else{
-            $products = Product::orderBy('name', 'asc')->simplePaginate(30);
+            $products = Product::where('name', 'LIKE', "%{$search}%")
+                ->orderBy('name', 'asc')
+                ->simplePaginate(30);
+        } else {
+            $products = Product::orderBy('name', 'asc')
+                ->simplePaginate(30);
         }
 
         return view('Product.product', [
@@ -35,24 +38,69 @@ class ProductController extends Controller
      * @param Request $request
      * @return \Exception|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function new(Request $request)
+    public function crEd(Request $request, $oper)
     {
         if ($request->method() == 'GET') {
-            return view('Product.crEd', [
-                'form' => 'new_form'
-            ]);
-        } else {
+            if ($oper === 'new') {
+                return view('Product.crEd', [
+                    'form' => 'new_form'
+                ]);
+            } else {
+                $product = Product::where('guid', $oper)->first();
+
+                if (is_null($product)) {
+                    abort(404);
+                }
+
+                $product->attributes->id;
+                return view('Product.crEd', [
+                    'form' => 'new_form',
+                    'product' => $product
+                ]);
+            }
+        }
+
+        if ($request->method() == 'POST') {
+            $messages = [
+                'prodName.required'  => 'Поле "Наименование " не заполнено',
+                'b.required' => 'Поле "Белки" не заполнено',
+                'j.required' => 'Поле "Жиры" не заполнено',
+                'u.required' => 'Поле "Углеводы" не заполнено',
+                'cellulose.required' => 'Поле "Клетчатка" не заполнено',
+                'k.required' => 'Поле "Ккал" не заполнено',
+                'category.required' => 'Категория не выбрана',
+                'manufacturer.required' => 'Торговая марка не выбрана',
+
+                'prodName.min'  => 'Поле "Наименование " слишком короткое (мин. 2 символа)',
+                'prodName.max'  => 'Поле "Наименование " слишком длинное (макс. 100 символов)',
+                'b.min' => 'Значение поля "Белки" слишком маленькое (мин. 0)',
+                'b.max' => 'Значение поля "Белки" слишком большое (макс. 100)',
+                'j.max' => 'Значение поля  "Жиры" слишком большое (макс. 100)',
+                'j.min' => 'Значение поля "Жиры" слишком маленькое (мин. 0)',
+                'u.max' => 'Значение поля  "Углеводы" слишком большое (макс. 100)',
+                'u.min' => 'Значение поля "Углеводы" слишком маленькое (мин. 0)',
+                'cellulose.max' => 'Значение поля  "Клетчатка" большое (макс. 100)',
+                'cellulose.min' => 'Значение поля "Клетчатка" слишком маленькое (мин. 0)',
+                'k.max' => 'Значение поля  "Ккал" слишком большое (макс. 1000)',
+                'k.min' => 'Значение поля "Ккал" слишком маленькое (мин. 0)',
+
+                'b.numeric' => 'Поле "Белки" должно быть числом.',
+                'j.numeric' => 'Поле "Жиры" должно быть числом.',
+                'u.numeric' => 'Поле "Углеводы" должно быть числом.',
+                'cellulose.numeric' => 'Поле "Клетчатка" должно быть числом.',
+                'k.numeric' => 'Поле "Ккал" должно быть числом.'
+            ];
 
             $validator = Validator::make($request->all(), [
-                'prodName'  => 'required|max:100|min:3',
-                'b'         => 'required|numeric|max:100',
-                'j'         => 'required|numeric|max:100',
-                'u'         => 'required|numeric|max:100',
-                'cellulose' => 'required|numeric|max:100',
-                'k'         => 'required|numeric|max:1000',
+                'prodName'  => 'required|min:2|max:100',
+                'b'         => 'required|numeric|min:0|max:100',
+                'j'         => 'required|numeric|min:0|max:100',
+                'u'         => 'required|numeric|min:0|max:100',
+                'cellulose' => 'required|numeric|min:0|max:100',
+                'k'         => 'required|numeric|min:0|max:1000',
                 'category'  => 'required|integer',
                 'manufacturer' => 'required|integer',
-            ]);
+            ], $messages);
 
             $validator->after(function ($validator) {
                 if (
@@ -67,24 +115,41 @@ class ProductController extends Controller
             });
             $validator->validate();
 
-            $exist = Product::where('name', trim($request->get('prodName')))
-               ->where('manufacturer_id', $request->get('manufacturer'))
-                ->first();
+            if ($oper === 'new') {
+                $exist = Product::where('name', trim($request->get('prodName')))
+                    ->where('manufacturer_id', $request->get('manufacturer'))
+                    ->first();
 
-            $validator->after(function ($validator) use ($exist) {
-                if(!is_null($exist)) {
-                    $validator->errors()->add('prodName', 'Такой продукт уже существует');
+                $validator->after(function ($validator) use ($exist) {
+                    if (!is_null($exist)) {
+                        $validator->errors()->add('prodName', 'Такой продукт уже существует');
+                    }
+                });
+
+                $validator->validate();
+
+                $product = new Product();
+                $product->user_id = Auth::id();
+                $product->guid = strtoupper(guid());
+
+                $attributes = new Attributes();
+                $attributes->guid = strtoupper(guid());
+                $attributes->name = 'food_purpose';
+            } else {
+                $product = Product::where('guid', $oper)
+                    ->where('user_id', Auth::id())
+                    ->first();
+
+                if (is_null($product)) {
+                    return abort(403, 'Access Denied');
                 }
-            });
 
-            $validator->validate();
+                $attributes = $product->attributes;
+            }
 
             DB::beginTransaction();
 
             try {
-                $attributes = new Attributes();
-                $attributes->name = 'food_purpose';
-                $attributes->guid = strtoupper(guid());
                 $attributes->food_sushka = request()->has('sh');
                 $attributes->food_pohudenie = request()->has('ph');
                 $attributes->food_podderjka = request()->has('pd');
@@ -93,11 +158,9 @@ class ProductController extends Controller
 
                 $attributes->save();
 
-                $product = new Product();
                 $product->attribute_id = $attributes->id;
                 $product->name = trim($request->get('prodName'));
-                $product->user_id = Auth::id();
-                $product->guid = strtoupper(guid());
+
                 $product->b = (float)$request->get('b');
                 $product->j = (float)$request->get('j');
                 $product->u = (float)$request->get('u');
@@ -119,7 +182,7 @@ class ProductController extends Controller
 
             DB::commit();
 
-            return redirect()->route('products', ['success' => 'new']);
+            return redirect()->route('products', ['success' => $oper === 'new'? 'new' : 'edit']);
         }
     }
 
