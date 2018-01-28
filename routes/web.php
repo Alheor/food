@@ -22,7 +22,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dish_category', 'DishController@getCategoryList')->name('dish_category');
 
     Route::get('/products', 'ProductController@index')->name('products');
-    Route::match(['get', 'post'], '/products/{oper}', 'ProductController@crEd')->name('new_product');
+    Route::match(['get', 'post'], '/products/{oper?}', 'ProductController@crEd')->name('new_product');
     Route::get('/products_category', 'ProductController@getCategoryList')->name('products_category');
     Route::get('/products_manufacturers', 'ManufacturerController@getManufacturersList')->name('products_manufacturers');
 

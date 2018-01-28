@@ -52,9 +52,9 @@
                     </tr>
                     <tr>
                         <td style="width: 50px; text-align: center;"></td>
-                        <td style="width: 44px; text-align: center; background-color: #c3e6cb;" class="resultB">0</td>
-                        <td style="width: 44px; text-align: center; background-color: #ffeeba;" class="resultJ">0</td>
-                        <td style="width: 44px; text-align: center; background-color: #f5c6cb;" class="resultU">0</td>
+                        <td style="width: 44px; text-align: center; background-color: #c3e6cb;" class="resultB">0%</td>
+                        <td style="width: 44px; text-align: center; background-color: #ffeeba;" class="resultJ">0%</td>
+                        <td style="width: 44px; text-align: center; background-color: #f5c6cb;" class="resultU">0%</td>
                         <td style="width: 50px; text-align: center;"></td>
                     </tr>
                     </tbody>

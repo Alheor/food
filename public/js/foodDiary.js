@@ -104,9 +104,11 @@ function calculateDiary() {
     var sum = Math.ceil(parseFloat(sumB)) + Math.ceil(parseFloat(sumJ)) + Math.ceil(parseFloat(sumU));
 
     if ($(tr).length > 0) {
-        $($(tr).find('td')[1]).text((Math.ceil(parseFloat(sumB)) * 100 / sum).toFixed(1) + '%');
-        $($(tr).find('td')[2]).text((Math.ceil(parseFloat(sumJ)) * 100 / sum).toFixed(1) + '%');
-        $($(tr).find('td')[3]).text((Math.ceil(parseFloat(sumU)) * 100 / sum).toFixed(1) + '%');
+        if (sum > 0) {
+            $($(tr).find('td')[1]).text((Math.ceil(parseFloat(sumB)) * 100 / sum).toFixed(1) + '%');
+            $($(tr).find('td')[2]).text((Math.ceil(parseFloat(sumJ)) * 100 / sum).toFixed(1) + '%');
+            $($(tr).find('td')[3]).text((Math.ceil(parseFloat(sumU)) * 100 / sum).toFixed(1) + '%');
+        }
     }
 }
 
