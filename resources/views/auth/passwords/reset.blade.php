@@ -1,9 +1,9 @@
 @extends('layout')
 @section('content')
+    <?php $pageTitle = 'Сброс пароля'; ?>
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <р2 class="panel panel-default">
-                <h2 class="form-signin-heading">Сброс пароля</р2>
             <div class="panel-body">
                 <form class="form-horizontal" method="POST" action="{{ route('password.request') }}">
                     {{ csrf_field() }}

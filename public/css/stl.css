@@ -365,10 +365,8 @@ body{
 }
 
 .jumbotron {
-    padding: 5px !important;
-    padding-top: 10px !important;
+    padding: 20px 5px !important;
     margin-bottom: 0 !important;
-    padding-bottom: 10px;
 }
 
 @media (max-width: 576px) {
@@ -463,4 +461,25 @@ h5{
 }
 .login-box span {
 
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        display: none;
+    }
+
+    .footer {
+        display: none;
+    }
+
+    .footer-smart {
+        display: block !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .jumbotron {
+        padding: 5px 5px 35px 5px !important;
+
+    }
 }
