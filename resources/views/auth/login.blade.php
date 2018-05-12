@@ -1,9 +1,9 @@
 @extends('layout')
 @section('content')
+    @php $pageTitle = 'Вход в систему'; @endphp
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <h2 class="form-signin-heading">Вход в систему</h2>
                 <div class="panel-body">
                     <form class="form-horizontal" method="POST" action="{{ route('login') }}">
                         {{ csrf_field() }}
@@ -51,6 +51,10 @@
 
                                 <a class="btn btn-link" href="{{ route('password.request') }}">
                                     Забыли пароль?
+                                </a>
+
+                                <a class="btn btn-link" href="{{ route('register') }}">
+                                    Регистрация
                                 </a>
                             </div>
                         </div>

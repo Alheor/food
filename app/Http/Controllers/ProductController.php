@@ -18,7 +18,11 @@ class ProductController extends Controller
     {
         $search = $request->get('search');
 
-        if(!empty($search)) {
+        if (request()->has('clear')) {
+            $search = null;
+        }
+
+        if (!empty($search)) {
             $products = Product::where('name', 'LIKE', "%{$search}%")
                 ->orderBy('name', 'asc')
                 ->simplePaginate(30);
@@ -36,10 +40,14 @@ class ProductController extends Controller
 
     /**
      * @param Request $request
+     * @param $oper
+     * @param bool $copy
      * @return \Exception|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function crEd(Request $request, $oper)
     {
+        $copy = ($request->get('copy') === '1');
+
         if ($request->method() == 'GET') {
             if ($oper === 'new') {
                 return view('Product.crEd', [
@@ -52,10 +60,11 @@ class ProductController extends Controller
                     abort(404);
                 }
 
-                $product->attributes->id;
+//                $product->attributes->id;
                 return view('Product.crEd', [
                     'form' => 'new_form',
-                    'product' => $product
+                    'product' => $product,
+                    'copy' => $copy
                 ]);
             }
         }
@@ -68,7 +77,7 @@ class ProductController extends Controller
                 'u.required' => 'Поле "Углеводы" не заполнено',
                 'cellulose.required' => 'Поле "Клетчатка" не заполнено',
                 'k.required' => 'Поле "Ккал" не заполнено',
-                'category.required' => 'Категория не выбрана',
+                //'category.required' => 'Категория не выбрана',
                 'manufacturer.required' => 'Торговая марка не выбрана',
 
                 'prodName.min'  => 'Поле "Наименование " слишком короткое (мин. 2 символа)',
@@ -98,24 +107,24 @@ class ProductController extends Controller
                 'u'         => 'required|numeric|min:0|max:100',
                 'cellulose' => 'required|numeric|min:0|max:100',
                 'k'         => 'required|numeric|min:0|max:1000',
-                'category'  => 'required|integer',
+                //'category'  => 'required|integer',
                 'manufacturer' => 'required|integer',
             ], $messages);
 
-            $validator->after(function ($validator) {
-                if (
-                    false === request()->has('sh') &&
-                    false === request()->has('ph') &&
-                    false === request()->has('pd') &&
-                    false === request()->has('nm') &&
-                    false === request()->has('cm')
-                ) {
-                    $validator->errors()->add('field', '"Подходит для" не указано');
-                }
-            });
+//            $validator->after(function ($validator) {
+//                if (
+//                    false === request()->has('sh') &&
+//                    false === request()->has('ph') &&
+//                    false === request()->has('pd') &&
+//                    false === request()->has('nm') &&
+//                    false === request()->has('cm')
+//                ) {
+//                    $validator->errors()->add('field', '"Подходит для" не указано');
+//                }
+//            });
             $validator->validate();
 
-            if ($oper === 'new') {
+            if ($oper === 'new' || $copy) {
                 $exist = Product::where('name', trim($request->get('prodName')))
                     ->where('manufacturer_id', $request->get('manufacturer'))
                     ->first();
@@ -132,9 +141,9 @@ class ProductController extends Controller
                 $product->user_id = Auth::id();
                 $product->guid = strtoupper(guid());
 
-                $attributes = new Attributes();
-                $attributes->guid = strtoupper(guid());
-                $attributes->name = 'food_purpose';
+//                $attributes = new Attributes();
+//                $attributes->guid = strtoupper(guid());
+//                $attributes->name = 'food_purpose';
             } else {
                 $product = Product::where('guid', $oper)
                     ->where('user_id', Auth::id())
@@ -144,21 +153,21 @@ class ProductController extends Controller
                     return abort(403, 'Access Denied');
                 }
 
-                $attributes = $product->attributes;
+//                $attributes = $product->attributes;
             }
 
             DB::beginTransaction();
 
             try {
-                $attributes->food_sushka = request()->has('sh');
-                $attributes->food_pohudenie = request()->has('ph');
-                $attributes->food_podderjka = request()->has('pd');
-                $attributes->food_nabor_massi = request()->has('nm');
-                $attributes->food_cheat_meal = request()->has('cm');
+//                $attributes->food_sushka = request()->has('sh');
+//                $attributes->food_pohudenie = request()->has('ph');
+//                $attributes->food_podderjka = request()->has('pd');
+//                $attributes->food_nabor_massi = request()->has('nm');
+//                $attributes->food_cheat_meal = request()->has('cm');
 
-                $attributes->save();
+//                $attributes->save();
 
-                $product->attribute_id = $attributes->id;
+//                $product->attribute_id = $attributes->id;
                 $product->name = trim($request->get('prodName'));
 
                 $product->b = (float)$request->get('b');
@@ -166,9 +175,9 @@ class ProductController extends Controller
                 $product->u = (float)$request->get('u');
                 $product->cellulose = (float)$request->get('cellulose');
                 $product->k = (float)$request->get('k');
-                $product->sugar = request()->has('sugar');
-                $product->salt = request()->has('salt');
-                $product->category_id = $request->get('category');
+//                $product->sugar = request()->has('sugar');
+//                $product->salt = request()->has('salt');
+                $product->category_id = 18;//$request->get('category');
                 $product->manufacturer_id = $request->get('manufacturer');
 
                 $product->save();
@@ -182,7 +191,7 @@ class ProductController extends Controller
 
             DB::commit();
 
-            return redirect()->route('products', ['success' => $oper === 'new'? 'new' : 'edit']);
+            return redirect()->route('products', ['success' => true]);
         }
     }
 

@@ -20,12 +20,15 @@ class DishController extends Controller
     {
         $search = $request->get('search');
 
+        if (request()->has('clear')) {
+            $search = null;
+        }
+
         if(!empty($search)) {
             $dishList = Dish::where('name', 'LIKE', "%{$search}%")->orderBy('name', 'asc')->simplePaginate(30);
         }else{
             $dishList = Dish::orderBy('name', 'asc')->simplePaginate(30);
         }
-
 
         return view('Dish.dish', [
             'dishList' => $dishList,
@@ -38,24 +41,26 @@ class DishController extends Controller
      * @param string $oper
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function crEd(Request $request, $oper)
+    public function crEd(Request $request, $oper, $copy = false)
     {
         if ($request->method() == 'GET') {
-            if($oper == 'new') {
+            if ($oper == 'new') {
                 return view('Dish.crEd', [
-                    'dish' => null
+                    'dish' => null,
+                    'copy' => $copy
                 ]);
             } else {
                 $dish = Dish::where('guid', $oper)->first();
 
                 $dish->dishCategory->id;
-                $dish->attributes->id;
+                //$dish->attributes->id;
                 $dish->data = json_decode($dish->data,true);
                 $dc = new DishCalculator(new NutritionalValueCalculator(), $dish);
 
                 return view('Dish.crEd', [
                     'dish' => $dish,
-                    'productList' => $dc->getProductData()
+                    'productList' => $dc->getProductData(),
+                    'copy' => $copy
                 ]);
             }
         } elseif ($request->method() == 'POST') {
@@ -63,7 +68,7 @@ class DishController extends Controller
             $error_message = null;
             $status = null;
 
-            if($oper == 'new') {
+            if ($oper == 'new' || $copy) {
                 $dish = new Dish();
                 $dish->guid = strtoupper(guid());
                 $dish->user_id = Auth::id();
@@ -73,29 +78,35 @@ class DishController extends Controller
                     ->first();
 
                 if(is_null($dish)) {
-                    return abort(403, 'Access Denied');
+                    return response()->json(
+                        [
+                            'guid' => $dish->guid,
+                            'status' => $status,
+                            'error_message' => 'Вы не можете редактировать это блюдо!'
+                        ]
+                    );
                 }
             }
 
-            if (!isset($data['dish_name']) || empty($data['dish_name'])){
-                $error_message = [DishCalculator::DATA_ERROR => 'dish_name is empty'];
+            if (!isset($data['dish_name']) || empty($data['dish_name'])) {
+                $error_message = [DishCalculator::DATA_ERROR => 'Наименование не заполнено!'];
                 $status = self::STATUS_ERROR;
             }
 
-            if (!isset($data['cat_id']) || empty($data['cat_id'])){
-                $error_message = [DishCalculator::DATA_ERROR => 'cat_id is empty'];
+            if (!isset($data['cat_id']) || empty($data['cat_id'])) {
+                $error_message = [DishCalculator::DATA_ERROR => 'Категория не выбрана!'];
                 $status = self::STATUS_ERROR;
             }
 
-            if (!isset($data['draft']) || empty($data['draft'])){
+            if (!isset($data['draft']) || empty($data['draft'])) {
                 $error_message = [DishCalculator::DATA_ERROR => 'draft is empty'];
                 $status = self::STATUS_ERROR;
             }
 
-            if (!isset($data['suitable_for']) || empty($data['suitable_for'])){
-                $error_message = [DishCalculator::DATA_ERROR => 'suitable_for is empty'];
-                $status = self::STATUS_ERROR;
-            }
+//            if (!isset($data['suitable_for']) || empty($data['suitable_for'])){
+//                $error_message = [DishCalculator::DATA_ERROR => 'suitable_for is empty'];
+//                $status = self::STATUS_ERROR;
+//            }
 
             if($status !== null) {
                 return response()->json(
@@ -117,21 +128,21 @@ class DishController extends Controller
             if ($dc->isValid()) {
                 DB::beginTransaction();
                 try {
-                    $attributes = new Attributes();
-                    $attributes->name = 'dish_purpose';
-                    $attributes->guid = strtoupper(guid());
+//                    $attributes = new Attributes();
+//                    $attributes->name = 'dish_purpose';
+//                    $attributes->guid = strtoupper(guid());
+//
+//                    $attributes->food_sushka = in_array('sh', $data['suitable_for']);
+//                    $attributes->food_pohudenie = in_array('ph', $data['suitable_for']);
+//                    $attributes->food_podderjka = in_array('pd', $data['suitable_for']);
+//                    $attributes->food_nabor_massi = in_array('nm', $data['suitable_for']);
+//                    $attributes->food_cheat_meal = in_array('cm', $data['suitable_for']);
 
-                    $attributes->food_sushka = in_array('sh', $data['suitable_for']);
-                    $attributes->food_pohudenie = in_array('ph', $data['suitable_for']);
-                    $attributes->food_podderjka = in_array('pd', $data['suitable_for']);
-                    $attributes->food_nabor_massi = in_array('nm', $data['suitable_for']);
-                    $attributes->food_cheat_meal = in_array('cm', $data['suitable_for']);
-
-                    $attributes->save();
+//                    $attributes->save();
 
                     $dish->name = trim($data['dish_name']);
                     $dish->category_id = $data['cat_id'];
-                    $dish->attribute_id = $attributes->id;
+//                    $dish->attribute_id = $attributes->id;
                     $dish->draft = $data['draft'] === 'true' ? 1 : 0;
                     $dish->comment = $data['comment'];
                     $dish->data = json_encode($dish->data);

@@ -1,6 +1,6 @@
 @extends('layout')
 @section('content')
-    <h1>Блюда</h1>
+    @php $pageTitle = 'Блюда'; @endphp
     <div class="navbar-collapse row bg-light header-menu">
         <div class="col-3 col-xl-3">
             <a href="{{ route('new_dish', ['new']) }}" class="btn btn-success">Новое</a>
@@ -8,7 +8,16 @@
         <div class="col-9 col-xl-9">
             <form class="form-inline pull-right">
                 <input class="form-control" value="{{$search}}" name="search" style="width: 150px; margin-right: 5px;" type="text" placeholder="Найти" aria-label="Найти">
-                <button class="btn btn-outline-info" type="submit">Найти</button>
+                <button class="btn btn-outline-info" type="submit" title="Поиск" >
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-outline-danger"
+                        name="clear"
+                        title="Сброс"
+                        type="submit"
+                        style="margin-left: 5px;">
+                    <i class="fa fa-eraser" aria-hidden="true"></i>
+                </button>
             </form>
         </div>
     </div>
@@ -40,13 +49,22 @@
                         <td style="background-color: #ffeeba">{{$dish->j}}</td>
                         <td style="background-color: #f5c6cb">{{$dish->u}}</td>
                         <td>{{(int)$dish->k}}</td>
-                        <td>
-                            <div class="dropdown">
-                                <i style="cursor: pointer; font-size: 18px;" class="material-icons" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">view_headline</i>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a href="{{ route('new_dish', [$dish->guid]) }}" class="dropdown-item">
-                                        <i class="material-icons">mode_edit</i> Изменить
-                                    </a>
+                        <td style="padding-top: 0px;">
+                            <div class="btn-group dropleft ">
+                                <i class="fa fa-bars" style="font-size: 18px;" aria-hidden="true" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                                <div class="dropdown-menu other-menu">
+                                    <ul>
+                                        <li>
+                                            <a href="{{route('new_dish', ['guid' => $dish->guid, 'copy'=> true])}}">
+                                                <i class="fa fa-files-o" aria-hidden="true"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ route('new_dish', [$dish->guid]) }}">
+                                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
                         </td>

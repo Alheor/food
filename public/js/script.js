@@ -14,7 +14,10 @@ $(document).ready(function () {
     $('.calc_bju_field').on('keyup change', function () {
         var parent = $(this).parent().parent();
 
-        this.value = this.value.replace(/,/, '.');
+        if (this.value.length > 0) {
+            this.value = this.value.replace(/,/, '.');
+        }
+
         var sum = 0;
 
         $(parent).find('input').each(function (i, el) {
@@ -43,20 +46,31 @@ $(document).ready(function () {
     });
 
     $('.to-float').on('keyup', function () {
-        this.value = strToFloat(this.value);
+        strToFloat(this);
     });
 
     $('.to-int').on('keyup', function () {
-        this.value = strToInt(this.value);
+        strToInt(this);
+    });
+
+    //Что бы при сабмите всех форм отображался прогрессбар
+    $('form').each(function (i, el) {
+        $(el).on('submit', function () {
+            progress().start();
+        });
     });
 });
 
 function strToInt(str) {
-   return str.replace(/[^0-9]*/g, '');
+    if(str.value.length > 0) {
+        return str.value = parseInt(str.value);
+    }
 }
 
 function strToFloat(str) {
-    return str.replace(/[^0-9,.]*/g, '').replace(/,/g, '.');
+    if(str.value.length > 0) {
+        return str.value = parseFloat(str.value);
+    }
 }
 
 function escapeHtml(text) {
@@ -71,114 +85,143 @@ function escapeHtml(text) {
     return text.replace(/[&<>"']/g, function(m) { return map[m]; });
 }
 
-var timerProdSearch = false;
-function dishProdSearch(obj, type) {
-    function request() {
-        var el = $('#dishProdSearch');
+function dishProdSearch() {
+    debounce(function () {
+        var parent = $('.modal-body');
+        var searchType = parent.find('.search_type').data('content');
+        var search = parent.find('.dishProdSearch').val();
 
-        if(el.val().length > 1) {
-            $('#searchSendIndicator').html('<i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>');
+        if (search.length > 1) {
+            //parent.find('.modal-block').show();
+            progress().endSuccess(false);
+            progress().start();
 
             var request = $.ajax({
                 url: "/food_diary/finddp",
                 method: "POST",
                 data: {
-                    search: el.val(),
-                    type: type,
-                    _token: el.parent().find('input').first().val()
+                    search: search,
+                    type: searchType,
+                    _token: $('#form_token').val()
                 }
             });
 
             request.fail(function (jqXHR) {
-                $('#searchSendIndicator').html('<i class="fa fa-exclamation-triangle text-danger" aria-hidden="true" style="font-size:24px;"></i>');
-                console.log(jqXHR);
+                progress().endFail();
+                //parent.find('.modal-block').hide();
             });
 
-            request.done(function (msg) {
-                $('#searchSendIndicator').html('<i class="fa fa-check text-success" aria-hidden="true" style="font-size:24px;"></i>');
-                setTimeout(function () {
-                    $('#searchSendIndicator').html('');
-                }, 1000);
-                $('.dish-prod-list').html(msg);
+            request.done(function (responce) {
+                progress().endSuccess(false);
+                buildSearchPDList(responce);
+                //parent.find('.modal-block').hide();
             });
         }
-    }
-
-    if(timerProdSearch !== false) {
-        clearTimeout(timerProdSearch);
-    }
-
-    timerProdSearch = setTimeout(function () {
-        request();
     }, 500);
 }
 
-function addDishProdToDiary(el, modal, dayGuid, weight) {
-    var guid = $(el).find('td').first().find('input').val();
-    var request = $.ajax({
-        url: "/food_diary/finddp/" + guid,
-        type: "all",
-        method: "POST",
-        data: {
-            guid: guid,
-            _token: el.parent().parent().parent().parent().find('input').first().val()
-        }
-    });
+function hashCode(string) {
+    var hash = 0, i, chr;
+    if (string.length === 0) return hash;
+    for (i = 0; i < string.length; i++) {
+        chr   = string.charCodeAt(i);
+        hash  = ((hash << 5) - hash) + chr;
+        hash |= 0; // Convert to 32bit integer
+    }
+    return hash;
+}
 
-    request.fail(function (jqXHR) {
-        modal.spinner().error();
-        modal.showError(jqXHR);
-    });
+var debounceTimer = [];
+function debounce(func, time) {
+    var funcKey = hashCode(String(func));
 
-    request.done(function (msg) {
-        var bjuk = calculateBJUFromWeight(weight, msg.b, msg.j, msg.u);
+    if (typeof debounceTimer[funcKey] !== 'undefined') {
+        clearTimeout(debounceTimer[funcKey]);
+    }
 
-        //var json = JSON.stringify(msg).replace(/'/g, "&#039");
-        var json = escapeHtml(JSON.stringify(msg));
-        var html = '<tr>\n' +
-            '            <td style="text-overflow: ellipsis;">\n' +
-            '                <input type="hidden" value=\'' + json+ '\' />\n' +
-            '                <a  tabindex="0"  role="button" data-trigger="focus" class="dish-prod-info" data-toggle="dish-prod-info">' + msg.name + '</a>' +
-            '            </td>\n' +
-            '            <td style="min-width: 38px;">\n' +
-            '                <input type="integer" value="' + weight + '" class="form-control input-table dishProdWeight"/>\n' +
-            '            </td>\n' +
-            '            <td style="background-color: #c3e6cb; text-align: center;">' + bjuk.b + '</td>\n' +
-            '            <td style="background-color: #ffeeba; text-align: center;">' + bjuk.j + '</td>\n' +
-            '            <td style="background-color: #f5c6cb; text-align: center;">' + bjuk.u + '</td>\n' +
-            '            <td style="text-align: center;">' + bjuk.k +
-            '            </td>\n' +
-            '            <td>\n' +
-            '                <i class="fa fa-ban product-delete"  title="Удалить продукт или блюдо"  onclick="if(confirm(\'Удалить?\')){$(this).parent().parent().remove();calculateDiary();}" aria-hidden="true"></i>\n' +
-            '            </td>\n' +
-            '        </tr>';
+    debounceTimer[funcKey] = setTimeout(function () {
+        delete(debounceTimer[funcKey]);
+        func();
+    }, time);
+}
 
-        $('#diaryTableAmount_' + dayGuid).before(html);
+function addDishProdToList(el) {
+    var parent = $(el).closest('.dish-prod-el');
+    var weight = parent.find('input[type=number]');
+    var json = weight.data('content');
+    var type = ($('.dishTableAmount').length > 0) ? 'dish' : 'diary';
 
-        setTimeout(function () {
-            $('[data-toggle="dish-prod-info"]').popover({
-                trigger: 'focus',
-                html: true,
-                content: dishProdInfo(msg)
-            });
-        }, 100);
+    if (weight.val().length === 0 || Number(weight.val()) < 1 || isNaN(Number(weight.val()))) {
+        alert('Введите вес');
+        throw new Error('Weight is empty!');
+    }
 
-        $('.dishProdWeight').unbind();
+    var bjuk = calculateBJUFromWeight(weight.val(), json.b, json.j, json.u);
 
-        $('.dishProdWeight').keyup(function (event) {
-            this.value = this.value.replace(/[^0-9]*/g, '');
-            setTimeout(function () {
-                calculateDiary();
-            }, 100);
+    var html = '<tr>\n' +
+        '            <td style="text-overflow: ellipsis;">\n' +
+        '                <input type="hidden" value=\'' + escapeHtml(JSON.stringify(json))+ '\' />\n' +
+        '                <a  tabindex="0"  role="button" data-trigger="focus" class="dish-prod-info" data-toggle="dish-prod-info">' + json.name + '</a>' +
+        '            </td>\n' +
+        '            <td style="min-width: 38px;" class="weight-diary">\n' +
+        '                <input type="number" value="' + weight.val() + '" class="form-control input-table dishProdWeight"/>\n' +
+        '            </td>\n' +
+        '            <td style="background-color: #c3e6cb; text-align: center;">' + bjuk.b + '</td>\n' +
+        '            <td style="background-color: #ffeeba; text-align: center;">' + bjuk.j + '</td>\n' +
+        '            <td style="background-color: #f5c6cb; text-align: center;">' + bjuk.u + '</td>\n' +
+        '            <td style="text-align: center;">' + bjuk.k +
+        '            </td>\n' +
+        '            <td>\n' +
+        '                <i class="fa fa-ban product-delete"  title="Удалить продукт или блюдо"  onclick="if(confirm(\'Удалить?\')){$(this).parent().parent().remove();' +
+        (type === 'dish'? 'calculateDish()' : 'calculateDiary()') +
+        '}" aria-hidden="true"></i>\n' +
+        '            </td>\n' +
+        '        </tr>';
+    if (type === 'dish') {
+        $('.dishTableAmount').before(html);
+    } else {
+        $('#diaryTableAmount_' + $('.modal-body').find('.meal-guid').data('guid')).before(html);
+    }
 
+
+    setTimeout(function () {
+        $('[data-toggle="dish-prod-info"]').popover({
+            trigger: 'focus',
+            html: true,
+            content: dishProdInfo(json)
         });
+    }, 100);
 
-        modal.spinner().success();
+    $('.dishProdWeight').unbind();
+
+    $('.dishProdWeight').keyup(function (event) {
+        this.value = this.value.replace(/[^0-9]*/g, '');
         setTimeout(function () {
-            calculateDiary();
+            if (type === 'dish') {
+                calculateDish();
+            } else {
+                calculateDiary();
+            }
         }, 100);
+
     });
 
+    setTimeout(function () {
+        if (type === 'dish') {
+            calculateDish();
+        } else {
+            calculateDiary();
+        }
+    }, 100);
+
+    var button = parent.find('button');
+    button.text('Успешно!');
+    setTimeout(function () {
+        button.parent().hide();
+        button.text('Добавить >>');
+        parent.find('.bju').show();
+        weight.val('');
+    }, 500);
     return false;
 }
 
@@ -222,4 +265,228 @@ function dishProdInfo(data) {
         '<td>' + data.k +'</td>' +
         '</tr>' +
         '</table>';
+}
+
+function progress(progress) {
+    var interval;
+    var curWidth = 0;
+    var windowWidth = $(window).width();
+
+    if (typeof progress === 'undefined') {
+        progress = $('.progress');
+    }
+
+    progress.width(0);
+    progress.show();
+
+    function start() {
+        interval = setInterval(function () {
+            curWidth = (windowWidth - progress.width()) / 200;
+            progress.width(progress.width() + curWidth);
+        }, 20);
+    }
+
+    function endSuccess(show_notification) {
+        clearInterval(interval);
+        progress.width(windowWidth);
+        setTimeout(function () {
+            progress.hide('fast');
+        }, 500);
+
+        if (typeof show_notification === 'undefined' || show_notification === true) {
+            iziToast.success({
+                title: ':)',
+                message: 'Успешно!',
+                position: 'topRight',
+                timeout: 1000
+            });
+        }
+    }
+
+    function endFail(message) {
+        clearInterval(interval);
+        progress.width(windowWidth);
+        setTimeout(function () {
+            progress.hide('fast');
+        }, 500);
+
+        iziToast.error({
+            title: ':(',
+            message: typeof message === 'undefined'? 'Что-то сломалось, попробуйте позже' : message,
+            position:'topRight',
+            timeout: typeof message === 'undefined'? 3000 : 5000
+        });
+    }
+
+    return {'start': start,'endSuccess': endSuccess,'endFail': endFail};
+}
+
+function buildSearchPDList(responce) {
+    var dishProdList = $('.modal-body').find('.dish-prod-list');
+
+    if (
+        (responce.dish_list === 'undefined' || responce.dish_list.length === 0) &&
+        (responce.product_list === 'undefined' || responce.product_list.length === 0)
+    ) {
+        dishProdList.html(
+            '<tr style="font-size: 12px;"><td colspan="3">' + $('#dpa_empty_form').html() + '</td></tr>'
+        );
+
+        return null
+    }
+
+    var el = [];
+    dishProdList.find('tr').remove();
+
+    if (responce.product_list !== 'undefined' && responce.product_list.length > 0) {
+        var productList = responce.product_list;
+        for (var i in productList) {
+            if (!productList.hasOwnProperty(i)) {
+                continue;
+            }
+
+            el = productList[i];
+
+            dishProdList.append(
+                '<tr class="dish-prod-el" onclick="selectDishProdEl(this);">' +
+                    '<td class="prod-search-name">' +
+                        '<div>\n' +
+                            '<span class="product" title="Продукт">П</span>\n' +
+                             el.name +
+                        '</div>' +
+                        '<div>' + el.manufacturer.name + '</div>' +
+                    '</td>' +
+                    '<td class="weight">' +
+                        '<input data-content="'+ escapeHtml(JSON.stringify(el)) +'" type="number" onkeyup="if(event.keyCode === 13){ addDishProdToList(this); } strToInt(this);" step="1" min="1" class="form-control input-table"/>' +
+                    '</td>' +
+                    '<td style="width: 132px; font-size: 14px; font-weight: normal;">\n' +
+                        '<div class="bju">'+
+                            '<div class="prod-search-el" style="background-color: #c3e6cb; font-size: 14px;">' + el.b + '</div>\n' +
+                            '<div class="prod-search-el" style="background-color: #ffeeba; font-size: 14px;">' + el.j + '</div>\n' +
+                            '<div class="prod-search-el" style="background-color: #f5c6cb; font-size: 14px;">' + el.u + '</div>\n' +
+                            '<div class="prod-search-el" style="margin-right: 0 !important; width: 25px; font-size: 12px; margin-top: 1px;">' + parseInt(el.k) + '</div>\n' +
+                        '</div>'+
+                        '<div class="dish-prod-el-add" style="display: none;">' +
+                            '<button class="btn btn-success" onclick="addDishProdToList(this);">Добавить >></button>'+
+                        '</div>'+
+                    '</td>' +
+                '</tr>'
+            );
+        }
+    }
+
+    el = [];
+
+    if (responce.dish_list !== 'undefined' && responce.dish_list.length > 0) {
+        var dishList = responce.dish_list;
+        for (var z in dishList) {
+            if (!dishList.hasOwnProperty(z)) {
+                continue;
+            }
+
+            el = dishList[z];
+
+            dishProdList.append(
+                '<tr class="dish-prod-el" onclick="selectDishProdEl(this);">' +
+                    '<td class="prod-search-name">' +
+                        '<div>\n' +
+                            '<span class="dish" title="Блюдо">Б</span>\n' +
+                            el.name +
+                        '</div>' +
+                    '</td>' +
+                '<td class="weight">' +
+                '<input data-content="'+ escapeHtml(JSON.stringify(el)) +'" type="number" onkeyup="if(event.keyCode === 13){ addDishProdToList(this); } strToInt(this);" step="1" min="1" class="form-control input-table"/>' +
+                '</td>' +
+                '<td style="width: 132px; font-size: 14px; font-weight: normal;">\n' +
+                '<div class="bju">'+
+                '<div class="prod-search-el" style="background-color: #c3e6cb; font-size: 14px;">' + el.b + '</div>\n' +
+                '<div class="prod-search-el" style="background-color: #ffeeba; font-size: 14px;">' + el.j + '</div>\n' +
+                '<div class="prod-search-el" style="background-color: #f5c6cb; font-size: 14px;">' + el.u + '</div>\n' +
+                '<div class="prod-search-el" style="margin-right: 0 !important; width: 25px; font-size: 12px; margin-top: 1px;">' + parseInt(el.k) + '</div>\n' +
+                '</div>'+
+                '<div class="dish-prod-el-add" style="display: none;">' +
+                '<button class="btn btn-success" onclick="addDishProdToList(this);">Добавить >></button>'+
+                '</div>'+
+                '</td>' +
+                '</tr>'
+            );
+        }
+    }
+
+    el = [];
+
+    if (responce.products_manufacturers !== 'undefined') {
+        var mFilter =  $('.manufacturers-filter');
+        var manufacturers = responce.products_manufacturers;
+
+        mFilter.find('.manufacturer').remove();
+
+        for (var x in manufacturers) {
+            if (!manufacturers.hasOwnProperty(x)) {
+                continue;
+            }
+
+            el = manufacturers[x];
+
+            mFilter.append('<div onclick="manufacturerFilter(this)" class="badge badge-pill badge-light manufacturer">'+ el +'</div>');
+        }
+    }
+}
+
+function selectDishProdEl(obj) {
+    var el = $(obj);
+    var parent = el.parent();
+
+    el.find('input[type=number]').focus();
+
+    parent.find('tr').each(function (i, tr) {
+        var tr = $(tr);
+
+        if (tr[0] === el[0]) {
+            tr.addClass('manufacturers-list-selected');
+            tr.find('.bju').hide();
+            tr.find('.dish-prod-el-add').show();
+        } else {
+            tr.removeClass('manufacturers-list-selected');
+            tr.find('.bju').show();
+            tr.find('.dish-prod-el-add').hide();
+            tr.find('input[type=number]').val('');
+        }
+    });
+}
+
+function manufacturerFilter(obj) {
+    var parent = $(obj).parent();
+
+    if ($(obj).hasClass('all')) {
+        parent.find('.manufacturer').removeClass('badge-success').addClass('badge-light');
+        $(obj).removeClass('badge-light').addClass('badge-warning');
+    } else {
+        parent.find('.all').removeClass('badge-warning').addClass('badge-light');
+        parent.find('.manufacturer').each(function (i, el) {
+            if (el === obj) {
+                $(el).removeClass('badge-light').addClass('badge-success');
+            } else {
+                $(el).removeClass('badge-success').addClass('badge-light');
+            }
+        });
+    }
+
+    if ($(obj).hasClass('all')) {
+        $('.modal-body').find('.dish-prod-list>tr').show();
+    } else {
+        $('.modal-body').find('.dish-prod-list>tr').each(function (i, el) {
+            var manufacturer = $(el).find('.prod-search-name>div:nth-child(2)');
+
+            if(manufacturer.length > 0) {
+                if (manufacturer.text() === $(obj).text()) {
+                    manufacturer.closest('.dish-prod-el').show();
+                } else {
+                    manufacturer.closest('.dish-prod-el').hide();
+                }
+            } else {
+                $(el).hide();
+            }
+        });
+    }
 }

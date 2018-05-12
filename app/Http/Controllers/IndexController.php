@@ -3,16 +3,63 @@
 namespace App\Http\Controllers;
 
 use App\DayDiary;
+use App\Dish;
 use App\Performance;
+use App\Product;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class IndexController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return view('index');
+        $diary_to_date = !request()->has('diary_clear')? $request->get('diary_to_date') : null;
+        $perfomance_to_date = !request()->has('perfomance_clear')? $request->get('perfomance_to_date') : null;
+
+        if(!empty($diary_to_date)) {
+            try {
+                $date =  new \DateTime($diary_to_date);
+            } catch (\Throwable $t) {
+                $date = new \DateTime();
+            }
+
+            $diary = DayDiary::where('user_id', Auth::id())
+                ->where('to_date', $date)
+                ->take(1)
+                ->get();
+        } else {
+            $diary = DayDiary::where('user_id', Auth::id())
+                ->orderBy('to_date', 'DESC')
+                ->take(5)
+                ->get();
+        }
+
+        if(!empty($perfomance_to_date)) {
+            try {
+                $date =  new \DateTime($perfomance_to_date);
+            } catch (\Throwable $t) {
+                $date = new \DateTime();
+            }
+
+            $perfomance = Performance::where('user_id', Auth::id())
+                ->where('to_date', $date)
+                ->orderBy('to_date', 'DESC')
+                ->take(1)
+                ->get();
+        } else {
+            $perfomance = Performance::where('user_id', Auth::id())
+                ->orderBy('to_date', 'DESC')
+                ->take(5)
+                ->get();
+        }
+
+        return view('index', [
+            'diaryList' => $diary,
+            'to_date' => $diary_to_date,
+            'performanceList' => $perfomance,
+            'day' => DayDiary::where('user_id', Auth::id())->where('to_date', new \DateTime('midnight'))->first()
+        ]);
     }
 
     public function statistic(Request $request)
@@ -23,7 +70,7 @@ class IndexController extends Controller
         $group = $request->get('group') ?? 'week';
         $token = $request->get('token');
 
-        if(!is_null(Auth::id())) {
+        if (!is_null(Auth::id()) && is_null($token)) {
             $user = User::where('id', Auth::id())->first();
             $token = md5($user->email .
                 Auth::id() .
@@ -80,7 +127,7 @@ class IndexController extends Controller
                     'weight' => [$statistic[1]['weight']],
                     'metabolism' => [$statistic[1]['metabolism']],
                     'general_musculature' => [$statistic[1]['general_musculature']],
-                    'general_fat_percent' => [$statistic[1]['general_fat_percent']],
+                    'general_fat' => [$statistic[1]['general_fat']],
                     'general_wather' => [$statistic[1]['general_wather']]
                 ]
             ];
@@ -177,7 +224,7 @@ class IndexController extends Controller
                 $weight += $el->weight;
                 $general_musculature += $el->general_musculature;
                 $general_fat += $el->general_fat;
-                $general_fat_percent += $el->general_fat_percent;
+                $general_fat += $el->general_fat;
                 $general_wather += $el->general_wather;
                 $metabolism += $el->metabolism;
             }
@@ -207,11 +254,11 @@ class IndexController extends Controller
                 'backgroundColor' => '#e66161',
                 'borderColor' => '#e66161'
             ],
-//            'general_fat' => [
-//                'name' => 'Жир, кг.',
-//                'backgroundColor' => '',
-//                'borderColor' => '#f2d638'
-//            ],
+            'general_fat' => [
+                'name' => 'Жир, кг.',
+                'borderColor' => '#f2d638',
+                'backgroundColor' => '#f2d638',
+            ],
             'general_fat_percent' => [
                 'name' => 'Жир, %',
                 'backgroundColor' => '#f2d638',
@@ -238,7 +285,7 @@ class IndexController extends Controller
             $data['weight']['data'][] = $performance['info']['weight'];
             $data['general_musculature']['data'][] = $performance['info']['general_musculature'];
             //$data['general_fat']['data'][] = $perfomance['info']['general_fat'];
-            $data['general_fat_percent']['data'][] = $performance['info']['general_fat_percent'];
+            $data['general_fat']['data'][] = $performance['info']['general_fat'];
             $data['general_wather']['data'][] = $performance['info']['general_wather'];
             $data['metabolism']['data'][] = $performance['info']['metabolism'];
         }
@@ -246,7 +293,7 @@ class IndexController extends Controller
         $data['weight'] = array_merge($data['weight'], $config['weight']);
         $data['general_musculature'] = array_merge($data['general_musculature'], $config['general_musculature']);
         //$data['general_fat'] = array_merge($data['general_fat'], $config['general_fat']);
-        $data['general_fat_percent'] = array_merge($data['general_fat_percent'], $config['general_fat_percent']);
+        $data['general_fat'] = array_merge($data['general_fat'], $config['general_fat']);
         $data['general_wather'] = array_merge($data['general_wather'], $config['general_wather']);
         $data['metabolism'] = array_merge($data['metabolism'], $config['metabolism']);
 
@@ -367,5 +414,66 @@ class IndexController extends Controller
         $data['k'] = array_merge($data['k'], $config['k']);
 
         return [$labels, $data];
+    }
+
+    public function productsAndDishes(Request $request)
+    {
+        function prepareText($text) {
+            $textArr = explode(
+                ' ',
+                str_replace(
+                    ['+', '$', '&', '\\', '/', '*', "'", '"', '#', '~', '^', ':', ';'],'',
+                    $text
+                )
+            );
+
+            $resStr = '';
+            foreach ($textArr as $el) {
+                if (!empty($el)) {
+                    $resStr .= '+' . $el . '*';
+                }
+            }
+
+            return $resStr;
+        }
+
+        $product_search = $request->get('product_search');
+        $dish_search = $request->get('dish_search');
+        $products = null;
+        $dishes = null;
+
+        if(!empty($product_search) && mb_strlen($product_search) > 2) {
+            $products = Product::whereRaw(
+                "MATCH (name) AGAINST (? IN BOOLEAN MODE)", [prepareText($product_search)]
+            )
+                ->orderBy('name', 'asc')
+                ->take(30)
+                ->get();
+        }
+
+        if(!empty($dish_search) && mb_strlen($dish_search) > 2) {
+            $dishes = Dish::whereRaw(
+                "MATCH (name) AGAINST (? IN BOOLEAN MODE)", [prepareText($dish_search)]
+            )
+                ->where('user_id', Auth::id())
+                ->orderBy('name', 'asc')
+                ->take(30)
+                ->get();
+        }
+
+        return view('productsAndDishesList', [
+            'products' => !empty($products) && !$products->isEmpty()? $products : [],
+            'dishes' => !empty($dishes) && !$dishes->isEmpty()? $dishes : [],
+            'dish_success' => $request->get('dish_success'),
+            'product_success' => $request->get('product_success'),
+            'product_search' => $product_search,
+            'dish_search' => $dish_search
+        ]);
+    }
+
+    public function info(){
+        return view('info', [
+
+        ]);
     }
 }

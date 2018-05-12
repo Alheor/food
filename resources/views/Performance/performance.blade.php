@@ -1,6 +1,6 @@
 @extends('layout')
 @section('content')
-    <h1>Физические показатели</h1>
+    @php $pageTitle = 'Физические показатели'; @endphp
     <div class="navbar-collapse row bg-light header-menu">
         <div class="col-12 col-xl-12">
             @if(isset($success) && $success == 'new')
@@ -55,13 +55,17 @@
                         <td>{{$performance->general_musculature}}</td>
                         <td>{{$performance->general_fat}}</td>
                         <td>{{$performance->general_wather}}</td>
-                        <td>
-                            <div class="dropdown">
-                                <i style="cursor: pointer; font-size: 18px;" class="material-icons" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">view_headline</i>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a href="{{ route('performance_cred', [$performance->guid]) }}" class="dropdown-item">
-                                        <i class="material-icons">mode_edit</i> Изменить
-                                    </a>
+                        <td style="padding-top: 0px;">
+                            <div class="btn-group dropleft ">
+                                <i class="fa fa-bars" style="font-size: 21px; cursor: pointer;" aria-hidden="true" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                                <div class="dropdown-menu other-menu">
+                                    <ul>
+                                        <li>
+                                            <a href="{{ route('performance_cred', [$performance->guid]) }}">
+                                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
                         </td>

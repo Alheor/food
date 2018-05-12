@@ -100,77 +100,66 @@ $(document).ready(function () {
     });
 
     $('.product-add-div').on('click', function () {
-
         var dayGuid = $(this).find('input').first().val();
         var modal = new modalWindow();
+        var dpa_form = $('#dpa_form');
         modal.constructor({
             title: 'Добавить продукт или блюдо',
-            successButtonLabel: 'Добавить',
-            cancelButtonLabel: 'Закрыть'
+            showCancelButton: false,
+            showSuccessButton: false
         });
-
-        modal.onAgree = function () {
-            var selectEl = $('.manufacturers-list-selected');
-
-            if (selectEl.length == 0 || selectEl.length > 1) {
-                alert('Выберите продуки или блюдо из списка');
-                return false;
-            }
-
-            var weight = $(selectEl).find('input')[1].value;
-
-            if (weight == '' || Number(weight) < 1 || isNaN(Number(weight))) {
-                alert('Введите вес');
-                return false;
-            }
-
-            modal.spinner().show();
-            return addDishProdToDiary(selectEl, modal, dayGuid, weight);
-        };
 
         modal.show();
+        modal.html(dpa_form.html());
 
-        var request = $.ajax({
-            url: "/food_diary/finddp",
-            method: "GET",
-            data: {
-                guid: modal.guid
-            }
-        });
+        var modalBody = $('.modal-body');
+        modalBody.find('.manufacturer').remove();
+        modalBody.find('.meal-guid').data('guid', dayGuid);
+        modalBody.find('.dish-prod-list').html(
+            '<tr style="font-size: 12px;"><td colspan="3">'+$('#dpa_start_form').html()+'</td></tr>'
+        );
 
-        request.fail(function (jqXHR) {
-            modal.spinner().error();
-            modal.showError(jqXHR);
-        });
-
-        request.done(function (msg) {
-            modal.html(msg);
-            setTimeout(function () {
-                $('#dishProdSearch')[0].focus();
-            },400);
-        });
+        setTimeout(function () {
+            var modalBody = $('.modal-body');
+            var dishProdSearch = modalBody.find('.dishProdSearch');
+            dishProdSearch.focus();
+            modalBody.find('.dpa-form-reset').on('click', function () {
+                dishProdSearch.val('');
+                dishProdSearch.focus();
+            });
+            modalBody.find('.select-search-type').find('.dropdown-item').on('click', function () {
+                modalBody.find('.select-search-type>button').text($(this).text());
+                dishProdSearch.focus();
+            });
+        }, 500);
     });
 });
 
 function productManufacturersSearch() {
 
-    var mName = $('#ManufacturersSearch').val();
+    debounce(function () {
+        var mName = $('#ManufacturersSearch').val();
+        if(mName.length > 1) {
+            progress().endSuccess(false);
+            progress().start();
+            var request = $.ajax({
+                url: "/products_manufacturers",
+                method: "GET",
+                data: {
+                    search: mName
+                }
+            });
 
-    var request = $.ajax({
-        url: "/products_manufacturers",
-        method: "GET",
-        data: {
-            search: mName
+            request.fail(function (jqXHR) {
+                progress().endFail();
+            });
+
+            request.done(function (msg) {
+                progress().endSuccess(false);
+                $('.manufacturers-list').html(msg);
+            });
         }
-    });
-
-    request.fail(function (jqXHR) {
-        console.log(jqXHR);
-    });
-
-    request.done(function (msg) {
-        $('.manufacturers-list').html(msg);
-    });
+    }, 500);
 }
 
 function productManufacturersAdd() {
@@ -194,6 +183,7 @@ function productManufacturersAdd() {
     });
 
     request.done(function (msg) {
+        modal.spinner().success(false);
         modal.html(msg);
     });
 

@@ -150,14 +150,19 @@ function saveDiaryData(obj) {
         });
     });
 
+    if (toDate.val().length === 0 && $('#day_new').length > 0) {
+        alert('Укажите дату!');
+        obj.disabled = false;
+        throw new Error('Select date!');
+    }
+
     if (!productExist) {
         alert('Добавьте хотя бы один продукт!');
         obj.disabled = false;
         throw new Error('Add product!');
     }
 
-    $('#resultSendIndicator').html('<i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>');
-
+    progress().start();
     var request = $.ajax({
         url: "/food_diary/save_day",
         method: "POST",
@@ -165,23 +170,22 @@ function saveDiaryData(obj) {
             'data': {'mealList': data},
             'guid' : day_guid.length === 0? null : day_guid.val(),
             'to_date' : toDate.val(),
-            '_token':_token
+            '_token':_token,
+            'copy': $('#day_copy').length > 0,
+            'new': $('#day_new').length > 0
         }
     });
 
     request.fail(function (jqXHR) {
-        $('#resultSendIndicator').html('<i class="fa fa-exclamation-triangle text-danger" aria-hidden="true" style="font-size:24px;"></i>');
         obj.disabled = false;
+        progress().endFail();
     });
 
     request.done(function (msg) {
         if (typeof msg.status !== "undefined" && msg.status === 'success') {
-            $('#resultSendIndicator').html('<i class="fa fa-check text-success" aria-hidden="true" style="font-size:24px;"></i>');
-            setTimeout(function () {
-                $('#resultSendIndicator').html('');
-            }, 1000);
+            progress().endSuccess();
         } else {
-            $('#resultSendIndicator').html('<i class="fa fa-exclamation-triangle text-danger" aria-hidden="true" style="font-size:24px;"></i>');
+            progress().endFail(msg.error_message);
         }
 
         obj.disabled = false;

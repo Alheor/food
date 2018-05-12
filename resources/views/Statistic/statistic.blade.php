@@ -1,6 +1,6 @@
 @extends('layout')
 @section('content')
-    <h1>Статистика пользователя {{$userName}}</h1>
+    @php $pageTitle = $userName . '.статистика'; @endphp
     <div class="row main-widget-box">
         <form method="GET">
             <input type="hidden" id="token" name="token" value="{{$token}}"/>
@@ -176,16 +176,16 @@
             </div>
         </div>
     @endif
-    @if(!empty($statistic['general_fat_percent']))
+    @if(!empty($statistic['general_fat']))
         <div class="row">
             <div class="col-12 col-xl-12 main-widget-box">
                 <canvas id="myChartFat"></canvas>
                 <script type="application/javascript">
                     @php
-                        $data = modifyStatisticData($statistic['general_fat_percent'], $labels);
-                        $statistic['general_fat_percent'] = $data[0];
+                        $data = modifyStatisticData($statistic['general_fat'], $labels);
+                        $statistic['general_fat'] = $data[0];
                     @endphp
-                    renderChart('myChartFat', {!! json_encode($statistic['general_fat_percent']) !!}, {!! json_encode($data[1]) !!});
+                    renderChart('myChartFat', {!! json_encode($statistic['general_fat']) !!}, {!! json_encode($data[1]) !!});
                 </script>
             </div>
         </div>
@@ -232,7 +232,7 @@
             </div>
         </div>
     @endif
-    <div class="row" style="margin-top: 10px !important; margin-bottom: 10px !important;">
+    <div class="row" style="margin-bottom: 10px !important;">
         <div class="col-12">
             Поделиться: {{url('statistic')}}?token={{$token}}
         </div>

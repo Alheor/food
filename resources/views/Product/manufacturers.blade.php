@@ -9,25 +9,39 @@
            @if(old('manufacturer_name')) value="{{ old('manufacturer_name') }}" @else @if(isset($product)) value="{{$product->manufacturer->name}}" @endif @endif
            id="productManufacturerName" />
 @elseif($tplName == 'productManufacturers')
-    <nav class="navbar navbar-expand-xs navbar-light bg-light">
-        <div class="navbar-collapse">
-            <div class="pull-left">
-                <a href="#" onclick="productManufacturersAdd(this);" class="btn btn-success">Новая</a>
-            </div>
-            <div class="pull-right">
-                <i class="fa fa-refresh"
-                   aria-hidden="true"
-                   style="font-size: 20px; margin: 10px; margin-right: 0px; cursor: pointer;"
-                   onclick="productManufacturersSearch(this);"
-                ></i>
-            </div>
-            <div class="pull-right" style="width: 150px;">
-                <input class="form-control" id="ManufacturersSearch" onkeyup="productManufacturersSearch(this);" type="text" placeholder="Найти" aria-label="Найти">
+    <div class="col-12 main-widget-box">
+        <div class="row">
+            <div class="col-12">
+                <div class="pull-left">
+                    <a href="#" onclick="productManufacturersAdd(this);" class="btn btn-success">Новая ТМ</a>
+                </div>
+                <div class="pull-right">
+                    <button
+                            class="btn btn-outline-info pull-right"
+                            style="margin-left: 5px;"
+                            type="submit"
+                            title="Обновить"
+                            onclick="productManufacturersSearch(this);">
+                        <i class="fa fa-refresh"
+                           aria-hidden="true"
+                           onclick="productManufacturersSearch(this);"
+                        ></i>
+                    </button>
+                    <input class="form-control"
+                           value=""
+                           name="search"
+                           id="ManufacturersSearch"
+                           style="width: 150px;"
+                           type="text"
+                           placeholder="Найти"
+                           aria-label="Поиск"
+                           onkeyup="productManufacturersSearch(this);" >
+                </div>
             </div>
         </div>
-    </nav>
+    </div>
     <table class="table table-striped table-bordered table-sm">
-        <thead class="thead-dark">
+        <thead class="thead-inverse">
         <tr>
             <th scope="col" style="width: 35px; text-align: center;">#</th>
             <th scope="col">Наименование</th>

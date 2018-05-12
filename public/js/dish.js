@@ -38,60 +38,44 @@ $(document).ready(function () {
     });
 
     $('.dish-add-div').on('click', function () {
-
         var dayGuid = $(this).find('input').first().val();
         var modal = new modalWindow();
+        var dpa_form = $('#dpa_form');
         modal.constructor({
-            title: 'Добавить продукт',
-            successButtonLabel: 'Добавить',
-            cancelButtonLabel: 'Закрыть'
+            title: 'Добавить продукт или блюдо',
+            showCancelButton: false,
+            showSuccessButton: false
         });
-
-        modal.onAgree = function () {
-            var selectEl = $('.manufacturers-list-selected');
-
-            if (selectEl.length == 0 || selectEl.length > 1) {
-                alert('Выберите продуки или блюдо из списка');
-                return false;
-            }
-
-            var weight = $(selectEl).find('input')[1].value;
-
-            if (weight == '' || Number(weight) < 1 || isNaN(Number(weight))) {
-                alert('Введите вес');
-                return false;
-            }
-
-            modal.spinner().show();
-            return addProductToDish(selectEl, modal, dayGuid, weight);
-        };
 
         modal.show();
+        modal.html(dpa_form.html());
 
-        var request = $.ajax({
-            url: "/food_diary/finddp",
-            method: "GET",
-            data: {
-                type: 'product',
-                guid: modal.guid
-            }
-        });
+        var modalBody = $('.modal-body');
+        modalBody.find('.meal-guid').data('guid', dayGuid);
+        modalBody.find('.manufacturer').remove();
+        modalBody.find('.dish-prod-list').html(
+            '<tr style="font-size: 12px;"><td colspan="3">'+$('#dpa_start_form').html()+'</td></tr>'
+        );
 
-        request.fail(function (jqXHR) {
-            modal.spinner().error();
-            modal.showError(jqXHR);
-        });
+        setTimeout(function () {
+            var modalBody = $('.modal-body');
 
-        request.done(function (msg) {
-            modal.html(msg);
-            setTimeout(function () {
-                $('#dishProdSearch')[0].focus();
-            },400);
-        });
+            var dishProdSearch = modalBody.find('.dishProdSearch');
+            dishProdSearch.focus();
+            modalBody.find('.dpa-form-reset').on('click', function () {
+                dishProdSearch.val('');
+                dishProdSearch.focus();
+                //modalBody.find('.dish-prod-list').find('tr').remove();
+            });
+            modalBody.find('.select-search-type').find('.dropdown-item').on('click', function () {
+                modalBody.find('.select-search-type>button').text($(this).text());
+                dishProdSearch.focus();
+            });
+        }, 500);
     });
 
     $('#dish_weight').on('keyup', function () {
-        this.value = strToInt(this.value);
+        strToInt(this);
         calculateDish();
     });
 
@@ -106,9 +90,10 @@ function saveDishData(obj) {
     var diaryTable = $('.diaryTable');
     var _token = $(obj).parent().find('input').val();
     var dishGuid = $('#dish_guid');
+    var dishCopy = $('#dish_copy');
     var productList = [];
     var productExist = false;
-    var suitable_for = [];
+    //var suitable_for = [];
     var prodName = $('#prodName').val();
     var dish_category = $('#dishCategoryId').val();
 
@@ -151,125 +136,50 @@ function saveDishData(obj) {
         throw new Error('Add product!');
     }
 
-    $('#suitable_for').find('input').each(function (i, el) {
-        if($(el).prop("checked")) {
-            suitable_for.push(el.id);
-        }
-    });
-
-    if(suitable_for == '') {
-        alert('Не указано для чего подходит это блюдо');
-        obj.disabled = false;
-        throw new Error('Suitable for not selected!');
-    }
+    // $('#suitable_for').find('input').each(function (i, el) {
+    //     if($(el).prop("checked")) {
+    //         suitable_for.push(el.id);
+    //     }
+    // });
+    //
+    // if(suitable_for == '') {
+    //     alert('Не указано для чего подходит это блюдо');
+    //     obj.disabled = false;
+    //     throw new Error('Suitable for not selected!');
+    // }
 
     $('#resultSendIndicator').html('<i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>');
 
     var weight_after = $('#dish_weight').val() !== ''? $('#dish_weight').val() : $('#products_weight').text();
 
     var request = $.ajax({
-        url: "/dishes/" + (dishGuid.length > 0? dishGuid.val() : 'new'),
+        url: "/dishes/" + (dishGuid.length > 0? dishGuid.val() : 'new') + '/' + (dishCopy.length > 0? 1 : 0),
         method: "POST",
         data: {
             'dish_name': prodName,
             'cat_id': dish_category,
             'draft': $('#draft').prop( "checked" ),
             'comment': $('#comment').val(),
-            'suitable_for': suitable_for,
+            //'suitable_for': suitable_for,
             'data': {'product_list': productList, 'weight_after': weight_after},
             '_token':_token
         }
     });
 
     request.fail(function (jqXHR) {
-        $('#resultSendIndicator').html('<i class="fa fa-exclamation-triangle text-danger" aria-hidden="true" style="font-size:24px;"></i>');
+        progress().endFail();
         obj.disabled = false;
     });
 
     request.done(function (msg) {
         if (typeof msg.status !== "undefined" && msg.status === 'success') {
-            $('#resultSendIndicator').html('<i class="fa fa-check text-success" aria-hidden="true" style="font-size:24px;"></i>');
-            $('#dish_guid_div').html('<input type="hidden" id="dish_guid" value="'+ msg.guid +'"/>');
-            setTimeout(function () {
-                $('#resultSendIndicator').html('');
-            }, 1000);
+            progress().endSuccess();
         } else {
-            $('#resultSendIndicator').html('<i class="fa fa-exclamation-triangle text-danger" aria-hidden="true" style="font-size:24px;"></i>');
+            progress().endFail(msg.error_message);
         }
 
         obj.disabled = false;
     });
-}
-
-function addProductToDish(el, modal, dayGuid, weight) {
-    var guid = $(el).find('td').first().find('input').val();
-    var request = $.ajax({
-        url: "/food_diary/finddp/" + guid,
-        type: "product",
-        method: "POST",
-        data: {
-            guid: guid,
-            _token: el.parent().parent().parent().parent().find('input').first().val()
-        }
-    });
-
-    request.fail(function (jqXHR) {
-        modal.spinner().error();
-        modal.showError(jqXHR);
-    });
-
-    request.done(function (msg) {
-        var bjuk = calculateBJUFromWeight(weight, msg.b, msg.j, msg.u);
-
-        var html = '<tr class="tabel-td">\n' +
-            '            <td style="text-overflow: ellipsis; padding-left: 5px;">\n' +
-            '                <input type="hidden" value=\'' + JSON.stringify(msg) + '\' />\n' +
-            '                <a  tabindex="0"  role="button" data-trigger="focus" class="dish-prod-info" data-toggle="dish-prod-info">' + msg.name + '</a>' +
-            '            </td>\n' +
-            '            <td style="min-width: 42px;">\n' +
-            '                <input type="integer" value="' + weight + '" class="form-control input-table dishProdWeight"/>\n' +
-            '            </td>\n' +
-            '            <td style="background-color: #c3e6cb; text-align: center;">' + bjuk.b + '</td>\n' +
-            '            <td style="background-color: #ffeeba; text-align: center;">' + bjuk.j + '</td>\n' +
-            '            <td style="background-color: #f5c6cb; text-align: center;">' + bjuk.u + '</td>\n' +
-            '            <td style="text-align: center;">' + bjuk.k +
-            '            </td>\n' +
-            '            <td>\n' +
-            '                <i class="fa fa-ban product-delete"  title="Удалить продукт"  onclick="if(confirm(\'Удалить?\')){$(this).parent().parent().remove();recalcDish();}" aria-hidden="true"></i>\n' +
-            '            </td>\n' +
-            '        </tr>';
-
-        $('#dishTableAmount').before(html);
-
-        setTimeout(function () {
-            $('[data-toggle="dish-prod-info"]').popover({
-                trigger: 'focus',
-                html: true,
-                content: dishProdInfo(msg)
-            });
-        }, 100);
-
-        $('.dishProdWeight').unbind();
-
-        $('.dishProdWeight').keyup(function (event) {
-            this.value = this.value.replace(/[^0-9]*/g, '');
-            setTimeout(function () {
-                recalcDish();
-            }, 100);
-
-        });
-
-        modal.spinner().success();
-        setTimeout(function () {
-            recalcDish();
-        }, 100);
-    });
-
-    return false;
-}
-
-function recalcDish() {
-    calculateDish();
 }
 
 function calculateDish() {
@@ -280,7 +190,7 @@ function calculateDish() {
     var sumTK = 0;
 
     $('.diaryTable').find('tbody').find('tr').each(function (i, el) {
-        if (!$(el).hasClass('diaryTableAmount') && !$(el).hasClass('dishTableAmountPer100')) {
+        if (!$(el).hasClass('dishTableAmount') && !$(el).hasClass('dishTableAmountPer100')) {
             var dPdata = JSON.parse($(el).find('td').first().find('input').val());
 
             // --- Вес ---
@@ -349,7 +259,7 @@ function calculateDish() {
             $($(el).find('td')[4]).html(resU.toFixed(1));
             $($(el).find('td')[5]).html((Math.ceil(resK)));
 
-        } else if ($(el).hasClass('diaryTableAmount')) {
+        } else if ($(el).hasClass('dishTableAmount')) {
             var weight = $('#dish_weight').val()
             var coeff = 1;
             if(weight !== '' && Number(weight) !== 0) {

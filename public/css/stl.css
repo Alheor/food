@@ -143,7 +143,7 @@ body{
 }
 
 .prod-search-name div:nth-child(2){
-    font-size: 10px;
+    font-size: 12px;
     color: #666;
 }
 .diaryTable td, .diaryTable th {
@@ -261,13 +261,18 @@ body{
 }
 
 .modal-body {
-    padding: 5px;
+    padding: 5px ;
 }
 
 .modal-footer {
     padding-top: 5px;
     padding-right: 5px;
     padding-bottom: 5px;
+}
+
+.modal-footer button{
+    float: right;
+    margin: 5px;
 }
 
 .tabel-td td {
@@ -354,6 +359,10 @@ body{
     font-size: 14px;
 }
 
+.container {
+    padding-bottom: 150px;
+}
+
 .footer .info {
     margin: 0 auto;
     width:100%;
@@ -369,27 +378,6 @@ body{
     padding-top: 10px !important;
     margin-bottom: 0 !important;
     padding-bottom: 10px;
-}
-
-@media (max-width: 576px) {
-    .container {
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-    }
-
-    h1 {
-        margin-top: 0px !important;
-        margin-bottom: 10px !important;
-    }
-    .main-header-box {
-        padding: 5px !important;
-    }
-    .main-body-box {
-        padding: 5px !important;
-    }
-    .main-footer-box {
-        padding: 5px !important;
-    }
 }
 
 h1{
@@ -425,11 +413,36 @@ h5{
     margin-bottom: 5px;
 }
 
+.main-widget {
+    background-color: #fff;
+    padding: 0 10px 10px 10px;
+    border-top-right-radius: .25rem;
+    border-top-left-radius: .25rem;
+    border: 1px solid #ddd;
+    border-top: 2px solid #f2d638;
+    margin-bottom: 15px;
+}
+
+.main-widget-header {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0 10px 0;
+    font-weight: bold;
+}
+
+.main-widget-widget, .main-widget-body {
+    padding: 10px 0 0 0;
+}
+
+.main-widget-body .table {
+    margin-bottom: 0 !important;
+}
+
 .main-widget-box {
     padding: 10px;
     background-color: #fff;
     border-radius: .25rem;
     border: 1px solid #ddd;
+    margin-bottom: 10px;
 }
 
 .main-body-box {
@@ -463,4 +476,264 @@ h5{
 }
 .login-box span {
 
+}
+
+.weight {
+    width: 65px;
+    padding: 1px !important;
+    padding-top: 5px !important;
+}
+
+.weight-diary {
+    width: 60px;
+    padding: 1px !important;
+}
+
+.weight-diary input {
+    text-align: left;
+    padding-left: 4px;
+}
+
+.weight-diary-total {
+    text-align: left !important;
+    padding-left: 6px !important;
+}
+
+.bju {
+    padding-top: 5px !important;
+}
+
+
+.dish-prod-el-add{
+    padding-top: 2px !important;
+}
+@media (max-width: 768px) {
+    .navbar {
+        display: none;
+    }
+
+    .footer {
+        display: none;
+    }
+
+    .footer-smart {
+        display: block !important;
+    }
+
+    .jumbotron {
+        padding: 15px 0 50px 0 !important;
+    }
+
+    .container {
+        padding-bottom: 0px !important;
+    }
+
+    .copyright {
+        display: block !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .jumbotron {
+        padding: 5px 2px 50px 2px !important;
+    }
+    .main-widget {
+        margin-bottom: 5px;
+        padding: 0 5px 5px 5px;;
+    }
+    .card-body {
+        padding: 5px;
+    }
+
+    .container {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        padding-bottom: 0px !important;
+    }
+
+    h1 {
+        margin-top: 0px !important;
+        margin-bottom: 10px !important;
+    }
+    .main-header-box {
+        padding: 5px !important;
+    }
+    .main-body-box {
+        padding: 5px !important;
+    }
+    .main-footer-box {
+        padding: 5px !important;
+    }
+
+    .main-widget-box {
+        margin-bottom: 5px;
+    }
+
+    .title {
+        float: unset !important;
+    }
+
+    .modal-body {
+        padding: 5px 2px 5px 2px;
+    }
+
+    .weight {
+        width: 50px;
+    }
+
+    .weight-diary {
+        width: 40px;
+    }
+
+    .weight-diary input {
+        padding-left: unset;
+        text-align: center;
+    }
+
+    .weight-diary-total {
+        text-align: center !important;
+        padding-left: unset !important;
+    }
+}
+
+.add-new-day {
+    padding-right: 8px;
+    padding-left: 8px;
+    margin-right: 3px;
+    cursor: pointer;
+    border-radius: 3px;
+    background-color: #28a745;
+    margin-left: 4px;
+}
+
+.other-menu{
+    min-width: 55px;
+    position: fixed;
+    right: 0;
+    top: unset;
+    left: unset;
+}
+
+.other-list-menu {
+    position: absolute;
+    left: -30px;
+    width: 50px !important;
+    min-width: 50px;
+    top: 20px;
+}
+
+.other-menu ul, .other-list-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.other-menu ul li, .other-list-menu ul li {
+    float: none !important;
+}
+
+.other-menu ul li i, .other-list-menu ul li i {
+    font-size: 28px !important;
+    width: 100%;
+    text-align: center;
+    color: #444 !important;
+    margin-bottom: 10px;
+    margin-top: 5px;
+}
+.other-menu ul li:last-child i, .other-list-menu ul li:last-child i  {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+.b-bg-color {
+    background-color: #c3e6cb;
+}
+
+.b-text-color {
+    color: #c3e6cb;
+}
+
+.j-bg-color {
+    background-color: #ffeeba;
+}
+
+.j-text-color {
+    color: #ffeeba;
+}
+
+.u-bg-color {
+    background-color: #f5c6cb;
+}
+
+.u-text-color {
+    color: #f5c6cb;
+}
+
+.errors-div ul {
+    margin: 0;
+    padding: 0 0px 0 20px;
+}
+
+.progress {
+    position: fixed;
+    top: 1px;
+    z-index: 10000;
+    width: 0;
+    display: none;
+    height: 3px;
+}
+.progress div {
+    background-color: #28a745;
+}
+
+.copyright {
+    display: none;
+}
+
+.input-group>.input-group-prepend>.btn {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.dishProdSearch {
+    border-right: 0 !important;
+    border-left: 0 !important;
+}
+
+.dish-prod-el-add>button {
+    padding: 4px;
+    padding-top: 1px;
+    padding-bottom: 3px;
+    font-size: 14px;
+}
+
+.manufacturers-filter {
+    overflow-x: auto;
+    white-space: nowrap;
+    margin-bottom: 1px;
+}
+
+.manufacturers-filter div {
+    font-size: 88%;
+    display: inline-block;
+    float: none;
+    margin-left: 2px;
+    margin-right: 2px;
+    font-weight: normal;
+    border: 1px solid #666;
+    cursor: pointer;
+}
+.modal-block {
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    background: #eee;
+    opacity: 0.8;
+    left: 0;
+    top: 0;
+}
+.fixed-bottom {
+    bottom: -1px !important;
 }
