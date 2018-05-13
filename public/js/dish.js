@@ -174,6 +174,7 @@ function saveDishData(obj) {
     request.done(function (msg) {
         if (typeof msg.status !== "undefined" && msg.status === 'success') {
             progress().endSuccess();
+            $('#dish_guid_div').html('<input type="hidden" id="dish_guid" value="'+ msg.guid +'"/>');
         } else {
             progress().endFail(msg.error_message);
         }

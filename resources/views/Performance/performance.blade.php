@@ -3,11 +3,10 @@
     @php $pageTitle = 'Физические показатели'; @endphp
     <div class="navbar-collapse row bg-light header-menu">
         <div class="col-12 col-xl-12">
-            @if(isset($success) && $success == 'new')
-                <h2 class="text-success" style="font-size: 20px; text-align: center">Новая запись успешно создана!</h2>
-            @endif
-            @if(isset($success) && $success == 'edit')
-                <h2 class="text-success" style="font-size: 20px; text-align: center">Запись успешно изменена!</h2>
+            @if(isset($success))
+                <script type="application/javascript">
+                    progress().endSuccess();
+                </script>
             @endif
         </div>
         <div class="col-3 col-xl-3">

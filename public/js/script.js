@@ -68,8 +68,8 @@ function strToInt(str) {
 }
 
 function strToFloat(str) {
-    if(str.value.length > 0) {
-        return str.value = parseFloat(str.value);
+    if(str.value.length > 0 && (str.value[str.value.length - 1] !== '.' &&  str.value[str.value.length - 1] !== ',')) {
+        return str.value = parseFloat(str.value.replace(/,/, '.'));
     }
 }
 
